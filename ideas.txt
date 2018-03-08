@@ -1,0 +1,10 @@
+GPS tracker
+    Must:
+        MKR GSM 1400    https://www.microchip.com/wwwproducts/en/ATSAMD21G18
+                        https://www.u-blox.com/en/product/sara-u2-series
+        GPS Modul
+    Should:
+        SD card (backup)
+    Could:
+        Accelerometer
+        Wireless update of firmware
