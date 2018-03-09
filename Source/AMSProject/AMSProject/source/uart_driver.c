@@ -1,0 +1,67 @@
+/*
+ * uart_driver.c
+ *
+ * Created: 3/9/2018 9:24:24 AM
+ *  Author: Qtra
+ */ 
+
+#include "uart_driver.h"
+
+/**************************************************
+* "uart.c":                                       *
+* Implementation file for the Mega32 UART driver. *
+*  STK500 setup:                                  *
+*  Header "RS232 spare" connected to RXD/TXD:     *
+*  RXD = PORTD, bit0                              *
+*  TXD = PORTD, bit1                              *
+*                                                 *
+* Henning Hargaard, 1/11 2011                     *
+***************************************************/
+#include <avr/io.h>
+#include <stdlib.h>
+#include "uart.h"
+
+// Constants
+#define XTAL 3686400  
+
+///*************************************************************************
+//USART initialization.
+    //Asynchronous mode.
+	//RX and TX enabled.
+	//No interrupts enabled.
+	//Number of Stop Bits = 1.
+	//No Parity.
+	//Baud rate = Parameter.
+	//Data bits = Parameter.
+//Parameters:
+	//BaudRate: Wanted Baud Rate.
+	//Databits: Wanted number of Data Bits.
+//*************************************************************************/
+//void InitUART(unsigned long BaudRate, unsigned char DataBit)
+//{
+//unsigned int TempUBRR;
+//
+  //if ((BaudRate >= 110) && (BaudRate <= 115200) && (DataBit >=5) && (DataBit <= 8))
+  //{ 
+    //// "Normal" clock, no multiprocessor mode (= default)
+    //UCSRA = 0b00100000;
+    //// No interrupts enabled
+    //// Receiver enabled
+    //// Transmitter enabled
+    //// No 9 bit operation
+    //UCSRB = 0b00011000;	
+    //// Asynchronous operation, 1 stop bit, no parity
+    //// Bit7 always has to be 1
+    //// Bit 2 and bit 1 controls the number of databits
+    //UCSRC = 0b10000000 | (DataBit-5)<<1;
+    //// Set Baud Rate according to the parameter BaudRate:
+    //// Select Baud Rate (first store "UBRRH--UBRRL" in local 16-bit variable,
+    ////                   then write the two 8-bit registers separately):
+    //TempUBRR = XTAL/(16*BaudRate) - 1;
+    //// Write upper part of UBRR
+    //UBRRH = TempUBRR >> 8;
+    //// Write lower part of UBRR
+    //UBRRL = TempUBRR;
+  //}  
+//}
+
