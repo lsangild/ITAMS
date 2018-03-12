@@ -17,12 +17,49 @@
 *                                                 *
 * Henning Hargaard, 1/11 2011                     *
 ***************************************************/
-#include <avr/io.h>
-#include <stdlib.h>
-#include "uart.h"
+#include "uart_driver.h"
+#include "defines.h"
 
-// Constants
-#define XTAL 3686400  
+void UART_Init(unsigned long baudRate, unsigned char dataBit, uint8_t stopBits, uint8_t parity)
+{
+	uint16_t tmpBaudRate = 65536*(1-8*(baudRate/F_CPU));
+	REG_SERCOM5_USART_BAUD = tmpBaudRate;
+	
+	struct CTRLB_T tmpCtrB;	
+	tmpCtrB.TXEN = 1; //TX enable
+	tmpCtrB.RXEN = 1; //RX enable
+	tmpCtrB.PMODE = parity; //Parity 0 = equal, 1 = odd
+	tmpCtrB.SBMODE = stopBits-1; //Stop bits 0 = 1, 1 = 2
+	tmpCtrB.CHSIZE = (dataBit > 7) ? (dataBit == 9 ? 9 : 8) : (dataBit > 4) ? dataBit : 5; // If databit is 8 | 9 set to 0 or 1. Else if 5-7 set to that.
+	
+	REG_SERCOM5_USART_CTRLB |= *(int*)(void*)&tmpCtrB; 
+}
+
+void UART_EnableInt()
+{
+	
+}
+
+void UART_DisableInt()
+{
+	
+}
+
+void UART_ISR()
+{
+	
+}
+
+void UART_SendBuffer(uint8_t* buffer, uint16_t size)
+{
+	
+}
+
+void UART_Recieve(uint8_t* data, uint16_t* size)
+{
+	
+}
+
 
 ///*************************************************************************
 //USART initialization.
