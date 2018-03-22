@@ -1,0 +1,16 @@
+% Redefine emph to start with bold instead of italic. Can still be nested.
+% See http://tex.stackexchange.com/a/6757/100641.
+\makeatletter
+\DeclareRobustCommand{\em}{%
+	\@nomath\em \if b\expandafter\@car\f@series\@nil
+	\normalfont \else \bfseries \fi}
+\makeatother
+
+% Access to checkmarks and crosses.
+% See http://tex.stackexchange.com/a/42620/100641.
+\newcommand{\cmark}{\text{\ding{51}}}
+\newcommand{\xmark}{\text{\ding{55}}}
+
+% Macros for rotating either 90 degrees right or left.
+\newcommand{\rotateright}[1]{\rotatebox{90}{#1}}
+\newcommand{\rotateleft}[1]{\rotatebox{-90}{#1}}

@@ -1,0 +1,267 @@
+% !TeX document-id = {a39e8ab2-a52f-4b84-8569-c61394829c2b}
+% !TeX TXS-program:compile = txs:///lualatex/[--shell-escape]
+% !TeX TXS-program:lualatex = lualatex -synctex=1 -interaction=nonstopmode --shell-escape %.tex
+
+% The style of this template is to include all the packages in this main file. Any additional settings for each package is handled in a seperate file, included right after the package includes. This allows for easier optimization.
+
+% Any layout changes should be handled in the "layout.tex" file, while any additional macros should be added in "macros.tex" or "luamacros.tex".
+
+% The main document is handled in "document.tex".
+
+% This template requires compilation with LuaLaTeX, in order to enable the custom environments. Since minted is included by default, it is required to invoke the compilation with "-shell-escape".
+%draft og final
+\documentclass[a4paper,oneside,openany,11pt,final]{memoir}
+% Changing the spacing for Chapter
+\renewcommand{\midchapskip}{10pt}
+\renewcommand{\afterchapskip}{20pt}
+% We want to globally be able to configure the draft option, however we risk option clashes since some package may load another package in the background, and we pass different options. This is the case with graphicx, so we do this to fix it.
+\PassOptionsToPackage{final}{graphicx}
+
+
+% ------------------------------------------------------------------------------
+% Some packages needs to be loaded earlier than others. These follow here.
+% ------------------------------------------------------------------------------
+
+% Since this is compiled with LuaLaTeX, it is unnecessary to use utf8 for inputenc, since this is included by default.
+
+% Support for other languages.
+\usepackage{polyglossia}
+\setdefaultlanguage[variant=usmax]{english}
+
+% At the current implementation of TeXLive (2016), there is an issue with minted and lua (Or rather, the calls to write18 needs to be replaced since this appears to be deprecated in LuaLaTeX). This is fixed using shellesc.
+\usepackage{shellesc}
+
+% For better ragged environments (Centering, left- and right aligned text). Current option overwrites the default LaTeX commands.
+\usepackage[newcommands]{ragged2e}
+
+% For defining colors.
+\usepackage[hyperref,svgnames,table]{xcolor}
+
+% ------------------------------------------------------------------------------
+% Loading of packages, sorted alphabetically.
+% ------------------------------------------------------------------------------
+
+% Bibliography, load before hyperref.
+\usepackage[backend=biber,style=numeric,hyperref]{biblatex}
+\bibliography{references}
+
+
+% Allow inline calculations, for instance when altering widths.
+\usepackage{calc}
+
+% Edit the way captions look.
+%\usepackage{caption}
+
+% For date related code.
+\usepackage{datetime}
+
+% Better enumeration environment.
+\usepackage{enumitem}
+
+% For notes and other TODO related activities.
+\usepackage{fixme}
+
+% Support for placing a float HERE, in cases where the automatic placement is not good enough.
+\usepackage{float}
+
+% Instead of fontenc, where it would be prefferable to get T1 instead or OT1 fonts, fontspec is loaded.
+\usepackage{fontspec}
+
+% For inserting graphics.
+\usepackage{graphicx}
+
+% For draft related code.
+\usepackage{ifdraft}
+
+% Support for relative imports. This allows the use of "\input" and "\includegraphics" in subdirectories.
+\usepackage{import}
+
+% Allows rotated pages
+\usepackage{lscape}
+
+% Allow for long tables.
+\usepackage{longtable}
+
+% Support for lua.
+\usepackage{luacode}
+
+% For math. Loads amsmath as well.
+\usepackage{mathtools}
+
+% Better typography. Can be quite heavy during compilation.
+\usepackage[final]{microtype}
+
+% For inserting code.
+\usepackage[final, cache=false, newfloat]{minted}
+
+%For code that needs captions
+\newenvironment{code}{\captionsetup{type=listing}}{}
+\SetupFloatingEnvironment{listing}{name=Source Code}
+
+
+% Multirow table cells.
+\usepackage{multirow}
+
+% Landscape pages
+\usepackage{pdflscape}
+
+% Allow inclusion of pdf pages directly.
+\usepackage{pdfpages}
+
+% For inline drawing with tikz.
+\usepackage{pgfplots}
+
+% Load pifont for access to dingbats.
+\usepackage{pifont}
+
+% Package to extract various lengths.
+\usepackage{printlen}
+
+% For '\RaggedRight' macro (allows hyphenation).
+\usepackage{ragged2e}
+
+% For SI units.
+\usepackage{siunitx}
+
+% Add the possibility for subfigures/subcaptions.
+\usepackage{subcaption}
+
+% Alternative table implementation.
+\usepackage{tabu}
+
+% Three part table
+\usepackage{threeparttable}
+
+% Formatting for urls.
+\usepackage{url}
+
+% Enable cross referencing between documents.
+\usepackage{xr}
+
+% Clearpage without a pagebreak
+\usepackage{afterpage}
+% Preferred over afterpage. Write \FloatBarrier where you don't want the floats to move past
+\usepackage{placeins}
+
+
+% ------------------------------------------------------------------------------
+% Some packages needs to be loaded later than others. These follow here.
+% ------------------------------------------------------------------------------
+
+% For typesettings references from biblatex correctly. Load after minted.
+\usepackage{csquotes}
+
+% ------------------------------------------------------------------------------
+% Memoir emulated packages.
+% ------------------------------------------------------------------------------
+
+% Some may feel certain packages are missing. At the time of writing, the following packages are emulated by memoir.
+% Package abstract [2008/07/23] emulated by memoir.
+% Package appendix [2008/07/23] emulated by memoir.
+% Package array [2008/09/09] emulated by memoir.
+% Package booktabs [2016/05/16] emulated by memoir.
+% Package ccaption [2008/07/23] emulated by memoir.
+% Package changepage [2008/07/23] emulated by memoir.
+% Package chngcntr [2008/07/23] emulated by memoir.
+% Package chngpage [2008/07/23] emulated by memoir.
+% Package crop emulated by memoir.
+% Package dcolumn [2008/07/23] emulated by memoir.
+% Package delarray [2008/07/23] emulated by memoir.
+% Package enumerate [2008/07/23] emulated by memoir.
+% Package epigraph [2008/07/23] emulated by memoir.
+% Package ifmtarg [2008/07/23] emulated by memoir.
+% Package index [2008/07/23] emulated by memoir.
+% Package makeidx [2008/07/23] emulated by memoir.
+% Package moreverb [2008/07/23] emulated by memoir.
+% Package mparhack [2008/07/23] emulated by memoir.
+% Package needspace [2008/07/23] emulated by memoir.
+% Package newfile [2008/07/23] emulated by memoir.
+% Package nextpage [2008/07/23] emulated by memoir.
+% Package pagenote [2008/07/23] emulated by memoir.
+% Package parskip [2008/07/23] emulated by memoir.
+% Package patchcmd [2008/07/23] emulated by memoir.
+% Package setspace [2008/07/23] emulated by memoir.
+% Package shortvrb [2008/07/23] emulated by memoir.
+% Package showidx [2008/07/23] emulated by memoir.
+% Package tabularx [2008/07/23] emulated by memoir.
+% Package titleref [2008/07/23] emulated by memoir.
+% Package titling [2008/07/23] emulated by memoir.
+% Package tocbibind [2008/07/23] emulated by memoir.
+% Package tocloft [2008/07/23] emulated by memoir.
+% Package tocvsec2 [2008/07/23] emulated by memoir.
+% Package verbatim [2008/07/23] emulated by memoir.
+% Package verse [2008/07/23] emulated by memoir.
+% If one wants to avoid this emulation, an alternative is to use KOMA scripts instead of memoir.
+
+% ------------------------------------------------------------------------------
+% Hyperref and friends. These are loaded last, as there seems to be a lot of
+% interaction which needs to be handled, so most other packages needs to be
+% loaded first.
+% ------------------------------------------------------------------------------
+
+% Cross references. Assumes all git repos have no name changes and are in a common root folder.
+%\usepackage{xr}
+%\externaldocument[doc:]{../E3PRJ3-Documentation/main}
+%\externaldocument[pdoc:]{../E3PRJ3-ProcessReport/ProcessDocumentation/main}
+
+% Dynamic references. Does not play nicely with hyperref (At least according to the README of hyperref), but cleveref seems to fix this.
+\usepackage{varioref}
+
+% Clickable links in the PDF.
+\usepackage[final,hidelinks,unicode]{hyperref}
+
+% Make the links be to the top of a figure instead of where the caption is.
+\usepackage[figure]{hypcap}
+
+% Be able to print the title of a reference instead of the number.
+\usepackage{nameref}
+
+\usepackage{longtable}
+
+% To enable "clever" references, and support for referencing a range of entries. Load as late as possible to fix most issues with other packages.
+\usepackage[nameinlink,noabbrev]{cleveref}
+
+% ------------------------------------------------------------------------------
+% Loading of macros, layout and settings.
+% ------------------------------------------------------------------------------
+
+% Import the lua code.
+\directlua{dofile("texsetup/lua/wrapper.lua")}
+
+% Define any LaTeX macros.
+\subimport*{texsetup/macros/}{macros.tex}
+
+% Define any LuaLaTeX macros.
+\subimport*{texsetup/luamacros/}{luamacros.tex}
+
+% Configure the layout.
+\subimport*{texsetup/settings/}{layout.tex}
+
+% Configure strings.
+\subimport*{texsetup/settings/}{strings.tex}
+
+% Configure pdf metadata with hyperref.
+\subimport*{texsetup/settings/}{pdf-metadata.tex}
+
+\checkandfixthelayout
+
+% Table related
+\newcolumntype{Y}{>{\arraybackslash}X} % this one makes it multiline 
+
+
+% setting include path of graphics elements
+\graphicspath{{./graphics/}}
+
+
+\usepackage{xspace}
+
+
+
+% ------------------------------------------------------------------------------
+% Start of the document proper.
+% ------------------------------------------------------------------------------
+
+\begin{document}
+
+\subimport{./}{document.tex}
+\end{document}

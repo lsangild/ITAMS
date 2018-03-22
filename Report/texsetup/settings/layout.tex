@@ -1,0 +1,28 @@
+% Set fonts.
+\setmainfont{TeX Gyre Pagella}
+
+% We do not use the headers.
+\makeevenhead{plain}{}{}{}
+\makeoddhead{plain}{}{}{}
+
+\makeevenhead{headings}{}{}{}
+\makeoddhead{headings}{}{}{}
+
+% Macros for setting the footers with or without git info.
+\newcommand{\footerswithgit}{
+	\makeevenfoot{plain}{Branch: \gitbranch\gitdirty \ -- \gitshorthash \ -- commit \#\gitnumber}{}{\thepage}
+	\makeoddfoot{plain}{Branch: \gitbranch\gitdirty \ -- \gitshorthash \ -- commit \#\gitnumber}{}{\thepage}
+	
+	\makeevenfoot{headings}{Branch: \gitbranch\gitdirty \ -- \gitshorthash \ -- commit \#\gitnumber}{}{\thepage}
+	\makeoddfoot{headings}{Branch: \gitbranch\gitdirty \ -- \gitshorthash \ -- commit \#\gitnumber}{}{\thepage}
+}
+\newcommand{\footerswithoutgit}{
+	\makeevenfoot{plain}{}{}{\thepage}
+	\makeoddfoot{plain}{}{}{\thepage}
+	
+	\makeevenfoot{headings}{}{}{\thepage}
+	\makeoddfoot{headings}{}{}{\thepage}
+}
+
+% Enable git versions in the footer if we are in draft mode.
+\ifdraft{\footerswithgit}{\footerswithoutgit}

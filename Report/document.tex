@@ -1,0 +1,27 @@
+% !TEX root = ./main.tex
+% !TEX spellcheck = en_GB
+
+\frontmatter
+
+\subimport{front/}{front.tex}
+\newpage
+\maxtocdepth{subsection}
+\setcounter{tocdepth}{2}
+
+\subimport{./}{abstract.tex}
+\newpage
+\subimport{./}{preface.tex}
+\newpage
+\tableofcontents*
+\newpage
+\mainmatter
+\setcounter{secnumdepth}{3}
+\subimport{Report/}{report.tex}
+\backmatter
+
+\chapter{Bibliography}
+\printbibliography[type=article,title={Articles},heading=subbibliography,sorting=none]
+\printbibliography[type=book,title={Books},heading=subbibliography,sorting=none]
+\printbibliography[type=manual,title={Datasheets},heading=subbibliography,sorting=none]
+\printbibliography[type=report,title={Standards},heading=subbibliography,sorting=none]
+\printbibliography[type=online,title={Webpages},heading=subbibliography,sorting=none]
