@@ -1,0 +1,3 @@
+SerCOM Functionality:
+	To set register, clock must be enabled on the specific SERCOM
+		Look into division og clock

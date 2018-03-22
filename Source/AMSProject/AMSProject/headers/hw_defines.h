@@ -1,0 +1,22 @@
+/*
+ * hw_defines.h
+ *
+ * Created: 22-03-2018 09:30:35
+ *  Author: Qtra
+ */ 
+
+
+#ifndef HW_DEFINES_H_
+#define HW_DEFINES_H_
+
+#define SERCOM5_UART_PORT_BASE		0x41004480 //REG_PORT_DIR1
+#define SERCOM5_UART_PIN_RX			PORT_PB23
+#define SERCOM5_UART_PIN_TX			PORT_PB22
+
+
+#define SERCOM2_UART_PORT_BASE		0x41004400 //REG_PORT_DIR0
+#define SERCOM2_UART_PIN_RX			PORT_PA13
+#define SERCOM2_UART_PIN_TX			PORT_PA12
+
+
+#endif /* HW_DEFINES_H_ */
