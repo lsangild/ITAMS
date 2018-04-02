@@ -173,16 +173,31 @@
     <Compile Include="headers\hw_defines.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="headers\ringbuffer.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="headers\sam21d18a_register.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="headers\sw_defines.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="headers\uart_driver.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="headers\utility.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="main.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="source\ringbuffer.c">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="source\uart_driver.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="source\utility.c">
       <SubType>compile</SubType>
     </Compile>
   </ItemGroup>

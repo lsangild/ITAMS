@@ -10,6 +10,10 @@
 #include "defines.h"
 #include "sam21d18a_register.h"
 #include "hw_defines.h"
+#include "sw_defines.h"
+#include "uart_driver.h"
+
+struct uart_t gpsUart; //Name for specifics
 
 void InitPorts()
 {
@@ -27,36 +31,46 @@ void InitPorts()
 	
 }
 
+void InitInterrupts()
+{
+	NVIC_EnableIRQ(SERCOM2_IRQn);
+	NVIC_EnableIRQ(SERCOM5_IRQn);	
+}
+
 int main(void)
 {
     /* Initialize the SAM system */
     SystemInit();
 	
 	InitPorts();
+		
+	gpsUart.baseAddress = GPS_UART_Base;
+	gpsUart.sercom		= 5;
 	
-	struct SERUSART_CTRLB_T controlB;
+	struct uartsetup_t gpsSetup;
 	
-	*(int*)((void*)&controlB) = REG_SERCOM5_USART_CTRLB;
-	controlB.CHSIZE = 5;
-	controlB.TXEN = 1;
-	controlB.RXEN = 1;
+	gpsSetup.baudRate = 9600;
+	gpsSetup.dataBits = 8;
+	gpsSetup.parity = 0;
+	gpsSetup.stopBits = 1;
 	
-	REG_SERCOM5_USART_CTRLB = *(int*)((void*)&controlB);
-	
-	struct SERUSART_CTRLA_T controlA;
-	
-	*(int*)((void*)&controlA) = REG_SERCOM5_USART_CTRLA;
-
-	controlA.CMODE = 1;
-	controlA.ENABLE = 1;
-	
-	REG_SERCOM5_USART_CTRLA = *(int*)((void*)&controlA);
-	
+	UART_Init(gpsUart, gpsSetup);
+		
     /* Replace with your application code */
     while (1) 
     {		
-		REG_PORT_OUTSET0 =  PORT_PA20;		
+		REG_PORT_OUTSET0 =  PORT_PA20;
 		
 		REG_PORT_OUTCLR0 = PORT_PA20;
     }
+}
+
+void SERCOM5_Handler()
+{
+	
+}
+
+void SERCOM2_Handler()
+{
+	
 }

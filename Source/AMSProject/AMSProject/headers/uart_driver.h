@@ -5,12 +5,16 @@
  *  Author: Qtra
  */ 
 
-
 #ifndef UART_DRIVER_H_
 #define UART_DRIVER_H_
+
+#define MAX_TX_SIZE 256
+#define MAX_RX_SIZE 256
+
 #include "sam.h"
 #include <stdint.h>
 #include "sam21d18a_register.h"
+#include "ringbuffer.h"
 
 struct uartsetup_t{
 	unsigned long baudRate;
@@ -19,16 +23,26 @@ struct uartsetup_t{
 	uint8_t parity;
 };
 
-struct UART_t{
-	int* baseAddress;
+struct uart_t{
+	uint32_t baseAddress;
+	uint8_t sercom;
 };
 
-void UART_Init(unsigned long baudRate, unsigned char dataBit, uint8_t stopBits, uint8_t parity);
-void UART_EnableInt();
-void UART_DisableInt();
-void UART_ISR();
-void UART_SendBuffer(struct UART_t serCom, unsigned char* buffer, uint16_t size);
-void UART_Recieve(struct UART_t serCom, uint8_t* data, uint16_t* size);
+struct uarttransfer_t{
+	uint8_t index;
+	uint8_t count;
+	uint8_t buffer[MAX_TX_SIZE];
+	uint8_t isEmpty;	
+};
+
+struct uarttransfer_t serComTransfers[5]; 
+
+
+void UART_Init(struct uart_t uartBase, struct uartsetup_t uartSetup);
+void UART_EnableInt(struct uart_t uartBase);
+void UART_DisableInt(struct uart_t uartBase);
+void UART_ISR(struct uart_t uartBase, struct uarttransfer_t, ringbuffer_t rxBuffer);
+void UART_SendBuffer(struct uart_t serCom, unsigned char* buffer, uint16_t size);
 
 /**************************************/
 
