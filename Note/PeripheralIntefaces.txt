@@ -1,3 +1,6 @@
 SerCOM Functionality:
 	To set register, clock must be enabled on the specific SERCOM
 		Look into division og clock
+
+Example!
+https://www.avrfreaks.net/forum/no-asf-samd21-sercom-usart-rxc-interrupt-not-triggering

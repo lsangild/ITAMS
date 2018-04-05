@@ -9,7 +9,6 @@
 #define UART_DRIVER_H_
 
 #define MAX_TX_SIZE 256
-#define MAX_RX_SIZE 256
 
 #include "sam.h"
 #include <stdint.h>
@@ -21,6 +20,8 @@ struct uartsetup_t{
 	uint8_t dataBits;
 	uint8_t stopBits;
 	uint8_t parity;
+	uint8_t* rxBufferAddr;
+	uint8_t rxBufferSize;
 };
 
 struct uart_t{
@@ -36,13 +37,17 @@ struct uarttransfer_t{
 };
 
 struct uarttransfer_t serComTransfers[5]; 
+ringbuffer_t serComRxBuffers[5];
 
 
 void UART_Init(struct uart_t uartBase, struct uartsetup_t uartSetup);
+void UART_PadInit(struct uart_t uartBase);
 void UART_EnableInt(struct uart_t uartBase);
+void UART_ClearInt(struct uart_t uartBase);
 void UART_DisableInt(struct uart_t uartBase);
-void UART_ISR(struct uart_t uartBase, struct uarttransfer_t, ringbuffer_t rxBuffer);
-void UART_SendBuffer(struct uart_t serCom, unsigned char* buffer, uint16_t size);
+void UART_ISR(struct uart_t uartBase);
+uint8_t UART_INTVECTOR(struct uart_t uartBase);
+uint8_t UART_SendBuffer(struct uart_t serCom, uint8_t* buffer, uint16_t size);
 
 /**************************************/
 

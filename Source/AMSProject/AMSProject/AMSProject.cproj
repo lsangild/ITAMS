@@ -170,6 +170,9 @@
     <Compile Include="headers\defines.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="headers\GPS_driver.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="headers\hw_defines.h">
       <SubType>compile</SubType>
     </Compile>
@@ -189,6 +192,9 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="main.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="source\GPS_driver.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="source\ringbuffer.c">

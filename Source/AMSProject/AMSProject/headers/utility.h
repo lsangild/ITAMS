@@ -17,5 +17,11 @@ void SETREG16(uint32_t address, uint16_t data);
 void SETREG32(uint32_t address, uint32_t data);
 
 
+//Read one byte data at address
+uint8_t READREG8(uint32_t address);
+//Read two byte data at address
+uint16_t READREG16(uint32_t address);
+//Read four byte data at address
+uint32_t READREG32(uint32_t address);
 
 #endif /* UTILITY_H_ */
