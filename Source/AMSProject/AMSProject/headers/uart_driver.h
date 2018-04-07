@@ -36,11 +36,11 @@ struct uarttransfer_t{
 	uint8_t isEmpty;	
 };
 
-struct uarttransfer_t serComTransfers[5]; 
-ringbuffer_t serComRxBuffers[5];
-
+struct uarttransfer_t serComTransfers[6];
+ringbuffer_t serComRxBuffers[6];
 
 void UART_Init(struct uart_t uartBase, struct uartsetup_t uartSetup);
+void UART_SetupBuffer(struct uart_t uartBase, struct uartsetup_t uartSetup);
 void UART_PadInit(struct uart_t uartBase);
 void UART_EnableInt(struct uart_t uartBase);
 void UART_ClearInt(struct uart_t uartBase);

@@ -21,6 +21,7 @@ struct uart_t gpsUart; //Name for specifics
 
 uint8_t gpsRxBuffer[GPS_UART_BUFFER_SIZE];
 
+
 void InitPorts()
 {
 	REG_PORT_DIRSET0 = PORT_PA20;
@@ -38,6 +39,7 @@ void InitPorts()
 	SETREG8(SERCOM2_UART_PORT_BASE + PORT_PMUX_OFFSET + SERCOM2_PORT_PMUX_OFFSET, 0x22); //Set pmu functiontion C - 
 	SETREG8(SERCOM2_UART_PORT_BASE + PORT_PINCFG_OFFSET + 12, PORT_PINCFG_PMUXEN);
 	SETREG8(SERCOM2_UART_PORT_BASE + PORT_PINCFG_OFFSET + 13, PORT_PINCFG_PMUXEN + PORT_PINCFG_INEN);
+	
 	SETREG8(SERCOM5_UART_PORT_BASE + PORT_PMUX_OFFSET + SERCOM5_PORT_PMUX_OFFSET, 0x33); //Set pmu functiontion D -
 	SETREG8(SERCOM5_UART_PORT_BASE + PORT_PINCFG_OFFSET + 22, PORT_PINCFG_PMUXEN);
 	SETREG8(SERCOM5_UART_PORT_BASE + PORT_PINCFG_OFFSET + 23, PORT_PINCFG_PMUXEN + PORT_PINCFG_INEN);
@@ -54,8 +56,9 @@ int main(void)
     /* Initialize the SAM system */
     SystemInit();
 	
-	InitPorts();
+	InitPorts();	
 		
+	InitInterrupts();
 	
 	gpsUart.baseAddress = GPS_UART_Base;
 	gpsUart.sercom		= 5;
@@ -68,36 +71,26 @@ int main(void)
 	gpsSetup.stopBits = 1;
 	gpsSetup.rxBufferAddr = gpsRxBuffer;
 	gpsSetup.rxBufferSize = GPS_UART_BUFFER_SIZE;
-	
-	InitInterrupts();
-	
+		
 	UART_Init(gpsUart, gpsSetup);
-	
-	uint8_t buffer[] = {"Hello World"} ;
-	
-	//UART_SendBuffer(gpsUart, buffer, 11);
+
+	uint8_t buffer[] = {"Hello World"} ;		
+
+	UART_SendBuffer(gpsUart, buffer, 11);
 	
     /* Replace with your application code */
     while (1) 
     {		
-		REG_PORT_OUTSET0 =  PORT_PA20;		
+		REG_PORT_OUTTGL0 =  PORT_PA20;		
 		
-		unsigned long counter = 0;
-		
-		for (counter = 0; counter < 480000; counter++)
-		{
-			
-		}
-		
+		//unsigned long counter = 0;
+		//
+		//for (counter = 0; counter < 480000; counter++)
+		//{
+			//
+		//}
 
-		REG_SERCOM5_USART_STATUS = 0xff;
-		REG_SERCOM5_USART_INTFLAG = 0xff;
-		
-		REG_SERCOM5_USART_DATA = 0x0055;
-		
-		
-		
-		REG_PORT_OUTCLR0 = PORT_PA20;
+		//UART_SendBuffer(gpsUart, buffer, 11);
     }
 }
 
