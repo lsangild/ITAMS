@@ -46,7 +46,6 @@ void UART_EnableInt(struct uart_t uartBase);
 void UART_ClearInt(struct uart_t uartBase);
 void UART_DisableInt(struct uart_t uartBase);
 void UART_ISR(struct uart_t uartBase);
-uint8_t UART_INTVECTOR(struct uart_t uartBase);
 uint8_t UART_SendBuffer(struct uart_t serCom, uint8_t* buffer, uint16_t size);
 
 /**************************************/

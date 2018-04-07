@@ -11,7 +11,9 @@
 #include <string.h>
 
 void UART_Init(struct uart_t uartBase, struct uartsetup_t uartSetup)
-{
+{	
+	UART_PadInit(uartBase);
+	
 	//Setup clock
 	REG_PM_APBCMASK |= 1 << (2 + uartBase.sercom);// Shift Clock power bit in
 	GCLK->CLKCTRL.reg = GCLK_CLKCTRL_ID(0x14+uartBase.sercom) | GCLK_CLKCTRL_GEN_GCLK0 | GCLK_CLKCTRL_CLKEN; //Select clock, and enable
@@ -28,7 +30,8 @@ void UART_Init(struct uart_t uartBase, struct uartsetup_t uartSetup)
 	tmpCtrA.FORM = 0;
 	tmpCtrA.CMODE = 1;
 	tmpCtrA.MODE = 1;
-	tmpCtrA.ENABLE = 1;
+	tmpCtrA.SAMPR = 0;
+	tmpCtrA.DORD = 1;
 	
 	SETREG32(uartBase.baseAddress + SERCOM_USART_CTRLA_OFFSET, *(int*)((void*)&tmpCtrA));
 	
@@ -50,11 +53,11 @@ void UART_Init(struct uart_t uartBase, struct uartsetup_t uartSetup)
 	RB_ClearBuffer(&serComRxBuffers[uartBase.sercom]);
 	
 	//Setup Int
-	UART_EnableInt(uartBase);
+	//UART_EnableInt(uartBase);
 	
-	UART_PadInit(uartBase);
+	//UART_ClearInt(uartBase);
 	
-	UART_ClearInt(uartBase);
+	SERCOM5->USART.CTRLA.bit.ENABLE = 1;
 }
 
 void UART_PadInit(struct uart_t uartBase)
@@ -94,7 +97,7 @@ void UART_PadInit(struct uart_t uartBase)
 
 void UART_EnableInt(struct uart_t uartBase)
 {
-	SETREG8(uartBase.baseAddress + SERCOM_USART_INTENSET_OFFSET, 0x0f);
+	SETREG8(uartBase.baseAddress + SERCOM_USART_INTENSET_OFFSET, 0x0D);
 }
 
 void UART_ClearInt(struct uart_t uartBase)
@@ -104,62 +107,38 @@ void UART_ClearInt(struct uart_t uartBase)
 
 void UART_DisableInt(struct uart_t uartBase)
 {
-	SETREG8(uartBase.baseAddress + SERCOM_USART_INTENCLR_OFFSET, 0x0f);
+	SETREG8(uartBase.baseAddress + SERCOM_USART_INTENCLR_OFFSET, 0x0D);
 }
 
 void UART_ISR(struct uart_t uartBase)
-{
-	uint8_t vector = 0;
-	do 
+{	
+	if(READREG16(uartBase.baseAddress + SERCOM_USART_INTFLAG_OFFSET) & SERCOM_USART_INTFLAG_RXC)
 	{
-		switch (vector)
-		{
-			case SERCOM_USART_INTFLAG_RXC:
-				break;
-			case SERCOM_USART_INTFLAG_RXS:
-				break;
-			case SERCOM_USART_INTFLAG_DRE:
-				if(!serComTransfers[uartBase.sercom].isEmpty && serComTransfers[uartBase.sercom].index < serComTransfers[uartBase.sercom].count)
-				{
-					SETREG8(uartBase.baseAddress + SERCOM_USART_DATA_OFFSET, serComTransfers[uartBase.sercom].buffer[serComTransfers->index]);
-				}
-				break;
-			case SERCOM_USART_INTFLAG_TXC:
-				if(!serComTransfers[uartBase.sercom].isEmpty && serComTransfers[uartBase.sercom].index == serComTransfers[uartBase.sercom].count)
-				{
-					serComTransfers[uartBase.sercom].isEmpty = 1;
-				}
-				break;
-			default:
-				break;
-		}
-	} while ((vector = UART_INTVECTOR(uartBase)) != 0);
-}
-
-//Get interrupt vector from register
-uint8_t UART_INTVECTOR(struct uart_t uartBase)
-{
-	if(READREG16(uartBase.baseAddress + SERCOM_USART_INTFLAG_OFFSET) & SERCOM_USART_INTFLAG_RXC) 
-	{
+		uint8_t data = READREG8(uartBase.baseAddress + SERCOM_USART_DATA_OFFSET);
+		RB_PushByte(data, &serComRxBuffers[uartBase.sercom]);
 		SETREG8(uartBase.baseAddress + SERCOM_USART_INTFLAG_OFFSET, SERCOM_USART_INTFLAG_RXC);
-		return SERCOM_USART_INTFLAG_RXC;
 	}
-	if(READREG16(uartBase.baseAddress + SERCOM_USART_INTFLAG_OFFSET) & SERCOM_USART_INTFLAG_RXS) 
+	if(READREG16(uartBase.baseAddress + SERCOM_USART_INTFLAG_OFFSET) & SERCOM_USART_INTFLAG_RXS)
 	{
 		SETREG8(uartBase.baseAddress + SERCOM_USART_INTFLAG_OFFSET, SERCOM_USART_INTFLAG_RXS);
-		return SERCOM_USART_INTFLAG_RXS;
 	}
 	if(READREG16(uartBase.baseAddress + SERCOM_USART_INTFLAG_OFFSET) & SERCOM_USART_INTFLAG_DRE)
-	{
+	{		
 		SETREG8(uartBase.baseAddress + SERCOM_USART_INTFLAG_OFFSET, SERCOM_USART_INTFLAG_DRE);
-		return SERCOM_USART_INTFLAG_DRE;
-	}	
+	}
 	if(READREG16(uartBase.baseAddress + SERCOM_USART_INTFLAG_OFFSET) & SERCOM_USART_INTFLAG_TXC)
 	{
+		if(!serComTransfers[uartBase.sercom].isEmpty && serComTransfers[uartBase.sercom].index < serComTransfers[uartBase.sercom].count)
+		{
+			SETREG8(uartBase.baseAddress + SERCOM_USART_DATA_OFFSET, serComTransfers[uartBase.sercom].buffer[serComTransfers->index]);
+		}
+		else if(!serComTransfers[uartBase.sercom].isEmpty && serComTransfers[uartBase.sercom].index == serComTransfers[uartBase.sercom].count)
+		{
+			serComTransfers[uartBase.sercom].isEmpty = 1;
+		}
 		SETREG8(uartBase.baseAddress + SERCOM_USART_INTFLAG_OFFSET, SERCOM_USART_INTFLAG_TXC);
-		return SERCOM_USART_INTFLAG_TXC;		
 	}
-	return 0;
+	SETREG8(uartBase.baseAddress + SERCOM_USART_INTFLAG_OFFSET, SERCOM_USART_INTFLAG_ERROR);
 }
 
 uint8_t UART_SendBuffer(struct uart_t serCom, uint8_t* buffer, uint16_t size)

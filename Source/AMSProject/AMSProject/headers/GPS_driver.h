@@ -9,6 +9,10 @@
 #ifndef GPS_DRIVER_H_
 #define GPS_DRIVER_H_
 
+#include "uart_driver.h"
+
+extern struct uart_t gpsUart;
+
 void InitGPS();
 
 

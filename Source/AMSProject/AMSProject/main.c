@@ -67,15 +67,15 @@ int main(void)
 	gpsSetup.parity = 0;
 	gpsSetup.stopBits = 1;
 	gpsSetup.rxBufferAddr = gpsRxBuffer;
-	gpsSetup.rxBufferSize = GPS_UART_BUFFER_SIZE;	
-	
-	UART_Init(gpsUart, gpsSetup);
+	gpsSetup.rxBufferSize = GPS_UART_BUFFER_SIZE;
 	
 	InitInterrupts();
 	
+	UART_Init(gpsUart, gpsSetup);
+	
 	uint8_t buffer[] = {"Hello World"} ;
 	
-	UART_SendBuffer(gpsUart, buffer, 11);
+	//UART_SendBuffer(gpsUart, buffer, 11);
 	
     /* Replace with your application code */
     while (1) 
@@ -84,10 +84,18 @@ int main(void)
 		
 		unsigned long counter = 0;
 		
-		for (counter = 0; counter < 48000000; counter++)
+		for (counter = 0; counter < 480000; counter++)
 		{
 			
 		}
+		
+
+		REG_SERCOM5_USART_STATUS = 0xff;
+		REG_SERCOM5_USART_INTFLAG = 0xff;
+		
+		REG_SERCOM5_USART_DATA = 0x0055;
+		
+		
 		
 		REG_PORT_OUTCLR0 = PORT_PA20;
     }
