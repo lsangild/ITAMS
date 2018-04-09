@@ -14,6 +14,7 @@
 #include "uart_driver.h"
 #include "ringbuffer.h"
 #include "utility.h"
+#include <string.h>
 
 Sercom *test = SERCOM2;
 
@@ -74,8 +75,8 @@ int main(void)
 		
 	UART_Init(gpsUart, gpsSetup);
 
-	uint8_t buffer[] = {"Hello World"} ;		
-
+	uint8_t buffer[] = {"Hello World"};
+	
 	UART_SendBuffer(gpsUart, buffer, 11);
 	
     /* Replace with your application code */
@@ -83,13 +84,6 @@ int main(void)
     {		
 		REG_PORT_OUTTGL0 =  PORT_PA20;		
 		
-		//unsigned long counter = 0;
-		//
-		//for (counter = 0; counter < 480000; counter++)
-		//{
-			//
-		//}
-
 		//UART_SendBuffer(gpsUart, buffer, 11);
     }
 }

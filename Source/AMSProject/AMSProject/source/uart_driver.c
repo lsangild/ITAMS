@@ -11,8 +11,7 @@
 #include <string.h>
 
 void UART_Init(struct uart_t uartBase, struct uartsetup_t uartSetup)
-{
-	
+{	
 	//Setup clock
 	REG_PM_APBCMASK |= 1 << (2 + uartBase.sercom);// Shift Clock power bit in
 	GCLK->CLKCTRL.reg = GCLK_CLKCTRL_ID(0x14+uartBase.sercom) | GCLK_CLKCTRL_GEN_GCLK0 | GCLK_CLKCTRL_CLKEN; //Select clock, and enable
@@ -147,6 +146,22 @@ void UART_ISR(struct uart_t uartBase)
 			SETREG8(uartBase.baseAddress + SERCOM_USART_INTFLAG_OFFSET, SERCOM_USART_INTFLAG_TXC);
 		}
 	}
+}
+
+uint8_t UART_ScanRXBuffer(struct uart_t serCom, char data)
+{
+	return RB_ScanBuffer(&serComRxBuffers[serCom.sercom], data);
+}
+
+uint8_t UART_Recieve(struct uart_t serCom, uint8_t* data, uint8_t count)
+{
+	uint8_t index;
+	for (index = 0; index < count; index++)
+	{
+		if(RB_PopByte(&serComRxBuffers[serCom.sercom], &data[index]))
+			return index+1;
+	}
+	return 0;
 }
 
 uint8_t UART_SendBuffer(struct uart_t serCom, uint8_t* buffer, uint16_t size)
