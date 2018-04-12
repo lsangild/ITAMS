@@ -16,7 +16,9 @@ extern struct uart_t gpsUart;
 
 void InitGPS();
 
-const char* ConstructGPSMessage(uint8_t class, uint8_t ID, int payload);
+uint8_t ConstructGPSMessage(uint8_t class, uint8_t ID, uint16_t lenght, char* payload, char* packet);
+void CalculateChecksum(uint16_t lenght, char* payload, uint8_t ck_a, ck_b);
+
 
 
 #endif /* GPS_DRIVER_H_ */
