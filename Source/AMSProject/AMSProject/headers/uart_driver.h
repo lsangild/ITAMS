@@ -21,7 +21,7 @@ struct uartsetup_t{
 	uint8_t stopBits;
 	uint8_t parity;
 	uint8_t* rxBufferAddr;
-	uint8_t rxBufferSize;
+	uint16_t rxBufferSize;
 };
 
 struct uart_t{
@@ -47,8 +47,8 @@ void UART_ClearInt(struct uart_t uartBase);
 void UART_DisableInt(struct uart_t uartBase);
 void UART_ISR(struct uart_t uartBase);
 uint8_t UART_ScanRXBuffer(struct uart_t serCom, char data);
-uint8_t UART_Recieve(struct uart_t serCom, uint8_t* data, uint8_t count);
-uint8_t UART_SendBuffer(struct uart_t serCom, uint8_t* buffer, uint16_t size);
+uint8_t UART_Recieve(struct uart_t serCom, char* data, uint8_t count);
+uint8_t UART_SendBuffer(struct uart_t serCom, char* buffer, uint16_t size);
 
 /**************************************/
 

@@ -11,6 +11,8 @@
 
 #define GPS_UART_Base				0x42001C00 //Set to ctrl a reg
 #define GPS_UART_BUFFER_SIZE		256
+#define GPS_POLL_MSG				"$PUBX,00*33\r\n"
+#define GPS_POLL_MSG_LENGTH			13
 
 #define GSM_UART_Base				0x42001000 //Set to ctrl a reg
 

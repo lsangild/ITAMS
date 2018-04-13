@@ -15,12 +15,12 @@
 #include "ringbuffer.h"
 #include "utility.h"
 #include <string.h>
+#include "GPS_driver.h"
 
 Sercom *test = SERCOM2;
 
 struct uart_t gpsUart; //Name for specifics
 
-uint8_t gpsRxBuffer[GPS_UART_BUFFER_SIZE];
 
 
 void InitPorts()
@@ -52,6 +52,11 @@ void InitInterrupts()
 	NVIC_EnableIRQ(SERCOM5_IRQn);		
 }
 
+void InitModules()
+{
+	GPS_Init();
+}
+
 int main(void)
 {
     /* Initialize the SAM system */
@@ -61,19 +66,7 @@ int main(void)
 		
 	InitInterrupts();
 	
-	gpsUart.baseAddress = GPS_UART_Base;
-	gpsUart.sercom		= 5;
-	
-	struct uartsetup_t gpsSetup;
-	
-	gpsSetup.baudRate = 19200;
-	gpsSetup.dataBits = 8;
-	gpsSetup.parity = 0;
-	gpsSetup.stopBits = 1;
-	gpsSetup.rxBufferAddr = gpsRxBuffer;
-	gpsSetup.rxBufferSize = GPS_UART_BUFFER_SIZE;
-		
-	UART_Init(gpsUart, gpsSetup);
+	InitModules();
 
 	uint8_t buffer[] = {"Hello World"};
 	
@@ -83,6 +76,14 @@ int main(void)
     while (1) 
     {		
 		REG_PORT_OUTTGL0 =  PORT_PA20;		
+		
+		uint16_t i;
+		for (i = 0; i < 65000; i++)
+		{
+			
+		}
+		
+		GPS_Poll();
 		
 		//UART_SendBuffer(gpsUart, buffer, 11);
     }

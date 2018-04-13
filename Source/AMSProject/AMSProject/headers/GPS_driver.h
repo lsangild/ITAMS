@@ -11,13 +11,16 @@
 
 #include <string.h>
 #include "uart_driver.h"
+#include "sw_defines.h"
 
 extern struct uart_t gpsUart;
+uint8_t gpsRxBuffer[GPS_UART_BUFFER_SIZE];
 
-void InitGPS();
+void GPS_Init();
+uint8_t GPS_ConstructMessage(uint8_t class, uint8_t ID, uint16_t lenght, char* payload, char* packetBufffer);
+void GPS_CalculateChecksum(uint16_t lenght, char* payload, uint8_t* ck_a, uint8_t* ck_b);
+void GPS_Poll();
 
-uint8_t ConstructGPSMessage(uint8_t class, uint8_t ID, uint16_t lenght, char* payload, char* packet);
-void CalculateChecksum(uint16_t lenght, char* payload, uint8_t ck_a, ck_b);
 
 
 
