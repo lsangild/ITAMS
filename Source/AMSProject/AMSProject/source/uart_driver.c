@@ -153,7 +153,7 @@ uint8_t UART_ScanRXBuffer(struct uart_t serCom, char data)
 	return RB_ScanBuffer(&serComRxBuffers[serCom.sercom], data);
 }
 
-uint8_t UART_Recieve(struct uart_t serCom, uint8_t* data, uint8_t count)
+uint8_t UART_Recieve(struct uart_t serCom, char* data, uint8_t count)
 {
 	uint8_t index;
 	for (index = 0; index < count; index++)
@@ -164,7 +164,7 @@ uint8_t UART_Recieve(struct uart_t serCom, uint8_t* data, uint8_t count)
 	return 0;
 }
 
-uint8_t UART_SendBuffer(struct uart_t serCom, uint8_t* buffer, uint16_t size)
+uint8_t UART_SendBuffer(struct uart_t serCom, char* buffer, uint16_t size)
 {
 	if(serComTransfers[serCom.sercom].isEmpty && size <= MAX_TX_SIZE)
 	{
