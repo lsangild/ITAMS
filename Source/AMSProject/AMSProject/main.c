@@ -16,10 +16,10 @@
 #include "utility.h"
 #include <string.h>
 #include "GPS_driver.h"
-
-Sercom *test = SERCOM2;
+#include "sarau2_driver.h"
 
 struct uart_t gpsUart; //Name for specifics
+struct uart_t gsmUart;
 
 
 
@@ -37,24 +37,25 @@ void InitPorts()
 	SETREG32(SERCOM2_UART_PORT_BASE + PORT_DIRCLR_OFFSET, SERCOM2_UART_PIN_RX); //Set recieve pin to input
 		
 	//Set Multiplexer
-	SETREG8(SERCOM2_UART_PORT_BASE + PORT_PMUX_OFFSET + SERCOM2_PORT_PMUX_OFFSET, 0x22); //Set pmu functiontion C - 
-	SETREG8(SERCOM2_UART_PORT_BASE + PORT_PINCFG_OFFSET + 12, PORT_PINCFG_PMUXEN);
-	SETREG8(SERCOM2_UART_PORT_BASE + PORT_PINCFG_OFFSET + 13, PORT_PINCFG_PMUXEN + PORT_PINCFG_INEN);
-	
 	SETREG8(SERCOM5_UART_PORT_BASE + PORT_PMUX_OFFSET + SERCOM5_PORT_PMUX_OFFSET, 0x33); //Set pmu functiontion D -
 	SETREG8(SERCOM5_UART_PORT_BASE + PORT_PINCFG_OFFSET + 22, PORT_PINCFG_PMUXEN);
 	SETREG8(SERCOM5_UART_PORT_BASE + PORT_PINCFG_OFFSET + 23, PORT_PINCFG_PMUXEN + PORT_PINCFG_INEN);
+	
+	SETREG8(SERCOM2_UART_PORT_BASE + PORT_PMUX_OFFSET + SERCOM2_PORT_PMUX_OFFSET, 0x22); //Set pmu functiontion C - 
+	SETREG8(SERCOM2_UART_PORT_BASE + PORT_PINCFG_OFFSET + 12, PORT_PINCFG_PMUXEN);
+	SETREG8(SERCOM2_UART_PORT_BASE + PORT_PINCFG_OFFSET + 13, PORT_PINCFG_PMUXEN + PORT_PINCFG_INEN);
 }
 
 void InitInterrupts()
 {
-	NVIC_EnableIRQ(SERCOM2_IRQn);
-	NVIC_EnableIRQ(SERCOM5_IRQn);		
+	NVIC_EnableIRQ(SERCOM5_IRQn);	
+	NVIC_EnableIRQ(SERCOM2_IRQn);	
 }
 
 void InitModules()
 {
 	GPS_Init();
+	SARAU2_Init();
 }
 
 int main(void)
@@ -67,25 +68,35 @@ int main(void)
 	InitInterrupts();
 	
 	InitModules();
-
-	uint8_t buffer[] = {"Hello World"};
-	
-	UART_SendBuffer(gpsUart, buffer, 11);
-	
+		
     /* Replace with your application code */
+	uint8_t pcData[1024];
+	uint16_t i;
     while (1) 
     {		
 		REG_PORT_OUTTGL0 =  PORT_PA20;		
 		
-		uint16_t i;
-		for (i = 0; i < 65000; i++)
+		uint8_t pcCount = UART_Recieve(gpsUart, pcData, 255);
+		if(pcCount > 0)
+		{
+			UART_SendBuffer(gpsUart, pcData, pcCount);
+		}
+		
+		for (i = 0; i < 40000; i++)
 		{
 			
 		}
 		
-		GPS_Poll();
+		uint8_t emCount = UART_Recieve(gsmUart, pcData, 255);
+		if(emCount > 0)
+		{
+			UART_SendBuffer(gpsUart, pcData, emCount);
+		}
 		
-		//UART_SendBuffer(gpsUart, buffer, 11);
+		for (i = 0; i < 40000; i++)
+		{
+			
+		}
     }
 }
 
@@ -96,5 +107,5 @@ void SERCOM5_Handler()
 
 void SERCOM2_Handler()
 {
-	
+	UART_ISR(gsmUart);
 }

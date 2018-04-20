@@ -9,7 +9,7 @@
 
 void GPS_Init()
 {
-	gpsUart.baseAddress = GPS_UART_Base;
+	gpsUart.baseAddress = GPS_UART_BASE;
 	gpsUart.sercom		= 5;
 	
 	struct uartsetup_t gpsSetup;
@@ -79,6 +79,6 @@ void GPS_Poll()
 	{
 		countToBreak = UART_ScanRXBuffer(gpsUart, '\n');
 	}
-	char input[countToBreak];
+	uint8_t input[countToBreak];
 	UART_Recieve(gpsUart,input, countToBreak);
 }

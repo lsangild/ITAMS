@@ -17,7 +17,7 @@ typedef struct{
 }ringbuffer_t;
 
 uint8_t RB_PopElement(uint8_t* element, uint8_t elementSize, ringbuffer_t* buffer);
-uint8_t RB_PopByte(ringbuffer_t* buffer, uint8_t *data);
+uint8_t RB_PopByte(ringbuffer_t* buffer, uint8_t* data);
 uint8_t RB_PopBytes(ringbuffer_t* buffer, uint8_t *data, uint8_t *count);
 uint8_t RB_PushElement(uint8_t* element, uint8_t elementSize, ringbuffer_t* buffer);
 uint8_t RB_PushByte(uint8_t data, ringbuffer_t* buffer);

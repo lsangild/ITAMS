@@ -17,24 +17,23 @@ void UART_Init(struct uart_t uartBase, struct uartsetup_t uartSetup)
 	GCLK->CLKCTRL.reg = GCLK_CLKCTRL_ID(0x14+uartBase.sercom) | GCLK_CLKCTRL_GEN_GCLK0 | GCLK_CLKCTRL_CLKEN; //Select clock, and enable
 	//Write more elegant! Enables the specific clock, uses same reg for all generics
 	
-	UART_PadInit(uartBase);
-	
+	UART_PadInit(uartBase);	
 	
 	//Setup Control A Register
-	struct SERUSART_CTRLA_T tmpCtrA;
-	*(int*)((void*)&tmpCtrA) = REG_SERCOM5_I2CM_CTRLA;
+	SERCOM_USART_CTRLA_Type tmpCtrA;
+	tmpCtrA.reg = READREG32(uartBase.baseAddress + SERCOM_USART_CTRLA_OFFSET);
 	
-	tmpCtrA.FORM = 0;
-	tmpCtrA.CMODE = 1;
-	tmpCtrA.MODE = 1;
-	tmpCtrA.SAMPR = 0;
-	tmpCtrA.DORD = 1;
+	tmpCtrA.bit.FORM = 0;
+	tmpCtrA.bit.CMODE = 1;
+	tmpCtrA.bit.MODE = 1;
+	tmpCtrA.bit.SAMPR = 0;
+	tmpCtrA.bit.DORD = 1;
 	
-	SETREG32(uartBase.baseAddress + SERCOM_USART_CTRLA_OFFSET, *(int*)((void*)&tmpCtrA));
+	SETREG32(uartBase.baseAddress + SERCOM_USART_CTRLA_OFFSET, tmpCtrA.reg);
 	
 	//Setup Control B Register
 	struct SERUSART_CTRLB_T tmpCtrB;
-	*(int*)((void*)&tmpCtrB) = REG_SERCOM5_I2CM_CTRLA;
+	*(int*)((void*)&tmpCtrB) = READREG32(uartBase.baseAddress + SERCOM_USART_CTRLB_OFFSET);
 	
 	tmpCtrB.TXEN = 1; //TX enable
 	tmpCtrB.RXEN = 1; //RX enable
@@ -56,7 +55,7 @@ void UART_Init(struct uart_t uartBase, struct uartsetup_t uartSetup)
 	
 	UART_EnableInt(uartBase);
 	
-	SERCOM5->USART.CTRLA.bit.ENABLE = 1;
+	UART_EnableSerCom(uartBase);
 }
 
 void UART_SetupBuffer(struct uart_t uartBase, struct uartsetup_t uartSetup)
@@ -83,7 +82,7 @@ void UART_PadInit(struct uart_t uartBase)
 		break;
 		case 2:
 		//Setup Control A Register
-		*(int*)((void*)&tmpCtrA) = REG_SERCOM5_I2CM_CTRLA;
+		*(int*)((void*)&tmpCtrA) = READREG32(uartBase.baseAddress + SERCOM_USART_CTRLB_OFFSET);
 		
 		tmpCtrA.RXPO = 0x1;
 		
@@ -95,7 +94,7 @@ void UART_PadInit(struct uart_t uartBase)
 		break;
 		case 5:
 		//Setup Control A Register
-		*(int*)((void*)&tmpCtrA) = REG_SERCOM5_I2CM_CTRLA;
+		*(int*)((void*)&tmpCtrA) = READREG32(uartBase.baseAddress + SERCOM_USART_CTRLB_OFFSET);
 		
 		tmpCtrA.RXPO = 0x3;
 		tmpCtrA.TXPO = 0x1;
@@ -103,6 +102,34 @@ void UART_PadInit(struct uart_t uartBase)
 		SETREG32(uartBase.baseAddress + SERCOM_USART_CTRLA_OFFSET, *(int*)((void*)&tmpCtrA));
 		break;
 		default:
+		break;
+	}
+}
+
+void UART_EnableSerCom(struct uart_t uartBase)
+{
+	switch (uartBase.sercom)
+	{
+		case 0:
+			SERCOM0->USART.CTRLA.bit.ENABLE = 1;
+			break;
+		case 1:
+			SERCOM1->USART.CTRLA.bit.ENABLE = 1;
+			break;
+		case 2:
+			SERCOM2->USART.CTRLA.bit.ENABLE = 1;
+			break;
+		case 3:
+			SERCOM3->USART.CTRLA.bit.ENABLE = 1;
+			break;
+		case 4:
+			SERCOM4->USART.CTRLA.bit.ENABLE = 1;
+			break;
+		case 5:
+			SERCOM5->USART.CTRLA.bit.ENABLE = 1;
+			break;
+		default:
+		/* Your code here */
 		break;
 	}
 }
@@ -153,9 +180,14 @@ uint8_t UART_ScanRXBuffer(struct uart_t serCom, char data)
 	return RB_ScanBuffer(&serComRxBuffers[serCom.sercom], data);
 }
 
-uint8_t UART_Recieve(struct uart_t serCom, char* data, uint8_t count)
+uint8_t UART_Recieve(struct uart_t serCom, uint8_t* data, uint8_t count)
 {
 	uint8_t index;
+	if (RB_IsEmpty(&serComRxBuffers[serCom.sercom]))
+	{
+		return 0;
+	}
+	
 	for (index = 0; index < count; index++)
 	{
 		if(RB_PopByte(&serComRxBuffers[serCom.sercom], &data[index]))

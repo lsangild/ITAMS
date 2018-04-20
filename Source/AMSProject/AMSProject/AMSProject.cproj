@@ -182,6 +182,9 @@
     <Compile Include="headers\sam21d18a_register.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="headers\sarau2_driver.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="headers\sw_defines.h">
       <SubType>compile</SubType>
     </Compile>
@@ -198,6 +201,9 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="source\ringbuffer.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="source\sarau2_driver.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="source\uart_driver.c">
