@@ -6,6 +6,8 @@
 */
 
 #include "SaraU2_driver.h"
+#include "utility.h"
+#include "hw_defines.h"
 
 
 uint8_t SARAU2_Init()
@@ -15,7 +17,7 @@ uint8_t SARAU2_Init()
 
 	struct uartsetup_t gsmSetup;
 
-	gsmSetup.baudRate = 19200;
+	gsmSetup.baudRate = 64281; //Hard coded value for register real 19200
 	gsmSetup.dataBits = 8;
 	gsmSetup.parity = 0;
 	gsmSetup.stopBits = 1;
@@ -53,5 +55,15 @@ uint8_t SARAU2_OpenConnection()
 
 uint8_t SARAU2_Reset()
 {
+	SETREG32(GSM_RESET_PORT_BASE + PORT_OUTSET_OFFSET, PORT_PB08); //Set reset pin as high - Active high
+	uint16_t i;
+	for (i = 0; i < 400000; i++)
+	{
+		
+	} // wait
+	SETREG32(GSM_RESET_PORT_BASE + PORT_OUTCLR_OFFSET, PORT_PB08); //Set reset pin as low - Active high
+	
+	//Now send something to set autobaud!
+	
 	
 }

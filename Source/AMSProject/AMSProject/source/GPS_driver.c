@@ -9,12 +9,12 @@
 
 void GPS_Init()
 {
-	gpsUart.baseAddress = GPS_UART_Base;
+	gpsUart.baseAddress = GPS_UART_BASE;
 	gpsUart.sercom		= 5;
 	
 	struct uartsetup_t gpsSetup;
 	
-	gpsSetup.baudRate = 19200;
+	gpsSetup.baudRate = 64307;// Hardcoded for baud 9600 - real should be 9600;
 	gpsSetup.dataBits = 8;
 	gpsSetup.parity = 0;
 	gpsSetup.stopBits = 1;
@@ -22,6 +22,8 @@ void GPS_Init()
 	gpsSetup.rxBufferSize = GPS_UART_BUFFER_SIZE;
 	
 	UART_Init(gpsUart, gpsSetup);
+	
+	UART_SendBuffer(gpsUart, 0xB56206010800F004000000000000033F0D0A, 18);
 }
 
 uint8_t GPS_ConstructMessage(uint8_t class, uint8_t ID, uint16_t length, char* payload, char* packetBufffer) {
@@ -70,10 +72,10 @@ void GPS_CalculateChecksum(uint16_t lenght, char* payload, uint8_t* ck_a, uint8_
 	}
 }
 
-struct GPS_data GPS_Poll()
+struct GPS_data_t GPS_Poll()
 {   
     // Create message and send it
-    char* msg[GPS_POLL_MSG_LENGTH];
+    char msg[GPS_POLL_MSG_LENGTH];
     GPS_ConstructMessage(0x01, 0x07, 0x0000, 0x00, msg);
 	UART_SendBuffer(gpsUart, msg, GPS_POLL_MSG_LENGTH);
 	
@@ -83,17 +85,19 @@ struct GPS_data GPS_Poll()
 	{
 		countToBreak = UART_ScanRXBuffer(gpsUart, '\n');
 	}
-	char input[countToBreak];
+	uint8_t input[countToBreak];
 	UART_Recieve(gpsUart, input, countToBreak);
     
     // Setup struct for data
-    struct GPS_data data;
-    
+    struct GPS_data_t data;
+    data.error = 1;
+
     // Copy data to GPS struct
-    if ((countToBreak == 95) && (input[29] > 0){
+    if ((countToBreak == 95) && (input[29] > 0))
+	{
         memcpy(&data.year, input + 10, 2);
         memcpy(&data.month, input + 12, 1);
-        memcpy(&data.data, input + 13, 1);
+        memcpy(&data.date, input + 13, 1);
         memcpy(&data.hour, input + 14, 1);
         memcpy(&data.minute, input + 15, 1);
         memcpy(&data.second, input + 16, 1);
