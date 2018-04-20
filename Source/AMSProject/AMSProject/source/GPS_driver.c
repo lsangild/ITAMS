@@ -23,7 +23,26 @@ void GPS_Init()
 	
 	UART_Init(gpsUart, gpsSetup);
 	
-	UART_SendBuffer(gpsUart, 0xB56206010800F004000000000000033F0D0A, 18);
+    // Disable unwanted messages
+    GPS_setup(0x06, 0x01, 8, 0xF004000000000000);
+	GPS_setup(0x06, 0x01, 8, 0xF005000000000000);
+    GPS_setup(0x06, 0x01, 8, 0xF000000000000000);
+    GPS_setup(0x06, 0x01, 8, 0xF002000000000000);
+    GPS_setup(0x06, 0x01, 8, 0xF003000000000000);
+    GPS_setup(0x06, 0x01, 8, 0xF001000000000000);
+    GPS_setup(0x06, 0x01, 8, 0xF041000000000000);
+    
+    // Turn of Glonass
+    GPS_setup(0x06, 0x3E, 36, 0x001616040004FF0001000000010103000100000005000300010000000608FF0000000000);
+    
+    // Set Navigation Configuration to pedestrian
+    GPS_setup(0x06, 0x24, 36, 0x010003000000000000000000000000000000000000000000000000000000000000000000);
+    
+    // Power management ON/OFF mode
+    GPS_setup(0x06, 0x3B, 44, 0x0100000000002800000000000000000000000000000000000000000000000000000000000000000000000000);
+    
+    // Apply Power save mode
+    GPS_setup(0x06, 0x11, 2, 0x0801);
 }
 
 uint8_t GPS_ConstructMessage(uint8_t class, uint8_t ID, uint16_t length, char* payload, char* packetBufffer) {
@@ -61,48 +80,81 @@ uint8_t GPS_ConstructMessage(uint8_t class, uint8_t ID, uint16_t length, char* p
 	return checksum_length;
 }
 
-void GPS_CalculateChecksum(uint16_t lenght, char* payload, uint8_t* ck_a, uint8_t* ck_b)
+void GPS_CalculateChecksum(uint16_t length, char* payload, uint8_t* ck_a, uint8_t* ck_b)
 {
 	// Calculate checksum
 	uint16_t i;
-	for (i = 0; i < lenght; i++)
+	for (i = 0; i < length; i++)
 	{
 		*ck_a = (*ck_a + payload[i]) &0xff;
 		*ck_b = (*ck_b + *ck_a)& 0xff;
 	}
 }
 
+uint8_t GPS_send(uint8_t class, uint8_t ID, uint16_t length, char* payload, char* answer)
+{
+    // Send data
+    char msg[4 + length + 6];
+    GPS_ConstructMessage(class, ID, length, payload, msg);
+    UART_SendBuffer(gpsUart, msg, 4 + length + 6);
+    
+    // Receive
+    uint16_t countToBreak = 0;
+    while (countToBreak == 0)
+    {
+        countToBreak = UART_ScanRXBuffer(gpsUart, '\n');
+    }
+    uint8_t input[countToBreak];
+    UART_Recieve(gpsUart, answer, countToBreak);
+    
+    // Return number of bytes read
+    return countToBreak;
+}
+
+uint8_t GPS_setup(uint8_t class, uint8_t ID, uint16_t length, char* payload)
+{
+    // Send data
+    char answer[10];
+    GPS_send(class, ID, length, payload, answer);
+    
+    // Create expected answer
+    uint8_t ck_a;
+    uint8_t ck_b;
+    GPS_CalculateChecksum(length, payload, &ck_a, &ck_b)
+    char expected[10] = {0xB5, 0x62, class, ID, (uint8_t) length, (uint8_t) length >> 8, ck_a, ck_b, 0x0D, 0x0A};
+    
+    // Check if acked
+    if (answer == expected)
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
 struct GPS_data_t GPS_Poll()
 {   
     // Create message and send it
     char msg[GPS_POLL_MSG_LENGTH];
-    GPS_ConstructMessage(0x01, 0x07, 0x0000, 0x00, msg);
-	UART_SendBuffer(gpsUart, msg, GPS_POLL_MSG_LENGTH);
-	
-    // Receive GPS data
-	uint16_t countToBreak = 0;
-	while (countToBreak == 0)
-	{
-		countToBreak = UART_ScanRXBuffer(gpsUart, '\n');
-	}
-	uint8_t input[countToBreak];
-	UART_Recieve(gpsUart, input, countToBreak);
+    bytesReceived = GPS_send(0x01, 0x07, 0, 0x00, char* msg)
     
     // Setup struct for data
     struct GPS_data_t data;
     data.error = 1;
 
     // Copy data to GPS struct
-    if ((countToBreak == 95) && (input[29] > 0))
+    if ((bytesReceived == 95) && (msg[29] > 0))
 	{
-        memcpy(&data.year, input + 10, 2);
-        memcpy(&data.month, input + 12, 1);
-        memcpy(&data.date, input + 13, 1);
-        memcpy(&data.hour, input + 14, 1);
-        memcpy(&data.minute, input + 15, 1);
-        memcpy(&data.second, input + 16, 1);
-        memcpy(&data.lat, input + 34, 4);
-        memcpy(&data.lon, input + 30, 4);
+        memcpy(&data.year, msg + 10, 2);
+        memcpy(&data.month, msg + 12, 1);
+        memcpy(&data.date, msg + 13, 1);
+        memcpy(&data.hour, msg + 14, 1);
+        memcpy(&data.minute, msg + 15, 1);
+        memcpy(&data.second, msg + 16, 1);
+        memcpy(&data.lat, msg + 34, 4);
+        memcpy(&data.lon, msg + 30, 4);
         data.error = 0;
     }
     

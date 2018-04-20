@@ -31,8 +31,10 @@ uint8_t gpsRxBuffer[GPS_UART_BUFFER_SIZE];
 
 void GPS_Init();
 uint8_t GPS_ConstructMessage(uint8_t class, uint8_t ID, uint16_t lenght, char* payload, char* packetBuffer);
-void GPS_CalculateChecksum(uint16_t lenght, char* payload, uint8_t* ck_a, uint8_t* ck_b);
+void GPS_CalculateChecksum(uint16_t length, char* payload, uint8_t* ck_a, uint8_t* ck_b);
 struct GPS_data_t GPS_Poll();
+uint8_t GPS_send(uint8_t class, uint8_t ID, uint16_t length, char* payload, char* answer);
+uint8_t GPS_setup(uint8_t class, uint8_t ID, uint16_t length, char* payload);
 
 
 
