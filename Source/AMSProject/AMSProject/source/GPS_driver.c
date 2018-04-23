@@ -51,7 +51,7 @@ uint8_t GPS_ConstructMessage(uint8_t class, uint8_t ID, uint16_t length, char* p
 	uint8_t ck_b;
 	
 	// Expects PacketBuffer to be required size, while max size is max of uart output
-	uint8_t checksum_length = 6 + length + 4;
+	uint8_t msg_length = 6 + length + 4;
 	
 	if(length + 10 > MAX_TX_SIZE){
         return 0;
@@ -66,7 +66,7 @@ uint8_t GPS_ConstructMessage(uint8_t class, uint8_t ID, uint16_t length, char* p
 	{
 		packetBufffer[i+4] = payload[i];
 	}
-	GPS_CalculateChecksum(checksum_length, packetBufffer, &ck_a, &ck_b);
+	GPS_CalculateChecksum(msg_length, packetBufffer, &ck_a, &ck_b);
 	
 	packetBufffer[6 + length] = ck_a;
 	packetBufffer[6 + length + 1] = ck_b;
@@ -77,7 +77,7 @@ uint8_t GPS_ConstructMessage(uint8_t class, uint8_t ID, uint16_t length, char* p
 	packetBufffer[0] = 0xB5;
 	packetBufffer[1] = 0x62;
 	
-	return checksum_length;
+	return msg_length;
 }
 
 void GPS_CalculateChecksum(uint16_t length, char* payload, uint8_t* ck_a, uint8_t* ck_b)
@@ -114,19 +114,27 @@ uint8_t GPS_send(uint8_t class, uint8_t ID, uint16_t length, char* payload, char
 uint8_t GPS_setup(uint8_t class, uint8_t ID, uint16_t length, char* payload)
 {
     // Send data
-    char answer[10];
-    GPS_send(class, ID, length, payload, answer);
+    char answer[GPS_ACK_LENGTH];
+    bytesReceived = GPS_send(class, ID, length, payload, answer);
     
-    // Create expected answer
-    uint8_t ck_a;
-    uint8_t ck_b;
-    GPS_CalculateChecksum(length, payload, &ck_a, &ck_b)
-    char expected[10] = {0xB5, 0x62, class, ID, (uint8_t) length, (uint8_t) length >> 8, ck_a, ck_b, 0x0D, 0x0A};
-    
-    // Check if acked
-    if (answer == expected)
+    // Only check if ack/nack if correct amount of data is received.
+    if (bytesReceived == GPS_ACK_LENGTH)
     {
-        return 1;
+        // Create expected answer
+        uint8_t ck_a;
+        uint8_t ck_b;
+        GPS_CalculateChecksum(length, payload, &ck_a, &ck_b)
+        char expected[12] = {0xB5, 0x62, 0x05, 0x01, (uint8_t) length, (uint8_t) length >> 8, class, ID, ck_a, ck_b, 0x0D, 0x0A};
+        
+        // Check if acked
+        if (answer == expected)
+        {
+            return 1;
+        }
+        else
+        {
+            return 0;
+        }
     }
     else
     {
