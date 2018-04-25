@@ -10,9 +10,11 @@ namespace UDPAckServer
 {
     class Program
     {
+        const int port = 30000;
+
         static void Main(string[] args)
         {
-            UdpClient listener = new UdpClient(25565);
+            UdpClient listener = new UdpClient(port);
             byte[] data = new byte[1024]; 
 
             while (true)
