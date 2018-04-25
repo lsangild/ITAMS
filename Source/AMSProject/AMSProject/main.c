@@ -1,9 +1,9 @@
 /*
- * AMSProject.c
- *
- * Created: 3/9/2018 9:21:56 AM
- * Author : Qtra
- */ 
+* AMSProject.c
+*
+* Created: 3/9/2018 9:21:56 AM
+* Author : Qtra
+*/
 
 
 #include "sam.h"
@@ -16,16 +16,18 @@
 #include "utility.h"
 #include <string.h>
 #include "GPS_driver.h"
-
-Sercom *test = SERCOM2;
+#include "sarau2_driver.h"
 
 struct uart_t gpsUart; //Name for specifics
+struct uart_t gsmUart;
 
 
 
 void InitPorts()
 {
-	REG_PORT_DIRSET0 = PORT_PA20;
+	//REG_PORT_DIRSET0 = PORT_PA20; //LED
+	SETREG32(GSM_RESET_PORT_BASE + PORT_DIRSET_OFFSET, PORT_PB08); //Set reset pin as output
+	SETREG32(GSM_RESET_PORT_BASE + PORT_OUTCLR_OFFSET, PORT_PB08); //Set reset pin as low - Active high
 	
 	//*(int*) To indicate that it is a position to be writen at
 	//Set UART Pins for GPS
@@ -35,58 +37,88 @@ void InitPorts()
 	//Set UART Pins for GSM
 	SETREG32(SERCOM2_UART_PORT_BASE + PORT_DIRSET_OFFSET, SERCOM2_UART_PIN_TX); //Set transmit pin to output
 	SETREG32(SERCOM2_UART_PORT_BASE + PORT_DIRCLR_OFFSET, SERCOM2_UART_PIN_RX); //Set recieve pin to input
-		
-	//Set Multiplexer
-	SETREG8(SERCOM2_UART_PORT_BASE + PORT_PMUX_OFFSET + SERCOM2_PORT_PMUX_OFFSET, 0x22); //Set pmu functiontion C - 
-	SETREG8(SERCOM2_UART_PORT_BASE + PORT_PINCFG_OFFSET + 12, PORT_PINCFG_PMUXEN);
-	SETREG8(SERCOM2_UART_PORT_BASE + PORT_PINCFG_OFFSET + 13, PORT_PINCFG_PMUXEN + PORT_PINCFG_INEN);
 	
+	//Set Multiplexer
 	SETREG8(SERCOM5_UART_PORT_BASE + PORT_PMUX_OFFSET + SERCOM5_PORT_PMUX_OFFSET, 0x33); //Set pmu functiontion D -
 	SETREG8(SERCOM5_UART_PORT_BASE + PORT_PINCFG_OFFSET + 22, PORT_PINCFG_PMUXEN);
 	SETREG8(SERCOM5_UART_PORT_BASE + PORT_PINCFG_OFFSET + 23, PORT_PINCFG_PMUXEN + PORT_PINCFG_INEN);
+	
+	SETREG8(SERCOM2_UART_PORT_BASE + PORT_PMUX_OFFSET + SERCOM2_PORT_PMUX_OFFSET, 0x22); //Set pmu functiontion C -
+	SETREG8(SERCOM2_UART_PORT_BASE + PORT_PINCFG_OFFSET + 12, PORT_PINCFG_PMUXEN);
+	SETREG8(SERCOM2_UART_PORT_BASE + PORT_PINCFG_OFFSET + 13, PORT_PINCFG_PMUXEN + PORT_PINCFG_INEN);
 }
 
 void InitInterrupts()
 {
+	NVIC_EnableIRQ(SERCOM5_IRQn);
 	NVIC_EnableIRQ(SERCOM2_IRQn);
-	NVIC_EnableIRQ(SERCOM5_IRQn);		
 }
 
 void InitModules()
 {
 	GPS_Init();
+	SARAU2_Init();
 }
 
-int main(void)
+void LoopThrough()
 {
-    /* Initialize the SAM system */
-    SystemInit();
 	
-	InitPorts();	
+	/* Replace with your application code */
+	uint8_t pcData[1024];
+	uint8_t testData[] = "Hello";
+	uint16_t i;
+	while (1)
+	{
+		//REG_PORT_OUTTGL0 =  PORT_PA20;
 		
-	InitInterrupts();
-	
-	InitModules();
-
-	uint8_t buffer[] = {"Hello World"};
-	
-	UART_SendBuffer(gpsUart, buffer, 11);
-	
-    /* Replace with your application code */
-    while (1) 
-    {		
-		REG_PORT_OUTTGL0 =  PORT_PA20;		
+		//uint8_t pcCount = UART_Recieve(gpsUart, pcData, 255);
+		//if(pcCount > 0)
+		//{
+			//UART_SendBuffer(gpsUart, pcData, pcCount);
+		//}
+		UART_SendBuffer(gpsUart, testData, 5);
 		
-		uint16_t i;
-		for (i = 0; i < 65000; i++)
+		for (i = 0; i < 40000; i++)
 		{
 			
 		}
 		
-		GPS_Poll();
+		uint8_t emCount = UART_Recieve(gsmUart, pcData, 255);
+		if(emCount > 0)
+		{
+			UART_SendBuffer(gpsUart, pcData, emCount);
+		}
 		
-		//UART_SendBuffer(gpsUart, buffer, 11);
-    }
+		for (i = 0; i < 40000; i++)
+		{
+			
+		}
+	}
+}
+
+void TestGPS()
+{
+	struct GPS_data_t GPSdata = GPS_Poll();
+	/* while (GPSdata.valid != 0){
+		GPSdata = GPS_Poll();
+	}
+	writeGPStoSD(GPSdata);
+	*/
+}
+
+int main(void)
+{
+	/* Initialize the SAM system */
+	SystemInit();
+	
+	InitPorts();
+	
+	InitInterrupts();
+	
+	InitModules();
+	
+	TestGPS();
+	//LoopThrough();
 }
 
 void SERCOM5_Handler()
@@ -96,5 +128,5 @@ void SERCOM5_Handler()
 
 void SERCOM2_Handler()
 {
-	
+	UART_ISR(gsmUart);
 }

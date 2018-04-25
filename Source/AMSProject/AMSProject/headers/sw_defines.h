@@ -9,12 +9,15 @@
 #ifndef SW_DEFINES_H_
 #define SW_DEFINES_H_
 
-#define GPS_UART_Base				0x42001C00 //Set to ctrl a reg
+#define GPS_UART_BASE				0x42001C00 //Set to ctrl a reg
 #define GPS_UART_BUFFER_SIZE		256
-#define GPS_POLL_MSG				"$PUBX,00*33\r\n"
-#define GPS_POLL_MSG_LENGTH			13
+#define GPS_POLL_MSG_LENGTH			10
+#define GPS_ACK_LENGTH              12
 
-#define GSM_UART_Base				0x42001000 //Set to ctrl a reg
+#define GSM_UART_BASE				0x42001000 //Set to ctrl a reg
+#define GSM_UART_BUFFER_SIZE		1024
+#define GSM_AT_START				"AT"
+#define GSM_AT_START_LENGTH			2
 
 #define UART_INTVECTOR_DRE				1
 #define UART_INTVECTOR_TXC				2

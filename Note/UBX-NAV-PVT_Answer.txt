@@ -1,0 +1,35 @@
+Desc        Code        Meaning
+Header      b562
+ID          0107
+Length      5400        Length
+iTOW        68c99e16    GPS Time of week
+year        e207        2018
+month       04          April
+day         13          19th
+hour        09          9
+min         18          24 
+sec         2f          47
+valid       07          Fully Resolved
+tAcc        0c000000
+nano        eef7fbff    
+fixType     03
+flags       01
+reserved0   0b
+numSV       0a          Number of satellites    10
+lon         711c1306    Longitude   10.191576099999999
+lat         c72f7b21    Latitude    56.172128699999995
+height      7bba0100
+hMSL        78130100
+hAcc        7a100000
+vAcc        bb180000
+velN        18000000
+velE        05000000
+velD        c2ffffff
+gSpeed      18000000
+heading     d5f8ec00
+sAcc        d9000000
+headingAcc  30e2cb00
+pDOP        c300
+reserved2   0000
+reserved3   84d31100
+check       817c

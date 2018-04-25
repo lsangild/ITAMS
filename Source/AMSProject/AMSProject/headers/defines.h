@@ -9,7 +9,7 @@
 #ifndef DEFINES_H_
 #define DEFINES_H_
 
-#define F_CPU 48000000
+#define F_CPU 16000000
 
 
 #endif /* DEFINES_H_ */
