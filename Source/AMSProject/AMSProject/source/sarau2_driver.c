@@ -25,6 +25,8 @@ uint8_t SARAU2_Init()
 	gsmSetup.rxBufferSize = GSM_UART_BUFFER_SIZE;
 
 	UART_Init(gsmUart, gsmSetup);
+	
+	SARAU2_Reset();
 	return 0;
 }
 
@@ -62,8 +64,11 @@ uint8_t SARAU2_Reset()
 		
 	} // wait
 	SETREG32(GSM_RESET_PORT_BASE + PORT_OUTCLR_OFFSET, PORT_PB08); //Set reset pin as low - Active high
+	for (i = 0; i < 400000; i++)
+	{
+		
+	} // wait ?
 	
 	//Now send something to set autobaud!
-	
-	
+	return SARAU2_TestConnection();
 }
