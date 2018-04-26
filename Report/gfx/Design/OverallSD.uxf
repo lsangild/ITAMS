@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.2">
+  <zoom_level>6</zoom_level>
+  <element>
+    <type>com.baselet.element.old.allinone.SequenceDiagram</type>
+    <coordinates>
+      <x>468</x>
+      <y>0</y>
+      <w>270</w>
+      <h>696</h>
+    </coordinates>
+    <panel_attributes>title: SD: GPS Tracker
+_:GPS~id1_|_:µC~id2_|_:GSM~id3_|_:SD~id4_
+iframe{:Initiation
+id2-&gt;id2:id2:SystemInit()
+id2-&gt;id2:id2:InitPorts()
+id2-&gt;id2:id2:InitInterrupts
+id2-&gt;id1:id1:GPS_init()
+id2-&gt;id3:id3:SARAU2_Init()
+iframe{:Loop until data is valid
+id2-&gt;&gt;&gt;id1:id1,id2:GPS_Poll()
+id1.&gt;id2:id1,id2:GPS_data_t
+id2-&gt;id2:id2:check_data()
+iframe}
+id2-&gt;id2:id2:save_time()
+id2-&gt;id4:id2,id4:SD_save(GPS_data_t)
+iframe}
+
+iframe{:Get location
+id2-&gt;id2:id2:GPS_timeUp()
+id2-&gt;id1:id1,id2:GPS_wakeUp()
+id1.&gt;id2:id1,id2:
+iframe{:Loop until data is valid
+id2-&gt;&gt;&gt;id1:id1,id2:GPS_Poll()
+id1.&gt;id2:id1,id2:GPS_data_t
+id2-&gt;id2:id2:check_data()
+iframe}
+id2-&gt;id1:id1:GPS_sleep()
+id2-&gt;id4:id4:SD_save(GPS_data_t)
+iframe}
+
+iframe{:Upload data
+id2-&gt;id2:id2:GSM_timeUp()
+id2-&gt;&gt;&gt;id3:id2,id3:GSM_wakeUp()
+id3.&gt;id2:id2,id3
+id2-&gt;&gt;&gt;id3:id2,id3:GSM_upload()
+id3-&gt;id3:id3:upload()
+id3.&gt;id2:id2,id3
+
+id2-&gt;id3:id3:GSM_sleep()
+iframe}
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>
