@@ -2,7 +2,7 @@
 % !TEX spellcheck = en_GB
 
 \chapter{Requirements}
-
+\label{chap:requirements}
 In this chapter the requirements for the system will be described.
 No use cases have been produced as the target of this project is rather simple.
 In stead the MoSCoW below will be used to describe the functions of the system and the prioritization.
@@ -11,7 +11,7 @@ In stead the MoSCoW below will be used to describe the functions of the system a
 	\item \textbf{Must}
 	\begin{itemize}
 		\item Communicate with a server over wast distances.
-		\item Retrieve positional data.
+		\item Retrieve global positional data.
 		\item Send location data to server.
 	\end{itemize}
 	\item \textbf{Should}
@@ -22,7 +22,10 @@ In stead the MoSCoW below will be used to describe the functions of the system a
 	\item \textbf{Could}
 	\begin{itemize}
 		\item Allow for wireless updates.
-		\item Communicate with an accelerometer.
+	\end{itemize}
+	\item \textbf{Won't}
+	\begin{itemize}
+		\item Log movement data.
 	\end{itemize}
 \end{itemize}
 
@@ -31,4 +34,5 @@ In stead the MoSCoW below will be used to describe the functions of the system a
 	\item Must draw a maximum of \SI{500}{\milli\ampere} at peak, to be able to be driven from a USB 2.0 port.
 	\item Must be able to locate itself within \SI{1}{\minute}.
 	\item Should be able to store at least \num{1440} locations (one data point per minute for \num{24} hours).
+	\item Must be able to run from a \SI{5}{\volt}, \SI{2.4}{\ampere} battery supply.
 \end{itemize}
