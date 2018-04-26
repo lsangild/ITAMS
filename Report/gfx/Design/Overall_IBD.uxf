@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <diagram program="umlet" version="14.2">
-  <zoom_level>10</zoom_level>
+  <zoom_level>12</zoom_level>
   <element>
     <id>UMLFrame</id>
     <coordinates>
-      <x>20</x>
-      <y>20</y>
-      <w>280</w>
-      <h>190</h>
+      <x>204</x>
+      <y>180</y>
+      <w>348</w>
+      <h>228</h>
     </coordinates>
     <panel_attributes>GPS Tracker</panel_attributes>
     <additional_attributes/>
@@ -15,46 +15,43 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>40</x>
-      <y>80</y>
-      <w>60</w>
-      <h>30</h>
+      <x>240</x>
+      <y>264</y>
+      <w>120</w>
+      <h>36</h>
     </coordinates>
-    <panel_attributes>µC
-group=1</panel_attributes>
+    <panel_attributes>µC</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>210</x>
-      <y>80</y>
-      <w>70</w>
-      <h>30</h>
+      <x>444</x>
+      <y>264</y>
+      <w>84</w>
+      <h>36</h>
     </coordinates>
-    <panel_attributes>GSM
-group=1</panel_attributes>
+    <panel_attributes>GSM</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLFrame</id>
     <coordinates>
-      <x>30</x>
-      <y>50</y>
-      <w>260</w>
-      <h>70</h>
+      <x>228</x>
+      <y>216</y>
+      <w>312</w>
+      <h>96</h>
     </coordinates>
-    <panel_attributes>Arduino MKR GSM 1400
-group=1</panel_attributes>
+    <panel_attributes>Arduino MKR GSM 1400</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>160</x>
-      <y>170</y>
-      <w>80</w>
-      <h>30</h>
+      <x>300</x>
+      <y>360</y>
+      <w>96</w>
+      <h>36</h>
     </coordinates>
     <panel_attributes>SD-card</panel_attributes>
     <additional_attributes/>
@@ -62,10 +59,10 @@ group=1</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>70</x>
-      <y>170</y>
-      <w>60</w>
-      <h>30</h>
+      <x>216</x>
+      <y>360</y>
+      <w>72</w>
+      <h>36</h>
     </coordinates>
     <panel_attributes>GPS</panel_attributes>
     <additional_attributes/>
@@ -73,23 +70,22 @@ group=1</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>90</x>
-      <y>70</y>
-      <w>140</w>
-      <h>40</h>
+      <x>348</x>
+      <y>252</y>
+      <w>120</w>
+      <h>48</h>
     </coordinates>
     <panel_attributes>lt=&lt;-&gt;
-UART
-group=1</panel_attributes>
-    <additional_attributes>10.0;20.0;120.0;20.0</additional_attributes>
+UART</panel_attributes>
+    <additional_attributes>10.0;20.0;80.0;20.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>90</x>
-      <y>110</y>
-      <w>70</w>
-      <h>80</h>
+      <x>240</x>
+      <y>288</y>
+      <w>84</w>
+      <h>96</h>
     </coordinates>
     <panel_attributes>lt=&lt;-&gt;
 UART</panel_attributes>
@@ -98,13 +94,47 @@ UART</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>190</x>
-      <y>110</y>
-      <w>50</w>
-      <h>80</h>
+      <x>336</x>
+      <y>288</y>
+      <w>60</w>
+      <h>96</h>
     </coordinates>
     <panel_attributes>lt=&lt;-&gt;
 SPI</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;60.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLFrame</id>
+    <coordinates>
+      <x>192</x>
+      <y>144</y>
+      <w>528</w>
+      <h>276</h>
+    </coordinates>
+    <panel_attributes>IBD: System context</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>624</x>
+      <y>264</y>
+      <w>84</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>Server</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>516</x>
+      <y>252</y>
+      <w>132</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-&gt;
+UDP</panel_attributes>
+    <additional_attributes>10.0;20.0;90.0;20.0</additional_attributes>
   </element>
 </diagram>
