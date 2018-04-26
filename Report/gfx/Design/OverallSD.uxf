@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <diagram program="umlet" version="14.2">
-  <zoom_level>6</zoom_level>
+  <zoom_level>8</zoom_level>
   <element>
     <type>com.baselet.element.old.allinone.SequenceDiagram</type>
     <coordinates>
-      <x>426</x>
-      <y>18</y>
-      <w>246</w>
-      <h>246</h>
+      <x>400</x>
+      <y>120</y>
+      <w>328</w>
+      <h>328</h>
     </coordinates>
     <panel_attributes>title: SD: Get locations
 _:GPS~id1_|_:µC~id2_|_:SD~id4_
@@ -26,10 +26,10 @@ id2-&gt;id4:id4:SD_save(GPS_data_t)</panel_attributes>
   <element>
     <type>com.baselet.element.old.allinone.SequenceDiagram</type>
     <coordinates>
-      <x>42</x>
-      <y>18</y>
-      <w>252</w>
-      <h>318</h>
+      <x>40</x>
+      <y>120</y>
+      <w>336</w>
+      <h>424</h>
     </coordinates>
     <panel_attributes>title: SD: Initiation
 _:GPS~id1_|_:µC~id2_|_:GSM~id3_|_:SD~id4_
@@ -52,10 +52,10 @@ id2-&gt;id3:id3:GSM_sleep()</panel_attributes>
   <element>
     <type>com.baselet.element.old.allinone.SequenceDiagram</type>
     <coordinates>
-      <x>720</x>
-      <y>18</y>
-      <w>258</w>
-      <h>228</h>
+      <x>752</x>
+      <y>120</y>
+      <w>336</w>
+      <h>304</h>
     </coordinates>
     <panel_attributes>title: SD: Upload data
 _:µC~id2_|_:GSM~id3_|_:SD~id4_
