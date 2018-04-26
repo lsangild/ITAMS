@@ -65,18 +65,16 @@ void LoopThrough()
 	
 	/* Replace with your application code */
 	uint8_t pcData[1024];
-	uint8_t testData[] = "Hello";
 	uint16_t i;
 	while (1)
 	{
-		//REG_PORT_OUTTGL0 =  PORT_PA20;
+		REG_PORT_OUTTGL0 =  PORT_PA20;
 		
-		//uint8_t pcCount = UART_Recieve(gpsUart, pcData, 255);
-		//if(pcCount > 0)
-		//{
-			//UART_SendBuffer(gpsUart, pcData, pcCount);
-		//}
-		UART_SendBuffer(gpsUart, testData, 5);
+		uint8_t pcCount = UART_Recieve(gpsUart, pcData, 255);
+		if(pcCount > 0)
+		{
+			UART_SendBuffer(gsmUart, pcData, pcCount);
+		}
 		
 		for (i = 0; i < 40000; i++)
 		{
@@ -115,10 +113,23 @@ int main(void)
 	
 	InitInterrupts();
 	
-	InitModules();
+	//InitModules();
 	
-	TestGPS();
+	//TestGPS();
 	//LoopThrough();
+	
+	//Test
+	uint8_t testData[12]  = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
+	
+	union Neo7_Ack testUnion;
+	
+	uint32_t unionAddr = &testUnion;
+	//uint32_t unionData = (uint32_t) testUnion;
+	uint32_t unionDataAddr = &testUnion.data[0];
+	uint32_t dataAddr = &testData[0];
+	
+	//testUnion = testData;
+	
 }
 
 void SERCOM5_Handler()
