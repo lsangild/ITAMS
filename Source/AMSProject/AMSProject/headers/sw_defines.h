@@ -9,11 +9,14 @@
 #ifndef SW_DEFINES_H_
 #define SW_DEFINES_H_
 
+
+//GPS Defines
 #define GPS_UART_BASE				0x42001C00 //Set to ctrl a reg
 #define GPS_UART_BUFFER_SIZE		256
-#define GPS_POLL_MSG_LENGTH			10
+#define GPS_POLL_MSG_LENGTH			90
 #define GPS_ACK_LENGTH              12
 
+//GSM Defines
 #define GSM_UART_BASE				0x42001000 //Set to ctrl a reg
 #define GSM_UART_BUFFER_SIZE		1024
 #define GSM_AT_START				"AT"

@@ -24,28 +24,50 @@ void GPS_Init()
 	UART_Init(gpsUart, gpsSetup);
 	
     // Disable unwanted messages
-    GPS_setup(0x06, 0x01, 8, 0xF004000000000000);
-	GPS_setup(0x06, 0x01, 8, 0xF005000000000000);
-    GPS_setup(0x06, 0x01, 8, 0xF000000000000000);
-    GPS_setup(0x06, 0x01, 8, 0xF002000000000000);
-    GPS_setup(0x06, 0x01, 8, 0xF003000000000000);
-    GPS_setup(0x06, 0x01, 8, 0xF001000000000000);
-    GPS_setup(0x06, 0x01, 8, 0xF041000000000000);
+	uint8_t cmd_DisableMSG[] = {0xF0, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+    GPS_setup(0x06, 0x01, 8, cmd_DisableMSG); //
+	
+	cmd_DisableMSG[1] = 0x05;
+	GPS_setup(0x06, 0x01, 8, cmd_DisableMSG);
+	
+	cmd_DisableMSG[1] = 0x00;
+    GPS_setup(0x06, 0x01, 8, cmd_DisableMSG);
+	
+	cmd_DisableMSG[1] = 0x02;
+    GPS_setup(0x06, 0x01, 8, cmd_DisableMSG);
+	
+	cmd_DisableMSG[1] = 0x03;
+    GPS_setup(0x06, 0x01, 8, cmd_DisableMSG);
+	
+	cmd_DisableMSG[1] = 0x01;
+    GPS_setup(0x06, 0x01, 8, cmd_DisableMSG);
+	
+	cmd_DisableMSG[1] = 0x41;
+    GPS_setup(0x06, 0x01, 8, cmd_DisableMSG);
     
     // Turn of Glonass
-    GPS_setup(0x06, 0x3E, 36, 0x001616040004FF0001000000010103000100000005000300010000000608FF0000000000);
+    uint8_t cmd_DisableGlonass[] = {0x00, 0x16, 0x16, 0x04, 0x00, 0x04, 0xFF, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01, 0x01, 0x03, 0x00, 0x01,
+		0x00, 0x00, 0x00, 0x05, 0x00, 0x03, 0x00, 0x01, 0x00, 0x00, 0x00, 0x06, 0x08, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00};
+    GPS_setup(0x06, 0x3E, 36, cmd_DisableGlonass);
     
     // Set Navigation Configuration to pedestrian
-    GPS_setup(0x06, 0x24, 36, 0x010003000000000000000000000000000000000000000000000000000000000000000000);
+    uint8_t cmd_SetPedestrian[36] = {0};
+	cmd_SetPedestrian[0] = 0x01;
+	cmd_SetPedestrian[2] = 0x03;
+    GPS_setup(0x06, 0x24, 36, cmd_SetPedestrian);
     
     // Power management ON/OFF mode
-    GPS_setup(0x06, 0x3B, 44, 0x0100000000002800000000000000000000000000000000000000000000000000000000000000000000000000);
+    uint8_t cmd_PowerManagement[44] = {0};
+    cmd_PowerManagement[0] = 0x01;
+    cmd_PowerManagement[6] = 0x28;
+    GPS_setup(0x06, 0x3B, 44, cmd_PowerManagement);
     
     // Apply Power save mode
-    GPS_setup(0x06, 0x11, 2, 0x0801);
+	uint8_t cmd_PowerSave[] = {0x08, 0x01};
+    GPS_setup(0x06, 0x11, 2, cmd_PowerSave);
 }
 
-uint8_t GPS_ConstructMessage(uint8_t class, uint8_t ID, uint16_t length, char* payload, char* packetBufffer) {
+uint8_t GPS_ConstructMessage(uint8_t class, uint8_t ID, uint16_t length, uint8_t* payload, uint8_t* packetBufffer) {
 	//Init
 	uint8_t ck_a;
 	uint8_t ck_b;
@@ -80,7 +102,7 @@ uint8_t GPS_ConstructMessage(uint8_t class, uint8_t ID, uint16_t length, char* p
 	return msg_length;
 }
 
-void GPS_CalculateChecksum(uint16_t length, char* payload, uint8_t* ck_a, uint8_t* ck_b)
+void GPS_CalculateChecksum(uint16_t length, uint8_t* payload, uint8_t* ck_a, uint8_t* ck_b)
 {
 	// Calculate checksum
 	uint16_t i;
@@ -91,10 +113,10 @@ void GPS_CalculateChecksum(uint16_t length, char* payload, uint8_t* ck_a, uint8_
 	}
 }
 
-uint8_t GPS_send(uint8_t class, uint8_t ID, uint16_t length, char* payload, char* answer)
+uint8_t GPS_send(uint8_t class, uint8_t ID, uint16_t length, uint8_t* payload, uint8_t* answer)
 {
     // Send data
-    char msg[4 + length + 6];
+    uint8_t msg[4 + length + 6];
     GPS_ConstructMessage(class, ID, length, payload, msg);
     UART_SendBuffer(gpsUart, msg, 4 + length + 6);
     
@@ -104,36 +126,29 @@ uint8_t GPS_send(uint8_t class, uint8_t ID, uint16_t length, char* payload, char
     {
         countToBreak = UART_ScanRXBuffer(gpsUart, '\n');
     }
-    uint8_t input[countToBreak];
     UART_Recieve(gpsUart, answer, countToBreak);
     
     // Return number of bytes read
     return countToBreak;
 }
 
-uint8_t GPS_setup(uint8_t class, uint8_t ID, uint16_t length, char* payload)
+uint8_t GPS_setup(uint8_t cmdClass, uint8_t cmdID, uint16_t length, uint8_t* payload)
 {
     // Send data
-    char answer[GPS_ACK_LENGTH];
-    bytesReceived = GPS_send(class, ID, length, payload, answer);
+    uint8_t answer[GPS_ACK_LENGTH];
+    uint8_t bytesReceived = GPS_send(cmdClass, cmdID, length, payload, answer);
     
     // Only check if ack/nack if correct amount of data is received.
     if (bytesReceived == GPS_ACK_LENGTH)
     {
-        // Create expected answer
-        uint8_t ck_a;
-        uint8_t ck_b;
-        GPS_CalculateChecksum(length, payload, &ck_a, &ck_b)
-        char expected[12] = {0xB5, 0x62, 0x05, 0x01, (uint8_t) length, (uint8_t) length >> 8, class, ID, ck_a, ck_b, 0x0D, 0x0A};
-        
         // Check if acked
-        if (answer == expected)
+        if (GPS_CheckAcknowledge(length, cmdClass, cmdID, answer))
         {
-            return 1;
+	        return 1;
         }
         else
         {
-            return 0;
+	        return 0;
         }
     }
     else
@@ -145,8 +160,8 @@ uint8_t GPS_setup(uint8_t class, uint8_t ID, uint16_t length, char* payload)
 struct GPS_data_t GPS_Poll()
 {   
     // Create message and send it
-    char msg[GPS_POLL_MSG_LENGTH];
-    bytesReceived = GPS_send(0x01, 0x07, 0, 0x00, char* msg)
+    uint8_t msg[GPS_POLL_MSG_LENGTH];
+    uint8_t bytesReceived = GPS_send(0x01, 0x07, 0, 0x00, msg);
     
     // Setup struct for data
     struct GPS_data_t data;
@@ -167,4 +182,25 @@ struct GPS_data_t GPS_Poll()
     }
     
     return data;
+}
+
+
+uint8_t GPS_CheckAcknowledge(uint16_t length, uint8_t cmdClass, uint8_t cmdID, uint8_t* buffer)
+{
+	// Create expected answer
+	uint8_t ck_a;
+	uint8_t ck_b;
+	union Neo7_Ack expected;
+	uint8_t expectedData[] = {0xB5, 0x62, 0x05, 0x01, (uint8_t) length, (uint8_t) length >> 8, cmdClass, cmdID, ck_a, ck_b, 0x0D, 0x0A};
+	
+	GPS_CalculateChecksum(6, &expected.data[2], &ck_a, &ck_b);
+	
+	expected.Neo7_Ack_T.ck_a = ck_a;
+	expected.Neo7_Ack_T.ck_b = ck_b;
+	
+	//Set stucture data
+	union Neo7_Ack recieved;
+	//recieved.data = buffer;
+	
+	return 0;
 }
