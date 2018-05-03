@@ -4,11 +4,30 @@
 \chapter{Test}
 In this section an short introduction to how this project has used test from beginning to the end will be described.
 
-\section{Unit  test}
-
-
 \section{Module test}
-Module tests has been performed on the different parts of the \systemName.
+Unit tests has been performed on the \GPS GPS module, the \SARA GSM module and the \SDsock SD-card socket with SD-card inserted.
+
+\subsection{GPS \GPS}
+The GPS module is tested by connecting it to a USB to UART module and sending the appropriate UBX commands. The setting is outdoors as to achieve the most precise localization.
+
+\begin{table}
+	\centering
+	\begin{tabularx}{\textwidth}{p{4.3cm} X X}
+		\toprule
+		\textbf{Action} & \textbf{Expected outcome} & \textbf{Outcome} \\
+		\midrule
+		Send \textit{0xB5620107000008190D0A} (UBX-NAV-PVT/Get location) from computer to GPS module via USB to UART with \num{9600} baud. & Receive \num{92} bytes according to \cite[p.~160-161]{NEO7_proto}. & \\
+		\midrule
+		Input coordinates achieved from above test into Google Maps. & Pin is placed at the location above command was issued at. & \\
+		\bottomrule
+	\end{tabularx}
+	\caption{Module test of \GPS GPS module.}
+	\label{AT:GPS}
+\end{table}
+
+\subsection{GSM \SARA}
+
+\subsection{\SDsock socket and SD-card}
 
 \section{Integration test}
 
