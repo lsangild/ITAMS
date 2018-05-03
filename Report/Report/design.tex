@@ -4,4 +4,37 @@
 \chapter{Design}
 \label{ch:Design}
 
+\begin{table}[H]
+	\begin{tabularx}{\textwidth}{l X X}
+		\toprule
+		Command & Description & Chapter \\
+		\midrule
+		+CPIN & Sim card pin commands & 9.1 \\
+		+CCID & Sim card identification. Used for checking if the sim card is recognized. & 4.12 \\
+		+CFUN & Module functionality. Includes power saving features. & 5.3 \\
+		+CCLK & Get or set the real time clock. & 5.7 \\
+		+CTZU & Automatic time zone setup. & 5.15 \\
+		+CSQ & Check signal quality. & 7.2 \\
+		+COPS & Operator selection and statys. & 7.4 \\
+		+CGDCONT & APN and password setup. & 18.4 \\
+		+CGATT & GPRS attach or detach. & 18.14 \\
+		+CGACT & Activate or deactivate context. & 18.16 \\
+		+CGREG & GPRS network registrations status & 18.27 \\
+		+USOCO & Connect socket. & 25.9 \\
+		+USOWR & Write to socket. & 25.10 \\
+		+UPING & Ping command. & 30.1 \\
+		\bottomrule
+	\end{tabularx}
+	\caption{Table of used AT commands.}
+	\label{tab:ATcomm}
+\end{table}
+\fxnote{Check \url{http://m2msupport.net/m2msupport/data-call-at-commands-to-set-up-gprsedgeumtslte-data-call/} for expected behaviour.}
+
+\section{GPS - NEO-7M-0-000}
+Baud rates available: \num{4800}, \num{9600}, \num{19200}, \num{38400}, \num{57600} and \num{115200}. With frame 8N1.
+
+\cite{MKRSchem}
+
+\section{SD-card - Ciseco B026}
+
 \FloatBarrier
