@@ -42,27 +42,37 @@ Connection to the server is chosen to be UDP with an acknowledge from the server
 	\label{fig:IBD:overall}
 \end{figure}
 
-
 \section{Sequence Diagrams}
+The sequence diagrams (SD) below are meant to give an understanding of the inner workings of the \systemName.
+
+Initiation of the system is described in \cref{fig:SD:init}.
+It shows the µC initiating itself and then the external blocks.
+The GPS module is polled until it returns valid location data. The time returned from the GPS allows the µC know the time and run the desired actions either at certain intervals, e.g. every 10 minutes, or at specific times, e.g. every full hour.
+When valid data has been retrieved it is saved to the SD card and the GPS and GSM modules are put to sleep to conserve power.
+The acquisition of GPS location is shown in \cref{fig:SD:getlocation}.
+The GPS starts in a sleep mode and is awoken to find it's location.
+When the location is found and is valid, the GPS is put back to sleep and the data is saved tot he SD card.
+To upload data to the server, the GSM must be awoken and data must be retrieved from the SD card, as shown in \cref{fig:SD:upload}.
+When the data has been sent the GSM is put back to sleep.
 
 \begin{figure}
 	\centering
 	\includegraphics[width=0.7\linewidth]{gfx/Design/SD_init.pdf}
-	\caption{}
+	\caption{Sequence diagram showing the initiation of the system.}
 	\label{fig:SD:init}
 \end{figure}
 
 \begin{figure}
 	\centering
 	\includegraphics[width=0.7\linewidth]{gfx/Design/SD_getLocation.pdf}
-	\caption{}
+	\caption{Sequence diagram describing the acquisition and saving of GPS data.}
 	\label{fig:SD:getlocation}
 \end{figure}
 
 \begin{figure}
 	\centering
 	\includegraphics[width=0.7\linewidth]{gfx/Design/SD_Upload.pdf}
-	\caption{}
+	\caption{Sequence diagram showing the process of sending saved data to the server.}
 	\label{fig:SD:upload}
 \end{figure}
 
