@@ -27,20 +27,21 @@ struct GPS_data_t{
 	uint8_t error;
 };
 
-union Neo7_Ack{
+union Neo7_Ack
+{
 	struct{
 	uint8_t header[2];
-	uint8_t acknowlegde[2];
+	uint8_t acknowledge[2];
 	uint16_t lenght;
-	uint8_t class;
-	uint8_t id;
+	uint8_t cmdClass;
+	uint8_t cmdID;
 	uint8_t ck_a;
 	uint8_t ck_b;
 	uint8_t	footer[2];
-	}Neo7_Ack_T;
+	} Neo7_Ack_T;
 	
 	uint8_t data[12];
-	};
+};
 
 
 extern struct uart_t gpsUart;

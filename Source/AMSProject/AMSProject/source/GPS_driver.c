@@ -23,6 +23,8 @@ void GPS_Init()
 	
 	UART_Init(gpsUart, gpsSetup);
 	
+	return; //FIXME To Disable init og GPS
+	
     // Disable unwanted messages
 	uint8_t cmd_DisableMSG[] = {0xF0, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
     GPS_setup(0x06, 0x01, 8, cmd_DisableMSG); //
@@ -187,20 +189,22 @@ struct GPS_data_t GPS_Poll()
 
 uint8_t GPS_CheckAcknowledge(uint16_t length, uint8_t cmdClass, uint8_t cmdID, uint8_t* buffer)
 {
-	// Create expected answer
-	uint8_t ck_a;
-	uint8_t ck_b;
-	union Neo7_Ack expected;
-	uint8_t expectedData[] = {0xB5, 0x62, 0x05, 0x01, (uint8_t) length, (uint8_t) length >> 8, cmdClass, cmdID, ck_a, ck_b, 0x0D, 0x0A};
-	
-	GPS_CalculateChecksum(6, &expected.data[2], &ck_a, &ck_b);
-	
-	expected.Neo7_Ack_T.ck_a = ck_a;
-	expected.Neo7_Ack_T.ck_b = ck_b;
-	
 	//Set stucture data
-	union Neo7_Ack recieved;
-	//recieved.data = buffer;
+	union Neo7_Ack* recieved;
+	recieved = (void*) buffer;// Set union pointer to correct address
 	
-	return 0;
+	if(recieved->Neo7_Ack_T.acknowledge[0] != 0x05)
+		return 2;	
+	
+	if(recieved->Neo7_Ack_T.cmdClass == cmdClass && recieved->Neo7_Ack_T.cmdID == cmdID)
+	{
+		//Create Checksum test / Checksum function
+		
+		if(recieved->Neo7_Ack_T.acknowledge[1] == 0x01)
+			return 0; //Success
+		else
+			return 1; //Not Acknowledge
+	}
+	
+	return 3;
 }

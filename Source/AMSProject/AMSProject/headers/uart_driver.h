@@ -50,6 +50,7 @@ void UART_ISR(struct uart_t uartBase);
 uint8_t UART_ScanRXBuffer(struct uart_t serCom, char data);
 uint8_t UART_Recieve(struct uart_t serCom, uint8_t* data, uint8_t count);
 uint8_t UART_SendBuffer(struct uart_t serCom, uint8_t* buffer, uint16_t size);
+uint8_t UART_ResetRXBuffer(struct uart_t serCom);
 
 /**************************************/
 

@@ -10,6 +10,16 @@
 #include "utility.h"
 #include <string.h>
 
+extern struct uart_t gsmUart;
+extern struct uart_t gpsUart;
+
+uint8_t UART_CheckBase(struct uart_t uartBase)
+{
+	if(uartBase.baseAddress & 0xff)
+		return 1;
+	return 0;
+}
+
 void UART_Init(struct uart_t uartBase, struct uartsetup_t uartSetup)
 {	
 	//Setup clock
@@ -151,12 +161,16 @@ void UART_DisableInt(struct uart_t uartBase)
 
 void UART_ISR(struct uart_t uartBase)
 {
+	UART_CheckBase(uartBase);
+	
 	uint8_t flags = READREG8(uartBase.baseAddress + SERCOM_USART_INTFLAG_OFFSET);
 	
 	if(flags & SERCOM_USART_INTFLAG_RXC)
 	{
 		uint8_t data = READREG8(uartBase.baseAddress + SERCOM_USART_DATA_OFFSET);
 		RB_PushByte(data, &serComRxBuffers[uartBase.sercom]);
+		UART_CheckBase(gsmUart);
+		UART_CheckBase(gpsUart);
 	}
 	if(flags & SERCOM_USART_INTFLAG_RXS)
 	{
@@ -191,13 +205,14 @@ uint8_t UART_Recieve(struct uart_t serCom, uint8_t* data, uint8_t count)
 	for (index = 0; index < count; index++)
 	{
 		if(RB_PopByte(&serComRxBuffers[serCom.sercom], &data[index]))
-			return index+1;
+			return index;
 	}
-	return 0;
+	return index;
 }
 
 uint8_t UART_SendBuffer(struct uart_t serCom, uint8_t* buffer, uint16_t size)
 {
+	UART_CheckBase(serCom);
 	if(serComTransfers[serCom.sercom].isEmpty && size <= MAX_TX_SIZE)
 	{
 		UART_ClearInt(serCom);
@@ -208,5 +223,11 @@ uint8_t UART_SendBuffer(struct uart_t serCom, uint8_t* buffer, uint16_t size)
 		SETREG8(serCom.baseAddress + SERCOM_USART_DATA_OFFSET, serComTransfers[serCom.sercom].buffer[serComTransfers[serCom.sercom].index++]);
 		return 1;
 	}
+	return 0;
+}
+
+uint8_t UART_ResetRXBuffer(struct uart_t uartBase)
+{	
+	RB_ClearBuffer(&serComRxBuffers[uartBase.sercom]);
 	return 0;
 }

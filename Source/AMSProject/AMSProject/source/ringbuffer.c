@@ -72,7 +72,7 @@ uint8_t RB_PushElement(uint8_t* element, uint8_t elementSize, ringbuffer_t* buff
 uint8_t RB_PushByte(uint8_t data, ringbuffer_t* buffer)
 {
 	// next is where head will point to after this write.
-	int next = buffer->head + 1;
+	uint32_t next = buffer->head + 1;
 	if (next >= buffer->maxLen)
 		next = 0;
 

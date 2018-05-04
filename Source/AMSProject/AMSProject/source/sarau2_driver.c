@@ -17,7 +17,7 @@ uint8_t SARAU2_Init()
 
 	struct uartsetup_t gsmSetup;
 
-	gsmSetup.baudRate = 64281; //Hard coded value for register real 19200
+	gsmSetup.baudRate = 64307; //Hardcoded balue for 9600 baud - 64281; //Hard coded value for register real 19200
 	gsmSetup.dataBits = 8;
 	gsmSetup.parity = 0;
 	gsmSetup.stopBits = 1;
@@ -32,16 +32,20 @@ uint8_t SARAU2_Init()
 
 uint8_t SARAU2_TestConnection()
 {
-	char* msg = "AT+USIMSTAT?\r";
+	UART_ResetRXBuffer(gsmUart);
+	
+	uint8_t* msg = (uint8_t*)"AT+CCID?\r\n";
+	
 	UART_SendBuffer(gsmUart, msg, 13);
 	
-	uint16_t countToBreak = 0;
-	while (countToBreak == 0)
-	{
-		countToBreak = UART_ScanRXBuffer(gsmUart, '\n');
-	}
-	uint8_t input[countToBreak];
-	UART_Recieve(gsmUart, input, countToBreak);
+	//uint16_t countToBreak = 0;
+	//while (countToBreak == 0)
+	//{
+		//countToBreak = UART_ScanRXBuffer(gsmUart, '\n');
+		////Error! Create timeout!
+	//}
+	//uint8_t input[countToBreak];
+	//UART_Recieve(gsmUart, input, countToBreak);
 	return 0;
 }
 
@@ -55,11 +59,19 @@ uint8_t SARAU2_OpenConnection()
 	return 0;
 }
 
+uint8_t SARAU2_SetBaudRate()
+{
+	uint8_t* msg = "AT+IPR=9600\r\n";
+	
+	UART_SendBuffer(gsmUart, msg, 14);
+	uint16_t i;
+}
+
 uint8_t SARAU2_Reset()
 {
 	SETREG32(GSM_RESET_PORT_BASE + PORT_OUTSET_OFFSET, PORT_PB08); //Set reset pin as high - Active high
-	uint16_t i;
-	for (i = 0; i < 400000; i++)
+	uint32_t i;
+	for (i = 0; i < 40000; i++)
 	{
 		
 	} // wait
@@ -69,6 +81,8 @@ uint8_t SARAU2_Reset()
 		
 	} // wait ?
 	
-	//Now send something to set autobaud!
-	return SARAU2_TestConnection();
+	//Now set baudrate to 19200
+	SARAU2_SetBaudRate();
+	
+	return 0;
 }
