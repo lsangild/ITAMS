@@ -87,6 +87,9 @@ uint8_t SARAU2_Reset()
 	return 0;
 }
 
+//////////////////////////////////////////////////////////////////////////
+// Scan RX buffer for OK or ERROR.
+//////////////////////////////////////////////////////////////////////////
 // Error codes
 // 0 - success
 // 1 - error
@@ -105,6 +108,45 @@ uint8_t SARA2_CheckOK(uint8_t* cmd, uint8_t cmdLength)
 			return 0;
 		else if(ScanString(data, dataLength, "ERROR", 5))
 			return 1;
+		
+	} while (1);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// Scan RX buffer for OK or ERROR and return the response before status.
+//////////////////////////////////////////////////////////////////////////
+// Error codes
+// 0 - success
+// 1 - error
+// 2 - Not recognized
+uint8_t SARA2_CheckOK(uint8_t* cmd, uint8_t cmdLength, uint8_t* response, uint16_t* responseLength)
+{
+	uint16_t dataOffset = 0;
+	uint16_t dataLength = 0;
+	do
+	{
+		dataLength = UART_ScanRXBuffer(gsmUart, &response[dataLength]); //Insert response line into output
+		
+		if(dataLength == 0) //No Data
+		{
+			responseLength = dataOffset + dataLength;
+			return 2;
+		}		
+		else if(ScanString(&response[dataOffset], dataLength, "OK", 2))
+		{
+			responseLength = dataOffset + dataLength;
+			return 0;
+		}
+		else if(ScanString(&response[dataOffset], dataLength, "ERROR", 5))
+		{
+			responseLength = dataOffset + dataLength;
+			return 2;
+		}			
+		
+		dataOffset += dataLength;
+		
+		if( dataOffset > GSM_UART_BUFFER_SIZE) // ERROR out of index!
+			return 3; 
 		
 	} while (1);
 }

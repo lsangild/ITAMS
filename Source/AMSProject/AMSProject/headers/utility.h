@@ -25,5 +25,6 @@ uint16_t READREG16(uint32_t address);
 uint32_t READREG32(uint32_t address);
 
 uint8_t ScanString(uint8_t* buffer, uint16_t bufferSize, uint8_t* needle, uint8_t needleSize);
+int16_t IndexOfString(uint8_t* buffer, uint16_t bufferSize, uint8_t* needle, uint8_t needleSize);
 
 #endif /* UTILITY_H_ */
