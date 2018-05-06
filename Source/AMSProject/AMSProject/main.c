@@ -122,6 +122,16 @@ int main(void)
 	
 	InitModules();
 	
+	//uint8_t buffer[] = "TestDataOK\n";
+	//uint8_t bufferSize = 11;
+	//uint8_t needle[] = "OK";
+	//uint8_t needleSize = 2;
+	//
+	//if(ScanString(buffer, bufferSize, needle, needleSize))
+	//{
+		//bufferSize = 1;
+	//}
+	
 	//TestGPS();
 	LoopThrough();
 		

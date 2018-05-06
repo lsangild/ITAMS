@@ -87,32 +87,32 @@ void UART_PadInit(struct uart_t uartBase)
 	switch(uartBase.sercom)
 	{
 		case 0:
-		break;
+			break;
 		case 1:
-		break;
+			break;
 		case 2:
-		//Setup Control A Register
-		*(int*)((void*)&tmpCtrA) = READREG32(uartBase.baseAddress + SERCOM_USART_CTRLB_OFFSET);
+			//Setup Control A Register
+			*(int*)((void*)&tmpCtrA) = READREG32(uartBase.baseAddress + SERCOM_USART_CTRLB_OFFSET);
 		
-		tmpCtrA.RXPO = 0x1;
+			tmpCtrA.RXPO = 0x1;
 		
-		SETREG32(uartBase.baseAddress + SERCOM_USART_CTRLA_OFFSET, *(int*)((void*)&tmpCtrA));
-		break;
+			SETREG32(uartBase.baseAddress + SERCOM_USART_CTRLA_OFFSET, *(int*)((void*)&tmpCtrA));
+			break;
 		case 3:
-		break;
+			break;
 		case 4:
-		break;
+			break;
 		case 5:
-		//Setup Control A Register
-		*(int*)((void*)&tmpCtrA) = READREG32(uartBase.baseAddress + SERCOM_USART_CTRLB_OFFSET);
+			//Setup Control A Register
+			*(int*)((void*)&tmpCtrA) = READREG32(uartBase.baseAddress + SERCOM_USART_CTRLB_OFFSET);
 		
-		tmpCtrA.RXPO = 0x3;
-		tmpCtrA.TXPO = 0x1;
+			tmpCtrA.RXPO = 0x3;
+			tmpCtrA.TXPO = 0x1;
 		
-		SETREG32(uartBase.baseAddress + SERCOM_USART_CTRLA_OFFSET, *(int*)((void*)&tmpCtrA));
-		break;
+			SETREG32(uartBase.baseAddress + SERCOM_USART_CTRLA_OFFSET, *(int*)((void*)&tmpCtrA));
+			break;
 		default:
-		break;
+			break;
 	}
 }
 

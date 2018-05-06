@@ -86,3 +86,25 @@ uint8_t SARAU2_Reset()
 	
 	return 0;
 }
+
+// Error codes
+// 0 - success
+// 1 - error
+// 2 - Not recognized
+uint8_t SARA2_CheckOK(uint8_t* cmd, uint8_t cmdLength)
+{
+	uint8_t data[256];
+	uint16_t dataLength = 0;
+	do
+	{
+		dataLength = UART_ScanRXBuffer(gsmUart, data);
+		if(dataLength == 0)
+			return 2;
+		//Test for cmd?
+		if(ScanString(data, dataLength, "OK", 2))
+			return 0;
+		else if(ScanString(data, dataLength, "ERROR", 5))
+			return 1;
+		
+	} while (1);
+}

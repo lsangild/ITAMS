@@ -21,6 +21,7 @@ uint8_t SARAU2_SetupProfile();
 uint8_t SARAU2_OpenConnection();
 uint8_t SARAU2_SetBaudRate();
 uint8_t SARAU2_Reset();
+uint8_t SARA2_CheckOK(uint8_t* cmd, uint8_t cmdLength);
 
 
 

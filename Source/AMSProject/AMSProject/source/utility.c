@@ -35,3 +35,26 @@ uint32_t READREG32(uint32_t address)
 {
 	return *(uint32_t*)(address);	
 }
+
+
+// Scan array of chars for containing buffer.
+// Return 1 if true, 0 if not containing.
+uint8_t ScanString(uint8_t* buffer, uint16_t bufferSize, uint8_t* needle, uint8_t needleSize)
+{
+	uint16_t i;
+	uint8_t matched = 0;
+	for (i = 0; i < bufferSize; i++)
+	{
+		if(buffer[i] == needle[matched])
+		{
+			matched++;
+			if (matched == needleSize)
+				return 1;
+		}
+		else
+		{
+			matched = 0;
+		}
+	}
+	return 0;
+}
