@@ -180,7 +180,7 @@ uint8_t UART_ScanRXBuffer(struct uart_t serCom, char data)
 	return RB_ScanBuffer(&serComRxBuffers[serCom.sercom], data);
 }
 
-uint8_t UART_Recieve(struct uart_t serCom, uint8_t* data, uint8_t count)
+uint8_t UART_Receive(struct uart_t serCom, uint8_t* data, uint8_t count)
 {
 	uint8_t index;
 	if (RB_IsEmpty(&serComRxBuffers[serCom.sercom]))

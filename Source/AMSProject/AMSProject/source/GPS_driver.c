@@ -140,7 +140,7 @@ uint8_t GPS_send(uint8_t class, uint8_t ID, uint16_t length, uint8_t* payload, u
   {
     countToBreak = UART_ScanRXBuffer(gpsUart, '\n');
   }
-  UART_Recieve(gpsUart, answer, countToBreak);
+  UART_Receive(gpsUart, answer, countToBreak);
     
   // Return number of bytes read
   return countToBreak;

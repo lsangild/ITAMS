@@ -41,7 +41,7 @@ uint8_t SARAU2_TestConnection()
 		countToBreak = UART_ScanRXBuffer(gsmUart, '\n');
 	}
 	uint8_t input[countToBreak];
-	UART_Recieve(gsmUart, input, countToBreak);
+	UART_Receive(gsmUart, input, countToBreak);
 	return 0;
 }
 

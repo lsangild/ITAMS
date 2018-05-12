@@ -70,7 +70,7 @@ void LoopThrough()
 	{
 		REG_PORT_OUTTGL0 =  PORT_PA20;
 		
-		uint8_t pcCount = UART_Recieve(gpsUart, pcData, 255);
+		uint8_t pcCount = UART_Receive(gpsUart, pcData, 255);
 		if(pcCount > 0)
 		{
 			UART_SendBuffer(gsmUart, pcData, pcCount);
@@ -81,7 +81,7 @@ void LoopThrough()
 			
 		}
 		
-		uint8_t emCount = UART_Recieve(gsmUart, pcData, 255);
+		uint8_t emCount = UART_Receive(gsmUart, pcData, 255);
 		if(emCount > 0)
 		{
 			UART_SendBuffer(gpsUart, pcData, emCount);
