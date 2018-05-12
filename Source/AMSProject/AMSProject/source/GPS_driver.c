@@ -21,7 +21,12 @@ void GPS_Init()
 	gpsSetup.rxBufferAddr = gpsRxBuffer;
 	gpsSetup.rxBufferSize = GPS_UART_BUFFER_SIZE;
 	
+  // Setup µC UART part
 	UART_Init(gpsUart, gpsSetup);
+  
+  // Set GPS UART to 9600 only UBX
+  uint8_t cmd_GPSUART[] = {0x01, 0x00, 0x00, 0x00, 0xD0, 0x08, 0x00, 0x00, 0x80, 0x25, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00};
+  GPS_setup(0x06, 0x00, 20, cmd_GPSUART);
 	
   // Disable unwanted messages
 	uint8_t cmd_DisableMSG[] = {0xF0, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
@@ -128,7 +133,7 @@ uint8_t GPS_send(uint8_t class, uint8_t ID, uint16_t length, uint8_t* payload, u
   uint8_t msg[4 + length + 6];
   GPS_ConstructMessage(class, ID, length, payload, msg);
   UART_SendBuffer(gpsUart, msg, 4 + length + 6);
-    
+  
   // Receive
   uint16_t countToBreak = 0;
   while (countToBreak == 0)

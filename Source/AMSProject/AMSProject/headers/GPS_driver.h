@@ -52,7 +52,7 @@ void GPS_Init();
 uint8_t GPS_ConstructMessage(uint8_t class, uint8_t ID, uint16_t lenght, uint8_t* payload, uint8_t* packetBuffer);
 // Calculates checksum and writes values into ck_a and ck_b
 void GPS_CalculateChecksum(uint16_t length, uint8_t* payload, uint8_t* ck_a, uint8_t* ck_b);
-// Sends and receives GPS data. Answer is sritten into answer. Returns number of bytes received.
+// Sends and receives GPS data. Answer is written into answer. Returns number of bytes received.
 uint8_t GPS_send(uint8_t class, uint8_t ID, uint16_t length, uint8_t* payload, uint8_t* answer);
 // Used for sending setup commands. Checks for ack/nack and returns appropriate true/false
 uint8_t GPS_setup(uint8_t class, uint8_t ID, uint16_t length, uint8_t* payload);
@@ -60,9 +60,6 @@ uint8_t GPS_setup(uint8_t class, uint8_t ID, uint16_t length, uint8_t* payload);
 struct GPS_data_t GPS_Poll();
 
 uint8_t GPS_CheckAcknowledge(uint16_t length, uint8_t class, uint8_t id, uint8_t* buffer);
-
-
-
 
 
 #endif /* GPS_DRIVER_H_ */
