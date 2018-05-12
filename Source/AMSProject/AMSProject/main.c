@@ -114,19 +114,27 @@ int main(void)
 	InitInterrupts();
 	
 	//InitModules();
+  
+  GPS_Init();
 	
+  struct GPS_data_t GPS_data;
+  
+  while (1)
+  {
+    GPS_data = GPS_Poll();
+  }
 	//TestGPS();
 	//LoopThrough();
 	
 	//Test
-	uint8_t testData[12]  = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
+	/*uint8_t testData[12]  = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
 	
 	union Neo7_Ack testUnion;
 	
 	uint32_t unionAddr = &testUnion;
 	//uint32_t unionData = (uint32_t) testUnion;
 	uint32_t unionDataAddr = &testUnion.data[0];
-	uint32_t dataAddr = &testData[0];
+	uint32_t dataAddr = &testData[0];*/
 	
 	//testUnion = testData;
 	

@@ -40,7 +40,7 @@ union Neo7_Ack{
 	}Neo7_Ack_T;
 	
 	uint8_t data[12];
-	};
+};
 
 
 extern struct uart_t gpsUart;
