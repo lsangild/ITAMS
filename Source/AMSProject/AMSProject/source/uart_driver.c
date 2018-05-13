@@ -53,9 +53,9 @@ void UART_Init(struct uart_t uartBase, struct uartsetup_t uartSetup)
 	
 	SETREG32(uartBase.baseAddress + SERCOM_USART_CTRLB_OFFSET, *(int*)((void*)&tmpCtrB));
 	
-	//Setup Baud Rate
-	double scale = (double)uartSetup.baudRate/(double)F_CPU;
-	uint16_t tmpBaudRate = 65536.0f*(1.0f-(16.0f*scale));
+	//Setup Baud Rate - Calculation not working!
+	//double scale = (double)uartSetup.baudRate/(double)F_CPU;
+	//uint16_t tmpBaudRate = 65536.0f*(1.0f-(16.0f*scale));
 	SETREG16(uartBase.baseAddress + SERCOM_USART_BAUD_OFFSET, uartSetup.baudRate);//tmpBaudRate);// 64281); // Hard Coded 19200 BAUD Rate - Calculation is random
 	
 	UART_SetupBuffer(uartBase, uartSetup);	
@@ -189,12 +189,12 @@ void UART_ISR(struct uart_t uartBase)
 	}
 }
 
-uint8_t UART_ScanRXBuffer(struct uart_t serCom, char data)
+uint16_t UART_ScanRXBuffer(struct uart_t serCom, uint8_t data)
 {
 	return RB_ScanBuffer(&serComRxBuffers[serCom.sercom], data);
 }
 
-uint8_t UART_Recieve(struct uart_t serCom, uint8_t* data, uint8_t count)
+uint16_t UART_Recieve(struct uart_t serCom, uint8_t* data, uint16_t count)
 {
 	uint8_t index;
 	if (RB_IsEmpty(&serComRxBuffers[serCom.sercom]))

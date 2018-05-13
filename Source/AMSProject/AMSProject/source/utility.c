@@ -63,7 +63,7 @@ uint8_t ScanString(uint8_t* buffer, uint16_t bufferSize, uint8_t* needle, uint8_
 //////////////////////////////////////////////////////////////////////////
 // Scan array of chars for containing string. Returns index of first symbol in needle or -1
 //////////////////////////////////////////////////////////////////////////
-int16_t ScanString(uint8_t* buffer, uint16_t bufferSize, uint8_t* needle, uint8_t needleSize)
+int16_t IndexOfString(uint8_t* buffer, uint16_t bufferSize, uint8_t* needle, uint8_t needleSize)
 {
 	uint16_t i;
 	uint8_t matched = 0;
@@ -81,4 +81,16 @@ int16_t ScanString(uint8_t* buffer, uint16_t bufferSize, uint8_t* needle, uint8_
 		}
 	}
 	return -1;
+}
+
+//////////////////////////////////////////////////////////////////////////
+//Primitive wait method, runs for "tick" loop
+//////////////////////////////////////////////////////////////////////////
+void Wait(uint32_t ticks)
+{
+	uint32_t i;
+	for (i = 0; i < ticks; i++)
+	{
+		
+	}
 }

@@ -14,15 +14,17 @@
 
 extern struct uart_t gsmUart;
 uint8_t gsmRxBuffer[GSM_UART_BUFFER_SIZE];
+uint8_t gsmResponseBuffer[GSM_UART_BUFFER_SIZE]; //Use as container for data from ringbuffer, when running through it.
 
 uint8_t SARAU2_Init();
-uint8_t SARAU2_TestConnection();
+uint8_t SARAU2_CREG();
 uint8_t SARAU2_SetupProfile();
 uint8_t SARAU2_OpenConnection();
 uint8_t SARAU2_SetBaudRate();
+uint8_t SARAU2_SendCmd(struct uart_t serCom, uint8_t* buffer, uint16_t size);
 uint8_t SARAU2_Reset();
 uint8_t SARA2_CheckOK(uint8_t* cmd, uint8_t cmdLength);
-uint8_t SARA2_CheckOK(uint8_t* cmd, uint8_t cmdLength, uint8_t* response, uint16_t responseLength);
+uint8_t SARA2_CheckOKReturnMsg(uint8_t* cmd, uint8_t cmdLength, uint8_t* response, uint16_t* responseLength);
 
 
 

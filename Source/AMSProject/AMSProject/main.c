@@ -83,10 +83,7 @@ void LoopThrough()
 			}
 		}
 		
-		for (i = 0; i < 40000; i++)
-		{
-			
-		}
+		Wait(40000);
 		
 		uint8_t emCount = UART_Recieve(gsmUart, pcData, 255);
 		if(emCount > 0)
@@ -94,10 +91,7 @@ void LoopThrough()
 			UART_SendBuffer(gpsUart, pcData, emCount);
 		}
 		
-		for (i = 0; i < 40000; i++)
-		{
-			
-		}
+		Wait(40000);
 	}
 }
 
