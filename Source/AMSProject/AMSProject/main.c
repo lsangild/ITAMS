@@ -125,19 +125,6 @@ int main(void)
   }
 	//TestGPS();
 	//LoopThrough();
-	
-	//Test
-	/*uint8_t testData[12]  = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
-	
-	union Neo7_Ack testUnion;
-	
-	uint32_t unionAddr = &testUnion;
-	//uint32_t unionData = (uint32_t) testUnion;
-	uint32_t unionDataAddr = &testUnion.data[0];
-	uint32_t dataAddr = &testData[0];*/
-	
-	//testUnion = testData;
-	
 }
 
 void SERCOM5_Handler()
