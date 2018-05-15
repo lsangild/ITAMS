@@ -129,18 +129,28 @@ void GPS_CalculateChecksum(uint16_t length, uint8_t* payload, uint8_t* ck_a, uin
 
 uint8_t GPS_send(uint8_t class, uint8_t ID, uint16_t length, uint8_t* payload, uint8_t* answer)
 {
-  // Send data
+  // Setup
   uint8_t msg[4 + length + 6];
+  uint16_t countToBreak;
   GPS_ConstructMessage(class, ID, length, payload, msg);
-  UART_SendBuffer(gpsUart, msg, 4 + length + 6);
   
-  // Receive
-  uint16_t countToBreak = 0;
-  while (countToBreak == 0)
+  do
   {
-    countToBreak = UART_ScanRXBuffer(gpsUart, '\n');
-  }
-  UART_Receive(gpsUart, answer, countToBreak);
+    // Send
+    UART_SendBuffer(gpsUart, msg, 4 + length + 6);
+  
+    // Receive
+    countToBreak = 0;
+    while (countToBreak == 0)
+    {
+      countToBreak = UART_ScanRXBuffer(gpsUart, '\n');
+    }
+    UART_Receive(gpsUart, answer, countToBreak);
+    if ((answer[0] != 0xB0) && (answer[1] != 0x62)) // 0xB062 = µb
+    {
+      UART_ResetRXBuffer(gpsUart);
+    }
+  } while ((answer[0] != 0xB0) && (answer[1] != 0x62));
     
   // Return number of bytes read
   return countToBreak;
@@ -150,25 +160,16 @@ uint8_t GPS_setup(uint8_t cmdClass, uint8_t cmdID, uint16_t length, uint8_t* pay
 {
   // Send data
   uint8_t answer[GPS_ACK_LENGTH];
-  uint8_t bytesReceived = GPS_send(cmdClass, cmdID, length, payload, answer);
+
+  uint8_t bytesReceived = 0;
     
   // Only check if ack/nack if correct amount of data is received.
-  if (bytesReceived == GPS_ACK_LENGTH)
+  do
   {
+    bytesReceived = GPS_send(cmdClass, cmdID, length, payload, answer);
     // Check if acked
-    if (GPS_CheckAcknowledge(length, cmdClass, cmdID, answer))
-    {
-	    return 1;
-    }
-    else
-    {
-	    return 0;
-    }
-  }
-  else
-  {
-    return 0;
-  }
+  //} while ((bytesReceived != GPS_ACK_LENGTH) || !GPS_CheckAcknowledge(length, cmdClass, cmdID, answer));
+  } while (!GPS_CheckAcknowledge(cmdClass, cmdID, answer));
 }
 
 struct GPS_data_t GPS_Poll()
@@ -199,13 +200,13 @@ struct GPS_data_t GPS_Poll()
 }
 
 
-uint8_t GPS_CheckAcknowledge(uint16_t length, uint8_t cmdClass, uint8_t cmdID, uint8_t* buffer)
+uint8_t GPS_CheckAcknowledge(uint8_t cmdClass, uint8_t cmdID, uint8_t* buffer)
 {
 	// Create expected answer
 	uint8_t ck_a;
 	uint8_t ck_b;
 	union Neo7_Ack expected;
-	uint8_t expectedData[] = {0xB5, 0x62, 0x05, 0x01, (uint8_t) length, (uint8_t) length >> 8, cmdClass, cmdID, ck_a, ck_b, 0x0D, 0x0A};
+	uint8_t expectedData[] = {0xB5, 0x62, 0x05, 0x01, 0x02, 0x00, cmdClass, cmdID, ck_a, ck_b, 0x0D, 0x0A};
 	
 	GPS_CalculateChecksum(6, &expected.data[2], &ck_a, &ck_b);
 	

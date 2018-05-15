@@ -59,7 +59,7 @@ uint8_t GPS_setup(uint8_t class, uint8_t ID, uint16_t length, uint8_t* payload);
 // Polls the GPS for data and returns it in the GPS_data_t struct
 struct GPS_data_t GPS_Poll();
 
-uint8_t GPS_CheckAcknowledge(uint16_t length, uint8_t class, uint8_t id, uint8_t* buffer);
+uint8_t GPS_CheckAcknowledge(uint8_t class, uint8_t id, uint8_t* buffer);
 
 
 #endif /* GPS_DRIVER_H_ */

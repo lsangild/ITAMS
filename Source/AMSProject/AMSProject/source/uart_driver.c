@@ -44,7 +44,6 @@ void UART_Init(struct uart_t uartBase, struct uartsetup_t uartSetup)
 	//Setup Control B Register
 	struct SERUSART_CTRLB_T tmpCtrB;
 	*(int*)((void*)&tmpCtrB) = READREG32(uartBase.baseAddress + SERCOM_USART_CTRLB_OFFSET);
-	
 	tmpCtrB.TXEN = 1; //TX enable
 	tmpCtrB.RXEN = 1; //RX enable
 	tmpCtrB.PMODE = uartSetup.parity; //Parity 0 = equal, 1 = odd
@@ -57,7 +56,7 @@ void UART_Init(struct uart_t uartBase, struct uartsetup_t uartSetup)
 	double scale = (double)uartSetup.baudRate/(double)F_CPU;
 	uint16_t tmpBaudRate = 65536.0f*(1.0f-(16.0f*scale));
 	SETREG16(uartBase.baseAddress + SERCOM_USART_BAUD_OFFSET, uartSetup.baudRate);//tmpBaudRate);// 64281); // Hard Coded 19200 BAUD Rate - Calculation is random
-	
+
 	UART_SetupBuffer(uartBase, uartSetup);	
 
 	//Setup Int
