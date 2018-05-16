@@ -205,7 +205,7 @@ uint8_t GPS_CheckAcknowledge(uint8_t cmdClass, uint8_t cmdID, uint8_t* buffer)
 	union Neo7_Ack expected;
 	uint8_t expectedData[] = {0xB5, 0x62, 0x05, 0x01, 0x02, 0x00, cmdClass, cmdID, ck_a, ck_b, 0x0D, 0x0A};
 	
-	GPS_CalculateChecksum(6, &expected.data[2], &ck_a, &ck_b);
+	GPS_CalculateChecksum(12, &expected.data[0], &ck_a, &ck_b);
 	
 	expected.Neo7_Ack_T.ck_a = ck_a;
 	expected.Neo7_Ack_T.ck_b = ck_b;
