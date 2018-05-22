@@ -17,10 +17,10 @@
 */
 
 #include "sam.h"
-#include "variant.h"
+//#include "variant.h"
 
 #include <stdio.h>
-
+#include "startup.h"
 /**
  * \brief SystemInit() configures the needed clocks and according Flash Read Wait States.
  * At reset:
@@ -35,16 +35,7 @@
  * 6) Modify PRESCaler value of OSCM to have 8MHz
  * 7) Put OSC8M as source for Generic Clock Generator 3
  */
-// Constants for Clock generators
-#define GENERIC_CLOCK_GENERATOR_MAIN      (0u)
-#define GENERIC_CLOCK_GENERATOR_XOSC32K   (1u)
-#define GENERIC_CLOCK_GENERATOR_OSC32K    (1u)
-#define GENERIC_CLOCK_GENERATOR_OSCULP32K (2u) /* Initialized at reset for WDT */
-#define GENERIC_CLOCK_GENERATOR_OSC8M     (3u)
-// Constants for Clock multiplexers
-#define GENERIC_CLOCK_MULTIPLEXER_DFLL48M (0u)
-
-void SystemInit( void )
+void SystemInit_Premade()
 {
   /* Set 1 Flash Wait State for 48MHz, cf tables 20.9 and 35.27 in SAMD21 Datasheet */
   NVMCTRL->CTRLB.bit.RWS = NVMCTRL_CTRLB_RWS_HALF_Val ;

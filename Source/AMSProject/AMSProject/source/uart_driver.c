@@ -34,9 +34,9 @@ void UART_Init(struct uart_t uartBase, struct uartsetup_t uartSetup)
 	tmpCtrA.reg = READREG32(uartBase.baseAddress + SERCOM_USART_CTRLA_OFFSET);
 	
 	tmpCtrA.bit.FORM = 0;
-	tmpCtrA.bit.CMODE = 1;
+	tmpCtrA.bit.CMODE = 0;
 	tmpCtrA.bit.MODE = 1;
-	tmpCtrA.bit.SAMPR = 0;
+	tmpCtrA.bit.SAMPR = 1;
 	tmpCtrA.bit.DORD = 1;
 	
 	SETREG32(uartBase.baseAddress + SERCOM_USART_CTRLA_OFFSET, tmpCtrA.reg);
@@ -54,9 +54,12 @@ void UART_Init(struct uart_t uartBase, struct uartsetup_t uartSetup)
 	SETREG32(uartBase.baseAddress + SERCOM_USART_CTRLB_OFFSET, *(int*)((void*)&tmpCtrB));
 	
 	//Setup Baud Rate - Calculation not working!
-	//double scale = (double)uartSetup.baudRate/(double)F_CPU;
-	//uint16_t tmpBaudRate = 65536.0f*(1.0f-(16.0f*scale));
-	SETREG16(uartBase.baseAddress + SERCOM_USART_BAUD_OFFSET, uartSetup.baudRate);//tmpBaudRate);// 64281); // Hard Coded 19200 BAUD Rate - Calculation is random
+	// Asynchronous fractional mode (Table 24-2 in datasheet)
+	//   BAUD = fref / (sampleRateValue * fbaud)
+	// (multiply by 8, to calculate fractional piece)
+	uint32_t baudTimes8 = (SystemCoreClock * 8) / (16 * uartSetup.baudRate);
+	uint16_t baudReg = ((baudTimes8 % 8)<<13) | (baudTimes8 >> 3);
+	SETREG16(uartBase.baseAddress + SERCOM_USART_BAUD_OFFSET, baudReg); //uartSetup.baudRate);//tmpBaudRate);// 64281); // Hard Coded 19200 BAUD Rate - Calculation is random
 	
 	UART_SetupBuffer(uartBase, uartSetup);	
 

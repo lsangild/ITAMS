@@ -164,6 +164,9 @@
     <Compile Include="Device_Startup\startup.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="Device_Startup\startup.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Device_Startup\startup_samd21.c">
       <SubType>compile</SubType>
     </Compile>

@@ -9,6 +9,7 @@
 #include "utility.h"
 #include "hw_defines.h"
 
+extern struct uart_t gpsUart;
 
 uint8_t SARAU2_Init()
 {
@@ -17,7 +18,7 @@ uint8_t SARAU2_Init()
 
 	struct uartsetup_t gsmSetup;
 
-	gsmSetup.baudRate = 64307; //Hardcoded balue for 9600 baud - 64281; //Hard coded value for register real 19200
+	gsmSetup.baudRate = 9600; //Hardcoded balue for 9600 baud - 64281; //Hard coded value for register real 19200
 	gsmSetup.dataBits = 8;
 	gsmSetup.parity = 0;
 	gsmSetup.stopBits = 1;
@@ -30,7 +31,14 @@ uint8_t SARAU2_Init()
 	
 	Wait(40000);
 	
-	SARAU2_CREG();
+	uint8_t regStatus = SARAU2_CREG();
+	
+	//outcomment for Final
+	uint8_t msg[15] = "Creg State:  \r\n";
+	msg[12] = regStatus + 0x30;
+	
+	UART_SendBuffer(gpsUart, msg, 15);
+		
 	return 0;
 }
 
@@ -42,7 +50,7 @@ uint8_t SARAU2_CREG()
 	
 	while(1)
 	{
-		Wait(40000);
+		Wait(400000);
 		uint16_t rspLength;
 		uint8_t rsp = SARA2_CheckOKReturnMsg(msg, 10, gsmResponseBuffer, &rspLength);
 		
@@ -51,19 +59,20 @@ uint8_t SARAU2_CREG()
 			int16_t cregIndex = IndexOfString(gsmResponseBuffer, rspLength, (uint8_t*)"+CREG: 0,", 9);
 			if(cregIndex > 0)
 			{
-				switch (gsmResponseBuffer[cregIndex+9])
+				uint8_t regStatus = gsmResponseBuffer[cregIndex+9];
+				switch (regStatus)
 				{
-					case 0: // Error on registration
+					case '0': // Error on registration
 						return 2;
-					case 1: //Registered home network. This should be correct status
+					case '1': //Registered home network. This should be correct status
 						return 0;
-					case 2: //Searching for network. Idle state
+					case '2': //Searching for network. Idle state
 						break;
-					case 3: //Registration denied. Not enough signal?
+					case '3': //Registration denied. Not enough signal?
 						return 1;
-					case 4: //Unknown state
+					case '4': //Unknown state
 						return 3;
-					case 5: //Registered roaming network. This should be correct status
+					case '5': //Registered roaming network. This should be correct status
 						return 0;
 					default: // SMS only and other states. Keep checking
 						break;					
@@ -91,7 +100,7 @@ uint8_t SARAU2_SetupProfile()
 	if(errorStatus)//Error happened! Could not send!
 		return errorStatus;
 		
-	Wait(40000);
+	Wait(400000);
 	
 	errorStatus = SARA2_CheckOK(cmd, 11);
 	if(errorStatus)//Error happened! Could not attach to GPRS service
@@ -111,7 +120,7 @@ uint8_t SARAU2_OpenConnection()
 	if(errorStatus)//Error happened! Could not send!
 		return 1;
 	
-	Wait(40000);
+	Wait(400000);
 	
 	errorStatus = SARA2_CheckOK(cmd, 11);	
 	if(errorStatus)//Error happened! Could not attach to GPRS service
@@ -126,7 +135,7 @@ uint8_t SARAU2_OpenConnection()
 	if(errorStatus)//Error happened! Could not send!
 		return 1;
 	
-	Wait(40000);
+	Wait(400000);
 	
 	errorStatus = SARA2_CheckOK(cmd, 11);
 	if(errorStatus)//Error happened! Could not attach to GPRS service
@@ -141,7 +150,7 @@ uint8_t SARAU2_SetBaudRate()
 	
 	UART_SendBuffer(gsmUart, msg, 14);
 	
-	Wait(40000);
+	Wait(400000);
 	
 	return SARA2_CheckOK(msg, 14);
 }
@@ -150,11 +159,11 @@ uint8_t SARAU2_Reset()
 {
 	SETREG32(GSM_RESET_PORT_BASE + PORT_OUTSET_OFFSET, PORT_PB08); //Set reset pin as high - Active high
 	
-	Wait(40000);
+	Wait(400000);
 	
 	SETREG32(GSM_RESET_PORT_BASE + PORT_OUTCLR_OFFSET, PORT_PB08); //Set reset pin as low - Active high
 	
-	Wait(40000);
+	Wait(400000);
 	
 	//Now set baudrate to 19200
 	SARAU2_SetBaudRate();

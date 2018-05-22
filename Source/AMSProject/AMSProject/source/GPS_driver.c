@@ -14,7 +14,7 @@ void GPS_Init()
 	
 	struct uartsetup_t gpsSetup;
 	
-	gpsSetup.baudRate = 64307;// Hardcoded for baud 9600 - real should be 9600;
+	gpsSetup.baudRate = 9600;// Hardcoded for baud 9600 - real should be 9600;
 	gpsSetup.dataBits = 8;
 	gpsSetup.parity = 0;
 	gpsSetup.stopBits = 1;

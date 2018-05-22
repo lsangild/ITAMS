@@ -17,6 +17,7 @@
 #include <string.h>
 #include "GPS_driver.h"
 #include "sarau2_driver.h"
+#include "Device_Startup/startup.h"
 
 struct uart_t gpsUart; //Name for specifics
 struct uart_t gsmUart;
@@ -65,11 +66,8 @@ void LoopThrough()
 	
 	/* Replace with your application code */
 	uint8_t pcData[1024];
-	uint16_t i;
 	while (1)
-	{
-		REG_PORT_OUTTGL0 =  PORT_PA20;
-		
+	{		
 		uint8_t pcCount = UART_Recieve(gpsUart, pcData, 255);
 		if(pcCount > 0)
 		{
@@ -82,8 +80,8 @@ void LoopThrough()
 				UART_SendBuffer(gsmUart, pcData, pcCount);
 			}
 		}
-		
-		Wait(40000);
+				
+		Wait(400000);
 		
 		uint8_t emCount = UART_Recieve(gsmUart, pcData, 255);
 		if(emCount > 0)
@@ -91,7 +89,7 @@ void LoopThrough()
 			UART_SendBuffer(gpsUart, pcData, emCount);
 		}
 		
-		Wait(40000);
+		Wait(400000);
 	}
 }
 
@@ -109,6 +107,8 @@ int main(void)
 {
 	/* Initialize the SAM system */
 	SystemInit();
+	
+	SystemInit_Premade();
 	
 	InitPorts();
 	
