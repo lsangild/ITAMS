@@ -8,6 +8,8 @@
 #include "SaraU2_driver.h"
 #include "utility.h"
 #include "hw_defines.h"
+#include <string.h>
+#include "stdio.h"
 
 extern struct uart_t gpsUart;
 
@@ -252,4 +254,48 @@ uint8_t SARAU2_SendCmd(struct uart_t serCom, uint8_t* buffer, uint16_t size)
 {
 	UART_ResetRXBuffer(serCom);
 	return UART_SendBuffer(serCom, buffer, size);	
+}
+
+uint8_t SARAU2_OpenSocket()
+{
+	uint8_t cmd[13] = "AT+USOCR=17\r\n";
+	SARAU2_SendCmd(gsmUart, cmd, 13);
+	uint16_t rspLength;
+	
+	uint8_t rsp = SARA2_CheckOKReturnMsg(cmd, 10, gsmResponseBuffer, &rspLength);
+	if(rsp == 0)
+	{
+		int16_t cregIndex = IndexOfString(gsmResponseBuffer, rspLength, (uint8_t*)"+USOCR: ", 9);
+		if(cregIndex > 0)
+			socketID = gsmResponseBuffer[cregIndex+8]-0x30;		
+		else
+			return 1;
+	}
+	else
+	{
+		return 1;
+	}
+	return 0;
+}
+
+uint8_t SARAU2_SendData(char* ip, uint8_t ipLength, uint16_t port, uint8_t* data, uint16_t length)
+{
+	uint16_t cmdLength = sprintf((char*)cmdData,"AT+USOST=%d,%s,%d,%d@", socketID, ip, port, length);
+	
+	memcpy(&cmdData[cmdLength],data,length);
+	
+	cmdData[cmdLength+length] = '\r';
+	cmdData[cmdLength+length+1] = '\n';
+	
+	SARAU2_SendCmd(gsmUart, cmdData, cmdLength+length+2);
+	if (SARA2_CheckOK(cmdData,8))
+		return 1;
+	else 
+		return 0;
+}	
+
+
+uint16_t SARAU2_ReadData(uint8_t* data, uint16_t readCount)
+{
+	return 1;	
 }
