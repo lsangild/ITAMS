@@ -31,15 +31,9 @@ uint8_t SARAU2_Init()
 	
 	SARAU2_Reset();
 	
-	Wait(40000);
+	Wait(400000);
 	
 	uint8_t regStatus = SARAU2_CREG();
-	
-	//outcomment for Final
-	uint8_t msg[15] = "Creg State:  \r\n";
-	msg[12] = regStatus + 0x30;
-	
-	UART_SendBuffer(gpsUart, msg, 15);
 		
 	return 0;
 }
@@ -59,6 +53,8 @@ uint8_t SARAU2_CREG()
 		if (rsp == 0) //CREG responded OK
 		{
 			int16_t cregIndex = IndexOfString(gsmResponseBuffer, rspLength, (uint8_t*)"+CREG: 0,", 9);
+			
+			UART_SendBuffer(gpsUart, gsmResponseBuffer, rspLength);
 			if(cregIndex > 0)
 			{
 				uint8_t regStatus = gsmResponseBuffer[cregIndex+9];
