@@ -24,4 +24,9 @@ uint16_t READREG16(uint32_t address);
 //Read four byte data at address
 uint32_t READREG32(uint32_t address);
 
+uint8_t ScanString(uint8_t* buffer, uint16_t bufferSize, uint8_t* needle, uint8_t needleSize);
+int16_t IndexOfString(uint8_t* buffer, uint16_t bufferSize, uint8_t* needle, uint8_t needleSize);
+
+void Wait(uint32_t ticks);
+
 #endif /* UTILITY_H_ */

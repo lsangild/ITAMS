@@ -14,7 +14,7 @@ void GPS_Init()
 	
 	struct uartsetup_t gpsSetup;
 	
-	gpsSetup.baudRate = 64307;// Hardcoded for baud 9600 - real should be 9600;
+	gpsSetup.baudRate = 9600;// Hardcoded for baud 9600 - real should be 9600;
 	gpsSetup.dataBits = 8;
 	gpsSetup.parity = 0;
 	gpsSetup.stopBits = 1;
@@ -206,13 +206,22 @@ uint8_t GPS_CheckAcknowledge(uint8_t cmdClass, uint8_t cmdID, uint8_t* buffer)
 	uint8_t expectedData[] = {0xB5, 0x62, 0x05, 0x01, 0x02, 0x00, cmdClass, cmdID, ck_a, ck_b, 0x0D, 0x0A};
 	
 	GPS_CalculateChecksum(12, &expected.data[0], &ck_a, &ck_b);
-	
-	expected.Neo7_Ack_T.ck_a = ck_a;
-	expected.Neo7_Ack_T.ck_b = ck_b;
-	
 	//Set stucture data
-	union Neo7_Ack recieved;
-	//recieved.data = buffer;
+	union Neo7_Ack* recieved;
+	recieved = (void*) buffer;// Set union pointer to correct address
 	
-	return 0;
+	if(recieved->Neo7_Ack_T.acknowledge[0] != 0x05)
+		return 2;	
+	
+	if(recieved->Neo7_Ack_T.cmdClass == cmdClass && recieved->Neo7_Ack_T.cmdID == cmdID)
+	{
+		//Create Checksum test / Checksum function
+		
+		if(recieved->Neo7_Ack_T.acknowledge[1] == 0x01)
+			return 0; //Success
+		else
+			return 1; //Not Acknowledge
+	}
+	
+	return 3;
 }

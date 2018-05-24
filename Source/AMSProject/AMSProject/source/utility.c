@@ -35,3 +35,62 @@ uint32_t READREG32(uint32_t address)
 {
 	return *(uint32_t*)(address);	
 }
+
+
+//////////////////////////////////////////////////////////////////////////
+// Scan array of chars for containing string. Return 1 if needle exists.
+//////////////////////////////////////////////////////////////////////////
+uint8_t ScanString(uint8_t* buffer, uint16_t bufferSize, uint8_t* needle, uint8_t needleSize)
+{
+	uint16_t i;
+	uint8_t matched = 0;
+	for (i = 0; i < bufferSize; i++)
+	{
+		if(buffer[i] == needle[matched])
+		{
+			matched++;
+			if (matched == needleSize)
+				return 1;
+		}
+		else
+		{
+			matched = 0;
+		}
+	}
+	return 0;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// Scan array of chars for containing string. Returns index of first symbol in needle or -1
+//////////////////////////////////////////////////////////////////////////
+int16_t IndexOfString(uint8_t* buffer, uint16_t bufferSize, uint8_t* needle, uint8_t needleSize)
+{
+	uint16_t i;
+	uint8_t matched = 0;
+	for (i = 0; i < bufferSize; i++)
+	{
+		if(buffer[i] == needle[matched])
+		{
+			matched++;
+			if (matched == needleSize)
+				return i - needleSize + 1; // Return index of first symbol in needle
+		}
+		else
+		{
+			matched = 0;
+		}
+	}
+	return -1;
+}
+
+//////////////////////////////////////////////////////////////////////////
+//Primitive wait method, runs for "tick" loop
+//////////////////////////////////////////////////////////////////////////
+void Wait(uint32_t ticks)
+{
+	uint32_t i;
+	for (i = 0; i < ticks; i++)
+	{
+		
+	}
+}

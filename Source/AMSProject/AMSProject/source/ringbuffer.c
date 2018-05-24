@@ -39,7 +39,7 @@ uint8_t RB_PopByte(ringbuffer_t *buffer, uint8_t *data)
 	return 0;  // return success to indicate successful push.
 }
 
-uint8_t RB_PopBytes(ringbuffer_t *buffer, uint8_t *data, uint8_t *count)
+uint16_t RB_PopBytes(ringbuffer_t *buffer, uint8_t *data, uint16_t *count)
 {
 	uint8_t index;
 	for (index = 0; index < *count; index++)
@@ -72,7 +72,7 @@ uint8_t RB_PushElement(uint8_t* element, uint8_t elementSize, ringbuffer_t* buff
 uint8_t RB_PushByte(uint8_t data, ringbuffer_t* buffer)
 {
 	// next is where head will point to after this write.
-	int next = buffer->head + 1;
+	uint32_t next = buffer->head + 1;
 	if (next >= buffer->maxLen)
 		next = 0;
 
@@ -102,7 +102,7 @@ uint8_t RB_IsFull(ringbuffer_t* buffer)
 	return buffer->head+1 == buffer->tail;
 }
 
-uint8_t RB_ScanBuffer(ringbuffer_t* buffer, char data)
+uint16_t RB_ScanBuffer(ringbuffer_t* buffer, char data)
 {
 	if(RB_IsEmpty(buffer))
 		return 0;
