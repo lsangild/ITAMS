@@ -1,0 +1,50 @@
+\appendix
+
+\chapter{GPS communication}
+\label{app:GPScomm}
+\begin{table}[H]
+	\centering
+	\setlength{\extrarowheight}{0pt}
+	\begin{tabularx}{0.8\textwidth}{p{2cm} p{2cm} X}
+		\oldtoprule
+		\textbf{Desc} & \textbf{Code (hex)} & \textbf{Meaning} \\
+		\oldmidrule
+		Header & b562 & \\
+		ID & 0107 & \\
+		Length & 5400 & \\
+		iTOW & f0000a19 & GPS Time of week \\
+		year & e207 & 2018 \\
+		month & 05 & April \\
+		day & 18 & 19th \\
+		hour & 14 & 9 \\
+		min & 29 & 24 \\
+		sec & 08 & 47 \\
+		valid & 07 & Fully Resolved \\
+		tAcc & 1b000000 & \\
+		nano & 677c0000 & \\
+		fixType & 03 & 3D-fix \\
+		flags & 01 & Valid fix \\
+		reserved0 & 0a & \\
+		numSV & 06 & Number of satellites: 6 \\
+		lon & 285a1406 & Longitude: 10.1997096 \\
+		lat & b8dd7a21 & Latitude: 56.170027999999995 \\
+		height & 2e560100 & \\
+		hMSL & 36af0100 & \\
+		hAcc & 0d260000 & \\
+		vAcc & 48360000 & \\
+		velN & a1ffffff & \\
+		velE & 1d000000 & \\
+		velD & b0ffffff & \\
+		gSpeed & 63000000 & \\
+		heading & e77e6001 & \\
+		sAcc & 4d030000 & \\
+		headingAcc & c615e800 & \\
+		pDOP & e700 & \\
+		reserved2 & 0000 & \\
+		reserved3 & 84d31100 & \\
+		checksum & b05c & \\
+		\bottomrule
+	\end{tabularx}
+	\caption{Example of GPS answer to UBX-NAV-PVT\cite[p.~160-161]{NEO7_proto}.}
+	\label{tab:GPScomm}
+\end{table}
