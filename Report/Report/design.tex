@@ -10,19 +10,30 @@
 Communication with the \SARA module, will be done through a UART connection. The module contains an ability to auto detect the baud rate of the first transmission, and use this baud rate to respond. In addition it supports the standard baud rates:\num{1200}, \num{2400}, \num{4800}, \num{9600}, \num{19200}, \num{38400} and 5 higher rates. \num{9600} baud was selected with focus on stability and the ability to debug the communications.
 
 \subsection{AT Command Interface}
-From the analysis commands was found in order to set up the module, and send data through. The following section will run through the commands, what they do and how they are used.
+From the analysis commands was found in order to set up the module, and send data through. The following section will run through the most important commands, what they do and how they are used. The commands are used in the order of table \fxnote{Reference}
 
 \begin{table}
-	\setlength{\extrarowheight}{5pt}
-	\begin{tabularx}{\textwidth}{p{3cm} X X}
+	\begin{tabularx}{\textwidth}{p{2cm} X X}
 		\toprule
 		Name & Description & Command and \textit{Response} \\
 		\midrule
 		AT+CCID & Used to get the sim card ID, which could be used as identifier for the transmissions. & AT+CCID<CR><LF> \newline \newline
 		\textit{+CCID:<CCID><CR><LF>} \\ 
-		AT+CREG? & Used to read the current network status. Returns CREG: 0,? & \\
+		AT+CREG? & Used to read the current network status. Returns CREG: 0,? \newline
+		The return value ? describes if the modem is registered on the network. & AT+CREG?<CR><LF> \newline \newline
+		\textit{+CREG: 0,<state><CR><LF>} \\
+		AT+CGDCONT & Set up IP and APN for the network provider for the sim card & AT+CGDCONT=1,"IP","internet" \newline \newline
+		\textit{OK} \\
+		AT+CGATT & Attaches the GSM to the GPRS service before proceeding to activate internet protocols & AT+CGATT=1<CR><LF> \newline \newline
+		\textit{OK} \\
+		AT+CGACT & Activate the PDP context of the GPRS connection set up with the cgdcont command & AT+CGACT=1,1<CR><LF> \newline \newline
+		\textit{OK} \\
+		AT+USOCR & Set up a socket for internet protocol transmission, use 17 for UDP protocol. Returns the socket id, for future use.& AT+USOCR=17 \newline \newline
+		\textit{+USOCR: 1} \\
 		\bottomrule
 	\end{tabularx}
+	\caption{Table of used AT command to control SARA-U201 module}
+	\label{tab:ATDesc}
 \end{table}
 \fxnote{Check \url{http://m2msupport.net/m2msupport/data-call-at-commands-to-set-up-gprsedgeumtslte-data-call/} for expected behaviour.}
 
