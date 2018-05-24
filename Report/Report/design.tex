@@ -4,37 +4,39 @@
 \chapter{Design}
 \label{ch:Design}
 
-\begin{table}[H]
-	\begin{tabularx}{\textwidth}{l X X}
+\section{GSM - \SARA}
+
+\subsection{UART}
+Communication with the \SARA module, will be done through a UART connection. The module contains an ability to auto detect the baud rate of the first transmission, and use this baud rate to respond. In addition it supports the standard baud rates:\num{1200}, \num{2400}, \num{4800}, \num{9600}, \num{19200}, \num{38400} and 5 higher rates. \num{9600} baud was selected with focus on stability and the ability to debug the communications.
+
+\subsection{AT Command Interface}
+From the analysis commands was found in order to set up the module, and send data through. The following section will run through the commands, what they do and how they are used.
+
+\begin{table}
+	\setlength{\extrarowheight}{5pt}
+	\begin{tabularx}{\textwidth}{p{3cm} X X}
 		\toprule
-		Command & Description & Chapter \\
+		Name & Description & Command and \textit{Response} \\
 		\midrule
-		+CPIN & Sim card pin commands & 9.1 \\
-		+CCID & Sim card identification. Used for checking if the sim card is recognized. & 4.12 \\
-		+CFUN & Module functionality. Includes power saving features. & 5.3 \\
-		+CCLK & Get or set the real time clock. & 5.7 \\
-		+CTZU & Automatic time zone setup. & 5.15 \\
-		+CSQ & Check signal quality. & 7.2 \\
-		+COPS & Operator selection and statys. & 7.4 \\
-		+CGDCONT & APN and password setup. & 18.4 \\
-		+CGATT & GPRS attach or detach. & 18.14 \\
-		+CGACT & Activate or deactivate context. & 18.16 \\
-		+CGREG & GPRS network registrations status & 18.27 \\
-		+USOCO & Connect socket. & 25.9 \\
-		+USOWR & Write to socket. & 25.10 \\
-		+UPING & Ping command. & 30.1 \\
+		AT+CCID & Used to get the sim card ID, which could be used as identifier for the transmissions. & AT+CCID<CR><LF> \newline \newline
+		\textit{+CCID:<CCID><CR><LF>} \\ 
+		AT+CREG? & Used to read the current network status. Returns CREG: 0,? & \\
 		\bottomrule
 	\end{tabularx}
-	\caption{Table of used AT commands.}
-	\label{tab:ATcomm}
 \end{table}
 \fxnote{Check \url{http://m2msupport.net/m2msupport/data-call-at-commands-to-set-up-gprsedgeumtslte-data-call/} for expected behaviour.}
 
-\section{GPS - NEO-7M-0-000}
+\section{GPS - \GPS}
 Baud rates available: \num{4800}, \num{9600}, \num{19200}, \num{38400}, \num{57600} and \num{115200}. With frame 8N1.
 
 \cite{MKRSchem}
 
-\section{SD-card - Ciseco B026}
+\section{SD-card - \SDsock}
+
+
+\section{UART - \SAMD}
+
+\subsection{BaudRate}
+
 
 \FloatBarrier
