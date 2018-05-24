@@ -17,6 +17,7 @@
 #include <string.h>
 #include "GPS_driver.h"
 #include "sarau2_driver.h"
+#include "Device_Startup/startup.h"
 
 struct uart_t gpsUart; //Name for specifics
 struct uart_t gsmUart;
@@ -65,32 +66,38 @@ void LoopThrough()
 	
 	/* Replace with your application code */
 	uint8_t pcData[1024];
-	uint16_t i;
 	while (1)
-	{
-		REG_PORT_OUTTGL0 =  PORT_PA20;
-		
-		uint8_t pcCount = UART_Receive(gpsUart, pcData, 255);
+	{		
+		uint8_t pcCount = UART_Recieve(gpsUart, pcData, 255);
 		if(pcCount > 0)
 		{
-			UART_SendBuffer(gsmUart, pcData, pcCount);
+			if(pcData[0] == 0xAA)
+			{
+				SARAU2_Reset();
+			}
+			else if (pcData[0] == 0xAA)
+			{						
+				SARAU2_OpenConnection();
+				
+				SARAU2_OpenSocket();
+				
+				SARAU2_SendData("188.114.136.5", 30000, "Hello World", 11);
+			}
+			else
+			{
+				UART_SendBuffer(gsmUart, pcData, pcCount);
+			}
 		}
+				
+		Wait(400000);
 		
-		for (i = 0; i < 40000; i++)
-		{
-			
-		}
-		
-		uint8_t emCount = UART_Receive(gsmUart, pcData, 255);
+		uint8_t emCount = UART_Recieve(gsmUart, pcData, 255);
 		if(emCount > 0)
 		{
 			UART_SendBuffer(gpsUart, pcData, emCount);
 		}
 		
-		for (i = 0; i < 40000; i++)
-		{
-			
-		}
+		Wait(400000);
 	}
 }
 
@@ -109,22 +116,28 @@ int main(void)
 	/* Initialize the SAM system */
 	SystemInit();
 	
+	SystemInit_Premade();
+	
 	InitPorts();
 	
 	InitInterrupts();
 	
-	//InitModules();
-  
-  GPS_Init();
+	InitModules();
 	
-  struct GPS_data_t GPS_data;
-  
-  while (1)
-  {
-    GPS_data = GPS_Poll();
-  }
+	
+	//uint8_t buffer[] = "TestDataOK\n";
+	//uint8_t bufferSize = 11;
+	//uint8_t needle[] = "OK";
+	//uint8_t needleSize = 2;
+	//
+	//if(ScanString(buffer, bufferSize, needle, needleSize))
+	//{
+		//bufferSize = 1;
+	//}
+	
 	//TestGPS();
-	//LoopThrough();
+	LoopThrough();
+		
 }
 
 void SERCOM5_Handler()
