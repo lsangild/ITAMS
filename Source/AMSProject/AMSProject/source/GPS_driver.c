@@ -27,7 +27,7 @@ void GPS_Init()
   // Set GPS UART to 9600 only UBX
   uint8_t cmd_GPSUART[] = {0x01, 0x00, 0x00, 0x00, 0xD0, 0x08, 0x00, 0x00, 0x80, 0x25, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00};
   GPS_setup(0x06, 0x00, 20, cmd_GPSUART);
-	
+	/*
   // Disable unwanted messages
 	uint8_t cmd_DisableMSG[] = {0xF0, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
   GPS_setup(0x06, 0x01, 8, cmd_DisableMSG); //
@@ -49,7 +49,7 @@ void GPS_Init()
 	
 	cmd_DisableMSG[1] = 0x41;
   GPS_setup(0x06, 0x01, 8, cmd_DisableMSG);
-    
+   */
   // Turn off Glonass
   uint8_t cmd_DisableGlonass[] = {0x00, 0x16, 0x16, 0x04, 0x00, 0x04, 0xFF, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01, 0x01, 0x03, 0x00, 0x01,
 	0x00, 0x00, 0x00, 0x05, 0x00, 0x03, 0x00, 0x01, 0x00, 0x00, 0x00, 0x06, 0x08, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00};
@@ -131,23 +131,33 @@ uint8_t GPS_send(uint8_t class, uint8_t ID, uint16_t length, uint8_t* payload, u
 {
   // Setup
   uint8_t msg[4 + length + 6];
+  char start[] = {0xB5, 0x62};
   uint16_t countToBreak;
+  uint8_t inCmd[6];
+  uint16_t inLen = 0;
   GPS_ConstructMessage(class, ID, length, payload, msg);
   
   do
   {
     // Send
-    UART_ResetRXBuffer(gpsUart);
-    UART_SendBuffer(gpsUart, msg, 4 + length + 6);
-  
+    //UART_ResetRXBuffer(gpsUart);
+    UART_SendBuffer(gpsUart, msg, 6 + length + 4);
+    
+    Wait(48000000*0.5);
     // Receive
     countToBreak = 0;
-    while (countToBreak == 0)
+    countToBreak = UART_ScanRXBuffer(gpsUart, start, 2);
+    if (countToBreak > 0)
     {
-      countToBreak = UART_ScanRXBuffer(gpsUart, 0x0A);
+      // Load the preamble
+      UART_Recieve(gpsUart, inCmd, 6);
+   
+     // Get number of bytes in payload, according to preamble
+      inLen = (uint16_t)(inCmd[4] << 8 | inCmd[5]);
+      UART_Recieve(gpsUart, answer, inLen + 2);
     }
-    UART_Recieve(gpsUart, answer, countToBreak);
-  } while ((answer[0] != 0xB5) && (answer[1] != 0x62));
+    
+  } while (inLen <= 0);
     
   // Return number of bytes read
   return countToBreak;

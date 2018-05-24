@@ -182,7 +182,7 @@ uint8_t SARA2_CheckOK(uint8_t* cmd, uint8_t cmdLength)
 	uint16_t dataLength = 0;
 	do
 	{
-		dataLength = UART_ScanRXBuffer(gsmUart, '\n');
+		dataLength = UART_ScanRXBuffer(gsmUart, '\n', 1);
 		if(dataLength == 0)
 			return 2;
 		//Test for cmd?
@@ -211,7 +211,7 @@ uint8_t SARA2_CheckOKReturnMsg(uint8_t* cmd, uint8_t cmdLength, uint8_t* respons
 	uint16_t dataLength = 0;
 	do
 	{
-		dataLength = UART_ScanRXBuffer(gsmUart, '\n'); //Insert response line into output
+		dataLength = UART_ScanRXBuffer(gsmUart, '\n', 1); //Insert response line into output
 		
 		if(dataLength == 0) //No Data
 		{

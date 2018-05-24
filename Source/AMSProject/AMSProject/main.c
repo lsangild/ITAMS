@@ -58,7 +58,7 @@ void InitInterrupts()
 void InitModules()
 {
 	GPS_Init();
-	SARAU2_Init();
+	//SARAU2_Init();
 }
 
 void LoopThrough()
@@ -136,7 +136,7 @@ int main(void)
 	//}
 	
 	//TestGPS();
-	LoopThrough();
+	//LoopThrough();
 		
 }
 

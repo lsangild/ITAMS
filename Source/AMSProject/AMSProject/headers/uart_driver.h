@@ -47,7 +47,7 @@ void UART_EnableInt(struct uart_t uartBase);
 void UART_ClearInt(struct uart_t uartBase);
 void UART_DisableInt(struct uart_t uartBase);
 void UART_ISR(struct uart_t uartBase);
-uint16_t UART_ScanRXBuffer(struct uart_t serCom, uint8_t data);
+uint16_t UART_ScanRXBuffer(struct uart_t serCom, char* data, uint8_t nBytes);
 uint16_t UART_Recieve(struct uart_t serCom, uint8_t* data, uint16_t count);
 uint8_t UART_SendBuffer(struct uart_t serCom, uint8_t* buffer, uint16_t size);
 uint8_t UART_ResetRXBuffer(struct uart_t serCom);
