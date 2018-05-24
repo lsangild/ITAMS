@@ -13,4 +13,27 @@ To fulfil the specified requirements in \nameref{chap:requirements} a module to 
 	\label{fig:BDD:unspecified}
 \end{figure}
 
+\section{GSM - AT Command Interface}
+In order to communicate with the GSM module, it is likely that an AT interface will be used, as this has become the standard way of interaction with GSM modules.
+Going through \fxnote{Reference for PDF} a range of commands has been found, that will likely be used to set up the connection and send data through UDP.
+
+\begin{table}[H]
+	\begin{tabularx}{\textwidth}{l X X}
+		\toprule
+		Command & Description & Chapter \\
+		\midrule
+		+CCID & Sim card identification. Used for checking if the sim card is recognized. & 4.12 \\
+		+CSQ & Check signal quality. & 7.2 \\
+		+COPS & Operator selection and status. & 7.4 \\
+		+CGDCONT & Connection settings and apn. & 18.4 \\
+		+CGATT & GPRS attach or detach. & 18.14 \\
+		+CGACT & Activate or deactivate context. & 18.16 \\
+		+CGREG & GPRS network registrations status & 18.27 \\
+		+USOST & Send UDP Datagram through socket. & 25.10 \\
+		\bottomrule
+	\end{tabularx}
+	\caption{Table of used AT commands.}
+	\label{tab:ATcomm}
+\end{table}
+
 \FloatBarrier
