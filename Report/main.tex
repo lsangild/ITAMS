@@ -143,6 +143,15 @@
 % Preferred over afterpage. Write \FloatBarrier where you don't want the floats to move past
 \usepackage{placeins}
 
+% Add extra spacing for tabulars
+\setlength{\extrarowheight}{5pt}
+
+% Redefine toprule and midrule to not have extra spacing above first row of table
+\let\oldtoprule\toprule
+\renewcommand*{\toprule}{\oldtoprule \\[-1.7\normalbaselineskip]}
+
+\let\oldmidrule\midrule
+\renewcommand*{\midrule}{\oldmidrule \\[-1.7\normalbaselineskip]}
 
 % ------------------------------------------------------------------------------
 % Some packages needs to be loaded later than others. These follow here.

@@ -81,7 +81,6 @@ Before this, the command CFG-PRT (Port Configuration for UART) \cite[p.~119-120]
 		\textbf{Action} & \textbf{Expected outcome} & \textbf{Outcome} \\
 		\midrule
 		Send \textit{0xB5620107000008190D0A} (UBX-NAV-PVT/Get location) from \MKR, with debugger on, to GPS module via UART with \num{9600} baud. & Receive \num{92} bytes according to \cite[p.~160-161]{NEO7_proto}. & \\
-		\midrule
 		Input coordinates achieved from above test into Google Maps. & Pin is placed at the location above command was issued at. & \\
 		\bottomrule
 	\end{tabularx}
@@ -138,12 +137,30 @@ Acceptance tests are carried out outdoors to ensure good GPS signal quality.
 		\toprule
 		\textbf{Action} & \textbf{Expected outcome} & \textbf{Outcome} \\
 		\midrule
-		Use the \MKR to save the string "Hello World" to the µSD-card via SPI.
-		Remove the µSD-card from the \SDsock socket and read it on a Linux device using \textit{dd} to a file. & The output file shows "Hello World". & \\
+		Power on \systemName. Wait \SI{5}{\minute}. & One valid location data point is shown on the server. & \\
+		Wait \SI{5}{\minute}. & The server still shows one valid data point. & \\
+		Wait \SI{15}{\minute}. & The server shows \numrange{15}{20} valid location data points. & \\
+		A GPS location from the server is put into Google Maps. & Google Maps shows the location where the \systemName was turned on. & \\
 		\bottomrule
 	\end{tabularx}
 	\caption{Acceptance test of \systemName with  \SDsock socket and µSD-card.}
 	\label{AT:withSD}
+\end{table}
+
+\begin{table}[H]
+	\centering
+	\begin{tabularx}{\textwidth}{p{4.3cm} X X}
+		\toprule
+		\textbf{Action} & \textbf{Expected outcome} & \textbf{Outcome} \\
+		\midrule
+		Power on \systemName. Wait \SI{5}{\minute}. & \numrange{1}{5} valid data points are shown on the server. & \\
+		Wait \SI{5}{\minute}. & \numrange{5}{10} valid data points are shown on the server. & \\
+		Wait \SI{15}{\minute}. & The server shows \numrange{15}{25} valid location data points. & \\
+		A GPS location from the server is put into Google Maps. & Google Maps shows the location where the \systemName was turned on. & \\
+		\bottomrule
+	\end{tabularx}
+	\caption{Acceptance test of \systemName without \SDsock socket and µSD-card.}
+	\label{AT:withoutSD}
 \end{table}
 
 \FloatBarrier
