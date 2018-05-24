@@ -23,7 +23,7 @@ uint8_t SARAU2_CREG();
 uint8_t SARAU2_SetupProfile();
 uint8_t SARAU2_OpenConnection();
 uint8_t SARAU2_OpenSocket();
-uint8_t SARAU2_SendData(char* ip, uint8_t ipLength, uint16_t port, uint8_t* data, uint16_t length);
+uint8_t SARAU2_SendData(char* ip, uint16_t port, uint8_t* data, uint16_t length);
 uint16_t SARAU2_ReadData(uint8_t* data, uint16_t readCount);
 uint8_t SARAU2_SetBaudRate();
 uint8_t SARAU2_SendCmd(struct uart_t serCom, uint8_t* buffer, uint16_t size);

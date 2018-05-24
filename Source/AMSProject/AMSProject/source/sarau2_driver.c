@@ -274,7 +274,7 @@ uint8_t SARAU2_OpenSocket()
 	return 0;
 }
 
-uint8_t SARAU2_SendData(char* ip, uint8_t ipLength, uint16_t port, uint8_t* data, uint16_t length)
+uint8_t SARAU2_SendData(char* ip, uint16_t port, uint8_t* data, uint16_t length)
 {
 	uint16_t cmdLength = sprintf((char*)cmdData,"AT+USOST=%d,%s,%d,%d@", socketID, ip, port, length);
 	
