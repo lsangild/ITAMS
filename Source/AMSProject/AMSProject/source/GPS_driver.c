@@ -158,7 +158,8 @@ uint8_t GPS_send(uint8_t class, uint8_t ID, uint16_t length, uint8_t* payload, u
     }
     
   } while (inLen <= 0);
-    
+  // FX! Combine answer and inCmd
+  
   // Return number of bytes read
   return countToBreak;
 }
