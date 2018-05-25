@@ -133,7 +133,7 @@ uint8_t GPS_send(uint8_t class, uint8_t ID, uint16_t length, uint8_t* payload, u
   uint8_t msg[4 + length + 6];
   char start[] = {0xB5, 0x62};
   uint16_t countToBreak;
-  uint8_t inCmd[6];
+  uint8_t inCmd[6] = {0};
   uint16_t inLen = 0;
   GPS_ConstructMessage(class, ID, length, payload, msg);
   
@@ -143,7 +143,7 @@ uint8_t GPS_send(uint8_t class, uint8_t ID, uint16_t length, uint8_t* payload, u
     //UART_ResetRXBuffer(gpsUart);
     UART_SendBuffer(gpsUart, msg, 6 + length + 4);
     
-    Wait(48000000*0.5);
+    Wait(48000000*1);
     // Receive
     countToBreak = 0;
     countToBreak = UART_ScanRXBuffer(gpsUart, start, 2);
@@ -153,7 +153,7 @@ uint8_t GPS_send(uint8_t class, uint8_t ID, uint16_t length, uint8_t* payload, u
       UART_Recieve(gpsUart, inCmd, 6);
    
      // Get number of bytes in payload, according to preamble
-      inLen = (uint16_t)(inCmd[4] << 8 | inCmd[5]);
+      inLen = (uint16_t)((inCmd[5] << 8) | (inCmd[4] & 0xFF));
       UART_Recieve(gpsUart, answer, inLen + 2);
     }
     
