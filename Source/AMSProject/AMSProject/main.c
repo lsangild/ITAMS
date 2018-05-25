@@ -104,11 +104,10 @@ void LoopThrough()
 void TestGPS()
 {
 	struct GPS_data_t GPSdata = GPS_Poll();
-	/* while (GPSdata.valid != 0){
+	while (GPSdata.valid != 0){
 		GPSdata = GPS_Poll();
 	}
-	writeGPStoSD(GPSdata);
-	*/
+	//writeGPStoSD(GPSdata);
 }
 
 int main(void)
@@ -135,7 +134,7 @@ int main(void)
 		//bufferSize = 1;
 	//}
 	
-	//TestGPS();
+	TestGPS();
 	//LoopThrough();
 		
 }

@@ -21,10 +21,10 @@ struct GPS_data_t{
 	uint8_t hour;
 	uint8_t minute;
 	uint8_t second;
-	uint32_t lat;
-	uint32_t lon;
-	// error = 0, means data is valid.
-	uint8_t error;
+	float lat;
+	float lon;
+	// valid = 0, means data is valid.
+	uint8_t valid;
 };
 
 union Neo7_Ack

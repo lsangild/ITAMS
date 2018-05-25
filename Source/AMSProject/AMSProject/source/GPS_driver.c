@@ -160,8 +160,8 @@ uint8_t GPS_send(uint8_t class, uint8_t ID, uint16_t length, uint8_t* payload, u
   } while (inLen <= 0);
   // FX! Combine answer and inCmd
   
-  // Return number of bytes read
-  return countToBreak;
+  // Return number of bytes in payload
+  return inLen;
 }
 
 uint8_t GPS_setup(uint8_t cmdClass, uint8_t cmdID, uint16_t length, uint8_t* payload)
@@ -185,13 +185,12 @@ struct GPS_data_t GPS_Poll()
   // Create message and send it
   uint8_t msg[GPS_POLL_MSG_LENGTH];
   uint8_t bytesReceived = GPS_send(0x01, 0x07, 0, 0x00, msg);
-    
   // Setup struct for data
   struct GPS_data_t data;
-  data.error = 1;
+  data.valid = 1;
 
-  // Copy data to GPS struct
-  if ((bytesReceived == 95) && (msg[29] > 0))
+  // If data has correct length and flag for valid fix is set, copy into struct
+  //if ((bytesReceived == 86) && ((msg[21] & 0x01) == 1))
 	{
     memcpy(&data.year, msg + 10, 2);
     memcpy(&data.month, msg + 12, 1);
@@ -201,7 +200,7 @@ struct GPS_data_t GPS_Poll()
     memcpy(&data.second, msg + 16, 1);
     memcpy(&data.lat, msg + 34, 4);
     memcpy(&data.lon, msg + 30, 4);
-    data.error = 0;
+    data.valid = 0;
   }
     
   return data;
