@@ -15,7 +15,7 @@ The GPS module is tested by connecting it to a USB to UART module and sending th
 Before this, the below command CFG-PRT (Port Configuration for UART) \cite[p.~119-120]{NEO7_proto}, must be sent to the GPS module, to only enable UBX commands in and out, and set the baud rate to \num{9600}:
 
 \noindent
-\textit{0xB5620600140001000000D00800008025000001000100000000009A790D0A}
+\textit{0xB5620600140001000000D00800008025000001000100000000009A79}
 
 \begin{table}[H]
 	\centering
@@ -23,7 +23,7 @@ Before this, the below command CFG-PRT (Port Configuration for UART) \cite[p.~11
 		\toprule
 		\textbf{Action} & \textbf{Expected outcome} & \textbf{Outcome} \\
 		\midrule
-		Send \textit{0xB5620107000008190D0A} (UBX-NAV-PVT/Get location) from computer to GPS module via USB to UART with \num{9600} baud. & Receive \SI{92}{\byte} according to \cite[p.~160-161]{NEO7_proto}. & \SI{92}{\byte} received. Output shown in \cref{app:GPScomm}. \\
+		Send \textit{0xB562010700000819} (UBX-NAV-PVT/Get location) from computer to GPS module via USB to UART with \num{9600} baud. & Receive \SI{92}{\byte} according to \cite[p.~160-161]{NEO7_proto}. & \SI{92}{\byte} received. Output shown in \cref{app:GPSmodtest}. \\
 		\midrule
 		Input coordinates achieved from above test into Google Maps. & Pin is placed at the location above command was issued at. & Pin is placed at the location the command was issued. \\
 		\bottomrule
@@ -83,8 +83,8 @@ Before this, the command CFG-PRT (Port Configuration for UART) \cite[p.~119-120]
 		\toprule
 		\textbf{Action} & \textbf{Expected outcome} & \textbf{Outcome} \\
 		\midrule
-		Send \textit{0xB5620107000008190D0A} (UBX-NAV-PVT/Get location) from \MKR, with debugger on, to GPS module via UART with \num{9600} baud. & Receive \num{92} bytes according to \cite[p.~160-161]{NEO7_proto}. & \\
-		Input coordinates achieved from above test into Google Maps. & Pin is placed at the location above command was issued at. & \\
+		Send \textit{0xB562010700000819} (UBX-NAV-PVT/Get location) from \MKR, with debugger on, to GPS module via UART with \num{9600} baud. & Receive \num{92} bytes according to \cite[p.~160-161]{NEO7_proto}. & \SI{92}{\byte} received. Output shown in \cref{app:GPSinttest}. \\
+		Input coordinates achieved from above test into Google Maps. & Pin is placed at the location above command was issued at. & Pin is placed at the location the command was issued. \\
 		\bottomrule
 	\end{tabularx}
 	\caption{Integration test of \MKR and \GPS GPS module.}
