@@ -22,7 +22,7 @@
 struct uart_t gpsUart; //Name for specifics
 struct uart_t gsmUart;
 
-
+long end = 0x20008000;
 
 void InitPorts()
 {
@@ -75,13 +75,13 @@ void LoopThrough()
 			{
 				SARAU2_Reset();
 			}
-			else if (pcData[0] == 0xAA)
+			else if (pcData[0] == 0xBB)
 			{						
 				SARAU2_OpenConnection();
 				
 				SARAU2_OpenSocket();
 				
-				SARAU2_SendData("188.114.136.5", 30000, "Hello World", 11);
+				//SARAU2_SendData("188.114.136.5", 30000, "Hello World", 11);
 			}
 			else
 			{

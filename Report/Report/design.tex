@@ -28,8 +28,11 @@ From the analysis commands was found in order to set up the module, and send dat
 		\textit{OK} \\
 		AT+CGACT & Activate the PDP context of the GPRS connection set up with the cgdcont command & AT+CGACT=1,1<CR><LF> \newline \newline
 		\textit{OK} \\
+		AT+UPSD & Internal Context& \\
+		AT+UPSDA & Activate Internal& \\
 		AT+USOCR & Set up a socket for internet protocol transmission, use 17 for UDP protocol. Returns the socket id, for future use.& AT+USOCR=17 \newline \newline
 		\textit{+USOCR: 1} \\
+		AT+USOST & Send & \\
 		\bottomrule
 	\end{tabularx}
 	\caption{Table of used AT command to control SARA-U201 module}
