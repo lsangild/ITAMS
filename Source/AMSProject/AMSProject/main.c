@@ -81,7 +81,7 @@ void LoopThrough()
 				
 				SARAU2_OpenSocket();
 				
-				SARAU2_SendData("188.114.136.5", 30000, "Hello World", 11);
+				SARAU2_SendData("188.114.136.5", 30000, (uint8_t*)"Hello World", 11);
 			}
 			else
 			{
@@ -104,9 +104,10 @@ void LoopThrough()
 void TestGPS()
 {
 	struct GPS_data_t GPSdata = GPS_Poll();
-	while (GPSdata.valid != 0){
+  while (1)
+  {
 		GPSdata = GPS_Poll();
-	}
+  }    
 	//writeGPStoSD(GPSdata);
 }
 

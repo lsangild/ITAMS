@@ -114,20 +114,17 @@ uint16_t RB_ScanBuffer(ringbuffer_t* buffer, char* data, uint8_t nBytes)
 	
 	do 
 	{
-    for (counter; counter < nBytes; counter++)
+	  if(buffer->buffer[buffer->tail+IndexOffset-loopOffset] == data[matches])
     {
-		  if(buffer->buffer[buffer->tail+IndexOffset-loopOffset+counter] == data[counter])
-      {
-			  matches += 1;
-      }
-      else
-      {
-        matches = 0;
-      }
-      if (matches == nBytes)
-      {
-        return IndexOffset + 1;
-      }
+		  matches += 1;
+    }
+    else
+    {
+      matches = 0;
+    }
+    if (matches == nBytes)
+    {
+      return IndexOffset + 1;
     }
     IndexOffset++;
 	} while (buffer->tail != buffer->tail + IndexOffset - loopOffset && buffer->tail + IndexOffset - loopOffset - 1 != buffer->head); //buffer->tail + IndexOffset + loopOffset = 0
