@@ -54,7 +54,6 @@ uint8_t SARAU2_CREG()
 		{
 			int16_t cregIndex = IndexOfString(gsmResponseBuffer, rspLength, (uint8_t*)"+CREG: 0,", 9);
 			
-			UART_SendBuffer(gpsUart, gsmResponseBuffer, rspLength);
 			if(cregIndex > 0)
 			{
 				uint8_t regStatus = gsmResponseBuffer[cregIndex+9];
@@ -276,22 +275,80 @@ uint8_t SARAU2_OpenSocket()
 
 uint8_t SARAU2_SendData(char* ip, uint16_t port, uint8_t* data, uint16_t length)
 {
-	uint16_t cmdLength = sprintf((char*)cmdData,"AT+USOST=%d,%s,%d,%d@", socketID, ip, port, length);
+	uint8_t cmdData[GSM_SEND_DATA_REQ_LENGTH];
+	uint16_t cmdLength = sprintf((char*)cmdData,"AT+USOST=%d,%s,%d,%d\r\n", socketID, ip, port, length);
 	
-	memcpy(&cmdData[cmdLength],data,length);
+	uint8_t index = 0;
+	uint8_t loopcount = 5;
+	uint8_t errorCode = 0;
 	
-	cmdData[cmdLength+length] = '\r';
-	cmdData[cmdLength+length+1] = '\n';
+	SARAU2_SendCmd(gsmUart, cmdData, cmdLength);
 	
-	SARAU2_SendCmd(gsmUart, cmdData, cmdLength+length+2);
-	if (SARA2_CheckOK(cmdData,8))
-		return 1;
+	do 
+	{
+		Wait(400000);
+		index = UART_ScanRXBuffer(gsmUart, '@');
+		if(index > 0)
+			break;
+			
+		errorCode = SARA2_CheckOK(cmdData,8);
+		if(errorCode != 2)
+			return errorCode;
+		
+		loopcount--;
+		if (loopcount == 0)
+			return 3;
+	} while (1);
+	
+	
+	SARAU2_SendCmd(gsmUart, data, length);
+	
+	errorCode = SARA2_CheckOK(cmdData,8);
+	
+	if (errorCode)
+		return errorCode;
 	else 
 		return 0;
 }	
 
 
-uint16_t SARAU2_ReadData(uint8_t* data, uint16_t readCount)
+int16_t SARAU2_ReadData(uint8_t* data, uint16_t readCount)
 {
-	return 1;	
+	uint8_t count;
+	uint8_t cmdData[16];
+	
+	uint16_t cmdLength = sprintf((char*)cmdData,"AT+USORF=%d\r\n", readCount);
+	
+	SARAU2_SendCmd(gsmUart, cmdData, cmdLength);
+	
+	Wait(400000);
+		
+	uint16_t rspLength = UART_Recieve(gsmUart, gsmResponseBuffer, GSM_UART_BUFFER_SIZE); // GSM_UART_BUFFER_SIZE Can't scan for footer, so get all data in buffer
+	
+	// FX May give issues! Can't test if returned data is OK or ERROR, That data can be in data before footer
+	if(rspLength != 0)
+	{
+		int16_t lengthIndex = IndexOfNthString(gsmResponseBuffer, rspLength, (uint8_t*)",", 1, 3)+1; //+2 from , + "
+		int16_t dataIndex = IndexOfNthString(gsmResponseBuffer, rspLength, (uint8_t*)",", 1, 4)+2; //+2 from , + "
+		if(dataIndex > 0 && lengthIndex > 0)
+		{
+			uint8_t i;
+			uint16_t dataLength = 0;
+			for (i = dataIndex-2-lengthIndex; i >= 0; i--) //Data - 2 for index of last byte in length
+			{
+				dataLength += AsciiNumToInt(gsmResponseBuffer[dataIndex-2 - i])*(10^i);
+			}
+			memcpy(data, &gsmResponseBuffer[dataIndex], dataLength);
+			
+			return dataLength;
+		}
+		else
+		{
+			return -2;
+		}	
+	}
+	else
+	{
+		return -1;
+	}
 }

@@ -81,7 +81,7 @@ void LoopThrough()
 				
 				SARAU2_OpenSocket();
 				
-				//SARAU2_SendData("188.114.136.5", 30000, "Hello World", 11);
+				SARAU2_SendData("188.114.136.5", 30000, "Hello World", 11);
 			}
 			else
 			{
