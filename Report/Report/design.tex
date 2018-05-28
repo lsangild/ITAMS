@@ -70,7 +70,25 @@ During operation \SAMD is able to maintain a given frequency through a DFLL(Digi
 	\item Edit Pre scaler for OSCM clock to obtain \SI{8}{\mega\hertz}.
 	\item Set OSC8M as source for Generic Clock Generator 3.
 \end{enumerate} 
-\subsection{BaudRate}
 
+\subsection{BaudRate}
+Both \SARA and \GPS supports the usage of auto baud rate detection, meaning that they will respond to a message in the same baud rate as they receive. But due to consistency, both modules is set to the selected baud rate during their set up configuration. 
+For simplicity a baud rate of 9600 bits/s was chosen, specification for the UART is shown in \vref{tab:BaudRate}.
+\begin{table}[H]
+	\begin{tabular}{ll}
+		\hline 
+		Baud Rate & 9600 \\ 
+		\hline 
+		Data Bits & 8 \\ 
+		\hline 
+		Parity & None \\ 
+		\hline 
+		Stop Bits & 1 \\ 
+		\hline 
+	\end{tabular}
+	\centering
+	\caption{Baud rate definition used for serial com ports on \SAMD.}
+	\label{tab:BaudRate}
+\end{table} 
 
 \FloatBarrier
