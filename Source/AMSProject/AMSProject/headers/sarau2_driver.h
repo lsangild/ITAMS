@@ -19,7 +19,8 @@ uint8_t socketID;
 
 uint8_t SARAU2_Init();
 uint8_t SARAU2_CREG();
-uint8_t SARAU2_SetupProfile();
+uint8_t SARAU2_SetupExternalContext();
+uint8_t SARAU2_SetupInternalContext();
 uint8_t SARAU2_OpenConnection();
 uint8_t SARAU2_OpenSocket();
 uint8_t SARAU2_SendData(char* ip, uint16_t port, uint8_t* data, uint16_t length);

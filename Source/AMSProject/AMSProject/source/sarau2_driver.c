@@ -90,19 +90,46 @@ uint8_t SARAU2_CREG()
 	return 0;
 }
 
-uint8_t SARAU2_SetupProfile()
+uint8_t SARAU2_SetupExternalContext()
 {
-	uint8_t* cmd = (uint8_t*)"AT+CGDCONT=1,\"IP\",\"internet\"\r\n";
-	uint8_t errorStatus = SARAU2_SendCmd(gsmUart, cmd, 11);
+	uint8_t* cmd = (uint8_t*)"AT+CGDCONT=1,\"IP\",\"www.internet.metelia.dk\"\r\n";
+	uint8_t errorStatus = SARAU2_SendCmd(gsmUart, cmd, 45);
 	if(errorStatus)//Error happened! Could not send!
 		return errorStatus;
 		
 	Wait(400000);
 	
-	errorStatus = SARA2_CheckOK(cmd, 11);
+	errorStatus = SARA2_CheckOK(cmd, 45);
 	if(errorStatus)//Error happened! Could not attach to GPRS service
 		return errorStatus;
 		
+	return 0;
+}
+
+uint8_t SARAU2_SetupInternalContext()
+{
+	uint8_t* cmd = (uint8_t*)"AT+UPSD=0,1,\"www.internet.metelia.dk\"\r\n";
+	uint8_t errorStatus = SARAU2_SendCmd(gsmUart, cmd, 39);
+	if(errorStatus)//Error happened! Could not send!
+		return errorStatus;
+	
+	Wait(400000);
+	
+	errorStatus = SARA2_CheckOK(cmd, 39);
+	if(errorStatus)//Error happened! Could not attach to GPRS service
+		return errorStatus;
+	
+	cmd = (uint8_t*)"AT+USPDA=0,3\r\n";
+	uint8_t errorStatus = SARAU2_SendCmd(gsmUart, cmd, 14);
+	if(errorStatus)//Error happened! Could not send!
+		return errorStatus;
+		
+	Wait(400000);
+	
+	errorStatus = SARA2_CheckOK(cmd, 45);
+	if(errorStatus)//Error happened! Could not attach to GPRS service
+		return errorStatus;
+	
 	return 0;
 }
 
@@ -112,7 +139,7 @@ uint8_t SARAU2_OpenConnection()
 	if(errorStatus)//Error happened! Not registered
 		return 1;
 	
-	uint8_t* cmd = (uint8_t*)"AT+CGATT?\r\n";	
+	uint8_t* cmd = (uint8_t*)"AT+CGATT=1\r\n";	
 	errorStatus = SARAU2_SendCmd(gsmUart, cmd, 11);	
 	if(errorStatus)//Error happened! Could not send!
 		return 1;
@@ -123,7 +150,7 @@ uint8_t SARAU2_OpenConnection()
 	if(errorStatus)//Error happened! Could not attach to GPRS service
 		return 1;
 		
-	errorStatus = SARAU2_SetupProfile();
+	errorStatus = SARAU2_SetupExternalContext();
 	if(errorStatus)//Error happened! Could not setup profile
 		return 1;
 	
@@ -136,6 +163,10 @@ uint8_t SARAU2_OpenConnection()
 	
 	errorStatus = SARA2_CheckOK(cmd, 11);
 	if(errorStatus)//Error happened! Could not attach to GPRS service
+		return 1;
+	
+	errorStatus = SARAU2_SetupInternalContext();
+	if(errorStatus)//Error happened! Could not setup profile
 		return 1;
 	
 	return 0;
