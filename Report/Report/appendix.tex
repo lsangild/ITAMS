@@ -48,3 +48,28 @@
 	\caption{Example of GPS answer to UBX-NAV-PVT\cite[p.~160-161]{NEO7_proto}.}
 	\label{tab:GPScomm}
 \end{table}
+
+
+\chapter{Sara-U201 Acceptance Test - Transcript}
+\fxnote{Colorize transcript?}
+\label{app:GSMcomm}
+\begin{itemize}
+	\item 25-05-2018 14:12:??.??? [TX] - AT+CGREG?<CR><LF>
+	\item 25-05-2018 14:12:??:??? [RX] - AT+CGREG=<CR> \newline <CR><LF> \newline +CGREG: 0,1<CR><LF> \newline <CR><LF> \newline OK<CR><LF>
+	\item 25-05-2018 14:12:??.??? [TX] - AT+CGDCONT=1,"IP","www.internet.mtelia.dk"<CR><LF>
+	\item 25-05-2018 14:12:??:??? [RX] - AT+CGDCONT=1,"IP","www.internet.mtelia.dk"<CR> \newline <CR><LF> \newline OK<CR><LF>
+	\item 25-05-2018 14:12:??.??? [TX] - AT+CGATT=1<CR><LF>
+	\item 25-05-2018 14:12:??:??? [RX] - AT+CGATT=1<CR> \newline <CR><LF> \newline OK<CR><LF>
+	\item 25-05-2018 14:12:??.??? [TX] - AT+CGACT=1,1<CR><LF>
+	\item 25-05-2018 14:12:??:??? [RX] - AT+CGACT=1,1<CR> \newline <CR><LF> \newline OK<CR><LF>
+	\item 25-05-2018 14:12:??.??? [TX] - AT+CGDCONT?<CR><LF>
+	\item 25-05-2018 14:12:??:??? [RX] - AT+CGDCONT?<CR> \newline <CR><LF> \newline +CGDCONT: 1, "IP", "www.internet.mtelia.dk","10.225.178.101",0,0<CR><LF> \newline <CR><LF> \newline OK<CR><LF>
+	\item 25-05-2018 14:12:42.254 [TX] - AT+UPSD=0,1,"www.internet.metelia.dk"<CR><LF>
+	\item 25-05-2018 14:12:42.375 [RX] - AT+UPSD=0,1,"www.internet.metelia.dk"<CR>\newline <CR><LF>\newline OK<CR><LF>
+	\item 25-05-2018 14:12:54.954 [TX] - AT+USPDA=0,3<CR><LF>
+	\item 25-05-2018 14:12:??:??? [RX] - AT+USPDA=0,3<CR> \newline <CR><LF>\newline OK<CR><LF>
+	\item 25-05-2018 14:12:??.??? [TX] - AT+USOCR=17<CR><LF>
+	\item 25-05-2018 14:12:??:??? [RX] - AT+USOCR=17<CR> \newline <CR><LF>\newline +USOCR: 0<CR><LF>\newline <CR><LF>\newline OK<CR><LF>
+	\item 25-05-2018 14:12:??.??? [TX] - AT+USOST=0,"188.114.136.5",30000,11,"Hello World"<CR><LF>
+	\item 25-05-2018 14:12:??:??? [RX] - AT+USOST=0,"188.114.136.5",30000,11,"Hello World"<CR>\newline <CR><LF> \newline +USOST: 0,11<CR><LF> \newline <CR><LF> \newline OK<CR><LF>
+\end{itemize}
