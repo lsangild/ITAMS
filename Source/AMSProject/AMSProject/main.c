@@ -67,7 +67,7 @@ void LoopThrough()
 	/* Replace with your application code */
 	uint8_t pcData[1024];
 	while (1)
-	{		
+	{
 		uint8_t pcCount = UART_Recieve(gpsUart, pcData, 255);
 		if(pcCount > 0)
 		{
@@ -76,19 +76,33 @@ void LoopThrough()
 				SARAU2_Reset();
 			}
 			else if (pcData[0] == 0xBB)
-			{						
-				SARAU2_OpenConnection();
+			{
+				UART_SendBuffer(gsmUart, (uint8_t*)"Sending Hello World\r\n", pcCount);
 				
-				SARAU2_OpenSocket();
-				
-				SARAU2_SendData("188.114.136.5", 30000, "Hello World", 11);
+				uint8_t error = SARAU2_OpenConnection();
+				if(!error)
+				{
+					
+					error = SARAU2_OpenSocket();
+					if(error)
+					{
+						
+						error = SARAU2_SendData("188.114.136.5", 30000, "Hello World", 11);
+						if(error)
+						{
+							uint8_t count = SARAU2_ReadData(pcData, 32);
+							if( count > 0)
+								UART_SendBuffer(gsmUart, pcData, count);
+						}
+					}
+				}
 			}
 			else
 			{
 				UART_SendBuffer(gsmUart, pcData, pcCount);
 			}
 		}
-				
+		
 		Wait(400000);
 		
 		uint8_t emCount = UART_Recieve(gsmUart, pcData, 255);
@@ -105,7 +119,7 @@ void TestGPS()
 {
 	struct GPS_data_t GPSdata = GPS_Poll();
 	/* while (GPSdata.valid != 0){
-		GPSdata = GPS_Poll();
+	GPSdata = GPS_Poll();
 	}
 	writeGPStoSD(GPSdata);
 	*/
@@ -132,12 +146,12 @@ int main(void)
 	//
 	//if(ScanString(buffer, bufferSize, needle, needleSize))
 	//{
-		//bufferSize = 1;
+	//bufferSize = 1;
 	//}
 	
 	//TestGPS();
 	LoopThrough();
-		
+	
 }
 
 void SERCOM5_Handler()

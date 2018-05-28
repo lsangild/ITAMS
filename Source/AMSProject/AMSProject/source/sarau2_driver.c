@@ -120,7 +120,7 @@ uint8_t SARAU2_SetupInternalContext()
 		return errorStatus;
 	
 	cmd = (uint8_t*)"AT+USPDA=0,3\r\n";
-	uint8_t errorStatus = SARAU2_SendCmd(gsmUart, cmd, 14);
+	errorStatus = SARAU2_SendCmd(gsmUart, cmd, 14);
 	if(errorStatus)//Error happened! Could not send!
 		return errorStatus;
 		
