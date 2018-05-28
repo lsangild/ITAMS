@@ -15,21 +15,29 @@ From the analysis commands was found in order to set up the module, and send dat
 \begin{table}
 	\begin{tabularx}{\textwidth}{p{2cm} X X}
 		\toprule
-		Name & Description & Command and \textit{Response} \\
+		Name & Description & Command and expected \textit{Response} \\
 		\midrule
 		AT+CCID & Used to get the sim card ID, which could be used as identifier for the transmissions. & AT+CCID<CR><LF> \newline \newline
 		\textit{+CCID:<CCID><CR><LF>} \\ 
 		AT+CREG? & Used to read the current network status. Returns CREG: 0,? \newline
 		The return value ? describes if the modem is registered on the network. & AT+CREG?<CR><LF> \newline \newline
 		\textit{+CREG: 0,<state><CR><LF>} \\
-		AT+CGDCONT & Set up IP and APN for the network provider for the sim card & AT+CGDCONT=1,"IP","internet" \newline \newline
+		AT+CGDCONT & Set up IP and APN for the network provider for the sim card & AT+CGDCONT=1,"IP","www.internet.mtelia.dk" \newline \newline
 		\textit{OK} \\
 		AT+CGATT & Attaches the GSM to the GPRS service before proceeding to activate internet protocols & AT+CGATT=1<CR><LF> \newline \newline
 		\textit{OK} \\
 		AT+CGACT & Activate the PDP context of the GPRS connection set up with the cgdcont command & AT+CGACT=1,1<CR><LF> \newline \newline
 		\textit{OK} \\
+		AT+UPSD & Set up APN for the internal context in the module, necessary for creating data sockets& AT+UPSD=0,1,"www.internet.mtelia.dk" \newline \newline
+		\textit{OK} \\
+		AT+UPSDA & Activate the internal context and allow the module to bin sockets for data transfer & AT+UPSDA=0,3,"www.internet.mtelia.dk"\newline \newline
+		\textit{OK} \\
 		AT+USOCR & Set up a socket for internet protocol transmission, use 17 for UDP protocol. Returns the socket id, for future use.& AT+USOCR=17 \newline \newline
 		\textit{+USOCR: 1} \\
+		AT+USOST & Send LENGTH amount of bytes through bound SOCK, to the stated IP on PORT. \SARA will respond with @ after which the binary data can be send& AT+USOST=0,"IP",PORT,LENGTH \newline \newline
+		\textit{@} \newline \newline
+		Hello World \newline \newline
+		\textit{OK} \\
 		\bottomrule
 	\end{tabularx}
 	\caption{Table of used AT command to control SARA-U201 module}
@@ -47,6 +55,21 @@ Baud rates available: \num{4800}, \num{9600}, \num{19200}, \num{38400}, \num{576
 
 \section{UART - \SAMD}
 
+\subsection{Clock}
+The \SAMD is able to run with a clock frequency of \SI{48}{\mega\hertz}, but will during start up this is not active. It is therefore necessary to active not just the clock called \textit{DFLL48M} but also set up the reference clock, the generic clocks and the required multiplexers.\newline
+
+
+During operation \SAMD is able to maintain a given frequency through a DFLL(Digital Frequency Lock Loop). This system relies on a secondary clock as a reference source for the main clock. In the following list it is showned in what order the clocks and registers should be activated in order to get a stable system.
+
+\begin{enumerate}
+	\item Enable XOSC32K clock (External on-board 32.768Hz oscillator). Used as reference for \SI{48}{\mega\hertz} clock.
+	\item Set Generic Clock Generator (1) source to XOSC32K.
+	\item Active and set reference for Generic Clock Multiplexer.
+	\item Enable DFLL48M.
+	\item Set DFLL48M as source for Generic Clock Generator 0.
+	\item Edit Pre scaler for OSCM clock to obtain \SI{8}{\mega\hertz}.
+	\item Set OSC8M as source for Generic Clock Generator 3.
+\end{enumerate} 
 \subsection{BaudRate}
 
 

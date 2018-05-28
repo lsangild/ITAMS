@@ -47,7 +47,7 @@ Where \textit{SOCK} is decided by the \SARA module, and \textit{IP} and \textit{
 		\toprule
 		\textbf{Action} & \textbf{Expected outcome} & \textbf{Outcome} \\
 		\midrule
-		Send test command, via a USB to UART module, to \MKR coded with an Arduino Sketch forwarding the input to the \SARA. & The server log shows "Hello World". & \\
+		Send test command, via a USB to UART module, to \MKR coded with an Arduino Sketch forwarding the input to the \SARA. & The server log shows "Hello World". & Success. For more information see transcript in appendix \fxnote{Reference}\\
 		\bottomrule
 	\end{tabularx}
 	\caption{Module test of \SARA GSM module.}
@@ -92,11 +92,15 @@ Before this, the command CFG-PRT (Port Configuration for UART) \cite[p.~119-120]
 \end{table}
 
 \subsection{\MKR with \SARA}
-The used test command is
+The used test command is \fxnote{Lasse aesthetics!}
 \begin{quote}
 	AT+USOST=\textit{SOCK},"\textit{IP}",\textit{PORT},11@Hello World
 \end{quote}
-Where \textit{SOCK} is decided by the \SARA module, and \textit{IP} and \textit{PORT} are decided by the server.
+Where \textit{SOCK} is decided by the \SARA module, and \textit{IP} and \textit{PORT} are decided by the server.\newline \newline
+After the module responds with @ the data is sent
+\begin{quote}
+	Hello World
+\end{quote}
 
 \begin{table}[H]
 	\centering
@@ -104,7 +108,7 @@ Where \textit{SOCK} is decided by the \SARA module, and \textit{IP} and \textit{
 		\toprule
 		\textbf{Action} & \textbf{Expected outcome} & \textbf{Outcome} \\
 		\midrule
-		Send test command from \MKR to \SARA via UART. & The server log shows "Hello World". & Success. See transcript appendix. \fxnote{Reference}\\
+		Send test command from \MKR to \SARA via UART. & The server log shows "Hello World". & \\
 		\bottomrule
 	\end{tabularx}
 	\caption{Integration test of \MKR and \SARA GSM module.}
