@@ -24,7 +24,7 @@ uint8_t RB_PushByte(uint8_t data, ringbuffer_t* buffer);
 void	RB_ClearBuffer(ringbuffer_t* buffer);
 uint8_t RB_IsEmpty(ringbuffer_t* buffer);
 uint8_t RB_IsFull(ringbuffer_t* buffer);
-uint16_t RB_ScanBuffer(ringbuffer_t* buffer, char data);
+uint16_t RB_ScanBuffer(ringbuffer_t* buffer, char* data, uint8_t nBytes);
 
 
 

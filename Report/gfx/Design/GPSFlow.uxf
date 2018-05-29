@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.2">
+  <zoom_level>10</zoom_level>
+  <element>
+    <type>com.baselet.element.old.allinone.ActivityDiagramText</type>
+    <coordinates>
+      <x>10</x>
+      <y>0</y>
+      <w>511</w>
+      <h>719</h>
+    </coordinates>
+    <panel_attributes>title:GPS_send()
+Start
+calcChecksum()
+constructMessage()
+While[NACK]
+	GPS_send()
+	findHeader()
+	Read 6 bytes (Sync, CLASS, ID, Length)
+	If
+		[ACK]
+		End
+
+		[Nack]
+
+		[GPS_data]
+		readPayload()
+		saveToSD()
+		End</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.baselet.element.old.allinone.ActivityDiagramText</type>
+    <coordinates>
+      <x>590</x>
+      <y>30</y>
+      <w>361</w>
+      <h>489</h>
+    </coordinates>
+    <panel_attributes>title:findHeader()
+Start
+UART_receive()
+While[Not found]
+	Find Header index
+While[Header not at zero]
+	popByte()
+End</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>

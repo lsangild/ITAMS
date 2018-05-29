@@ -84,6 +84,42 @@ int16_t IndexOfString(uint8_t* buffer, uint16_t bufferSize, uint8_t* needle, uin
 }
 
 //////////////////////////////////////////////////////////////////////////
+// Scan array of chars for containing string. Returns index of first symbol in nth needle or -1
+//////////////////////////////////////////////////////////////////////////
+int16_t IndexOfNthString(uint8_t* buffer, uint16_t bufferSize, uint8_t* needle, uint8_t needleSize, uint8_t n)
+{
+	uint16_t i;
+	uint8_t matched = 0;
+	for (i = 0; i < bufferSize; i++)
+	{
+		if(buffer[i] == needle[matched])
+		{
+			matched++;
+			if (matched == needleSize)
+			{
+				if(n == 1)
+					return i - needleSize + 1; // Return index of first symbol in needle
+				else
+					return i + 1 + IndexOfNthString(&buffer[i+1], bufferSize, needle, needleSize, n-1);
+			}
+		}
+		else
+		{
+			matched = 0;
+		}
+	}
+	return -1;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// Convert ascii decimal number to int
+//////////////////////////////////////////////////////////////////////////
+uint8_t AsciiNumToInt(uint8_t asciiByte)
+{
+	return asciiByte - 0x30; //Ascii number 0x30 -> 0x39;
+}
+
+//////////////////////////////////////////////////////////////////////////
 //Primitive wait method, runs for "tick" loop
 //////////////////////////////////////////////////////////////////////////
 void Wait(uint32_t ticks)

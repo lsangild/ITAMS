@@ -10,6 +10,7 @@
 #include "hw_defines.h"
 #include <string.h>
 #include "stdio.h"
+#include "stdlib.h"
 
 extern struct uart_t gpsUart;
 
@@ -54,7 +55,6 @@ uint8_t SARAU2_CREG()
 		{
 			int16_t cregIndex = IndexOfString(gsmResponseBuffer, rspLength, (uint8_t*)"+CREG: 0,", 9);
 			
-			UART_SendBuffer(gpsUart, gsmResponseBuffer, rspLength);
 			if(cregIndex > 0)
 			{
 				uint8_t regStatus = gsmResponseBuffer[cregIndex+9];
@@ -91,19 +91,57 @@ uint8_t SARAU2_CREG()
 	return 0;
 }
 
-uint8_t SARAU2_SetupProfile()
+uint8_t SARAU2_SetupExternalContext()
 {
-	uint8_t* cmd = (uint8_t*)"AT+CGDCONT=1,\"IP\",\"internet\"\r\n";
-	uint8_t errorStatus = SARAU2_SendCmd(gsmUart, cmd, 11);
+	uint8_t* cmd = (uint8_t*)"AT+CGDCONT=1,\"IP\",\"www.internet.metelia.dk\"\r\n";
+	uint8_t errorStatus = SARAU2_SendCmd(gsmUart, cmd, 45);
 	if(errorStatus)//Error happened! Could not send!
 		return errorStatus;
 		
-	Wait(400000);
+	Wait(4000000);
 	
-	errorStatus = SARA2_CheckOK(cmd, 11);
+	errorStatus = SARA2_CheckOK(cmd, 45);
 	if(errorStatus)//Error happened! Could not attach to GPRS service
 		return errorStatus;
 		
+	return 0;
+}
+
+uint8_t SARAU2_SetupInternalContext()
+{
+	uint8_t* cmd = (uint8_t*)"AT+UPSD=0,1,\"www.internet.metelia.dk\"\r\n";
+	uint8_t errorStatus = SARAU2_SendCmd(gsmUart, cmd, 39);
+	if(errorStatus)//Error happened! Could not send!
+		return errorStatus;
+	
+	Wait(4000000);
+	
+	errorStatus = SARA2_CheckOK(cmd, 39);
+	if(errorStatus)//Error happened! Could not attach to GPRS service
+		return errorStatus;
+	
+	cmd = (uint8_t*)"AT+UPSDA=0,3\r\n";
+	errorStatus = SARAU2_SendCmd(gsmUart, cmd, 14);
+	if(errorStatus)//Error happened! Could not send!
+		return errorStatus;
+		
+	Wait(4000000);
+	
+	uint8_t loopCount = 10;
+	do
+	{
+		Wait(40000000);
+		
+		errorStatus = SARA2_CheckOK(cmd, 11);
+		if(!errorStatus)//Error happened! Could not attach to GPRS service
+			break;
+		
+		loopCount--;
+	} while (loopCount!= 0);
+	
+	if(errorStatus)//Error happened! Could not attach to GPRS service
+		return errorStatus;
+	
 	return 0;
 }
 
@@ -113,18 +151,18 @@ uint8_t SARAU2_OpenConnection()
 	if(errorStatus)//Error happened! Not registered
 		return 1;
 	
-	uint8_t* cmd = (uint8_t*)"AT+CGATT?\r\n";	
+	uint8_t* cmd = (uint8_t*)"AT+CGATT=1\r\n";	
 	errorStatus = SARAU2_SendCmd(gsmUart, cmd, 11);	
 	if(errorStatus)//Error happened! Could not send!
 		return 1;
 	
-	Wait(400000);
+	Wait(4000000);
 	
 	errorStatus = SARA2_CheckOK(cmd, 11);	
 	if(errorStatus)//Error happened! Could not attach to GPRS service
 		return 1;
 		
-	errorStatus = SARAU2_SetupProfile();
+	errorStatus = SARAU2_SetupExternalContext();
 	if(errorStatus)//Error happened! Could not setup profile
 		return 1;
 	
@@ -133,10 +171,23 @@ uint8_t SARAU2_OpenConnection()
 	if(errorStatus)//Error happened! Could not send!
 		return 1;
 	
-	Wait(400000);
+	uint8_t loopCount = 10;
+	do 
+	{
+		Wait(40000000);
+		
+		errorStatus = SARA2_CheckOK(cmd, 11);
+		if(!errorStatus)//Error happened! Could not attach to GPRS service
+			break;	
+			
+		loopCount--;
+	} while (loopCount!= 0);
 	
-	errorStatus = SARA2_CheckOK(cmd, 11);
 	if(errorStatus)//Error happened! Could not attach to GPRS service
+		return 1;
+	
+	errorStatus = SARAU2_SetupInternalContext();
+	if(errorStatus)//Error happened! Could not setup profile
 		return 1;
 	
 	return 0;
@@ -182,7 +233,7 @@ uint8_t SARA2_CheckOK(uint8_t* cmd, uint8_t cmdLength)
 	uint16_t dataLength = 0;
 	do
 	{
-		dataLength = UART_ScanRXBuffer(gsmUart, '\n');
+		dataLength = UART_ScanRXBuffer(gsmUart, "\n", 1);
 		if(dataLength == 0)
 			return 2;
 		//Test for cmd?
@@ -211,7 +262,7 @@ uint8_t SARA2_CheckOKReturnMsg(uint8_t* cmd, uint8_t cmdLength, uint8_t* respons
 	uint16_t dataLength = 0;
 	do
 	{
-		dataLength = UART_ScanRXBuffer(gsmUart, '\n'); //Insert response line into output
+		dataLength = UART_ScanRXBuffer(gsmUart, "\n", 1); //Insert response line into output
 		
 		if(dataLength == 0) //No Data
 		{
@@ -258,12 +309,14 @@ uint8_t SARAU2_OpenSocket()
 	SARAU2_SendCmd(gsmUart, cmd, 13);
 	uint16_t rspLength;
 	
+	Wait(400000);
+	
 	uint8_t rsp = SARA2_CheckOKReturnMsg(cmd, 10, gsmResponseBuffer, &rspLength);
 	if(rsp == 0)
 	{
-		int16_t cregIndex = IndexOfString(gsmResponseBuffer, rspLength, (uint8_t*)"+USOCR: ", 9);
+		int16_t cregIndex = IndexOfString(gsmResponseBuffer, rspLength, (uint8_t*)"+USOCR: ", 8);
 		if(cregIndex > 0)
-			socketID = gsmResponseBuffer[cregIndex+8]-0x30;		
+			socketID = AsciiNumToInt(gsmResponseBuffer[cregIndex+8]);		
 		else
 			return 1;
 	}
@@ -276,22 +329,84 @@ uint8_t SARAU2_OpenSocket()
 
 uint8_t SARAU2_SendData(char* ip, uint16_t port, uint8_t* data, uint16_t length)
 {
-	uint16_t cmdLength = 0; //sprintf((char*)cmdData,"AT+USOST=%d,%s,%d,%d@", socketID, ip, port, length);
+	uint8_t cmdData[GSM_SEND_DATA_REQ_LENGTH];
+	uint16_t cmdLength = sprintf((char*)cmdData,"AT+USOST=%d,\"%s\",%d,%d\r\n", socketID, ip, port, length);
 	
-	memcpy(&cmdData[cmdLength],data,length);
+	uint8_t index = 0;
+	uint8_t loopcount = 5;
+	uint8_t errorCode = 0;
 	
-	cmdData[cmdLength+length] = '\r';
-	cmdData[cmdLength+length+1] = '\n';
+	SARAU2_SendCmd(gsmUart, cmdData, cmdLength);
 	
-	SARAU2_SendCmd(gsmUart, cmdData, cmdLength+length+2);
-	if (SARA2_CheckOK(cmdData,8))
-		return 1;
+	do 
+	{
+		Wait(400000);
+		index = UART_ScanRXBuffer(gsmUart, "@", 1);
+		if(index > 0)
+			break;
+			
+		errorCode = SARA2_CheckOK(cmdData,8);
+		if(errorCode != 2)
+			return errorCode;
+		
+		loopcount--;
+		if (loopcount == 0)
+			return 3;
+	} while (1);
+	
+	
+	SARAU2_SendCmd(gsmUart, data, length);
+	
+	Wait(4000000);
+	
+	errorCode = SARA2_CheckOK(cmdData,8);
+	
+	if (errorCode)
+		return errorCode;
 	else 
 		return 0;
 }	
 
 
-uint16_t SARAU2_ReadData(uint8_t* data, uint16_t readCount)
+int16_t SARAU2_ReadData(uint8_t* data, uint16_t readCount)
 {
-	return 1;	
+	uint8_t cmdData[18];
+	
+	uint16_t cmdLength = sprintf((char*)cmdData,"AT+USORF=%d,%d\r\n", socketID,readCount);
+	
+	SARAU2_SendCmd(gsmUart, cmdData, cmdLength);
+	
+	Wait(400000);
+		
+	uint16_t rspLength = UART_Recieve(gsmUart, gsmResponseBuffer, GSM_UART_BUFFER_SIZE); // GSM_UART_BUFFER_SIZE Can't scan for footer, so get all data in buffer
+	
+	// FX May give issues! Can't test if returned data is OK or ERROR, That data can be in data before footer
+	if(rspLength != 0)
+	{
+		int16_t lengthIndex = IndexOfNthString(gsmResponseBuffer, rspLength, (uint8_t*)",", 1, 4); 
+		int16_t dataIndex = IndexOfNthString(gsmResponseBuffer, rspLength, (uint8_t*)",", 1, 5); 
+		if(dataIndex > 0 && lengthIndex > 0)
+		{
+			lengthIndex +=1; //Offset after ,
+			dataIndex +=2; //Offset after , +
+			uint8_t lengthSize = dataIndex-lengthIndex-2;
+			char lengthStr[lengthSize+1];
+			lengthStr[lengthSize-1] = 0;
+				
+			memcpy(lengthStr, &gsmResponseBuffer[lengthIndex], lengthSize);
+			
+			uint16_t dataLength = atoi(lengthStr);
+			memcpy(data, &gsmResponseBuffer[dataIndex], dataLength);
+			
+			return dataLength;
+		}
+		else
+		{
+			return -2;
+		}	
+	}
+	else
+	{
+		return -1;
+	}
 }

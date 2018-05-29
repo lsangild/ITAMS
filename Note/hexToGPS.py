@@ -9,10 +9,13 @@ Created on Thu May 24 22:15:52 2018
 long = 0x285a1406;
 lat  = 0xb8dd7a21;
 
-# Flib bytes
-long = 0x06145a28;
-lat  = 0x217addb8;
+# Flip bytes
+long = 0x061327f8;
+lat  = 0x217b356f;
 
-# Flip to big endian
+# Scale
 long = long*10**(-7);
 lat = lat*10**(-7);
+
+print(long);
+print(lat);
