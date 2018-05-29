@@ -10,6 +10,7 @@
 #include "hw_defines.h"
 #include <string.h>
 #include "stdio.h"
+#include "stdlib.h"
 
 extern struct uart_t gpsUart;
 
@@ -97,7 +98,7 @@ uint8_t SARAU2_SetupExternalContext()
 	if(errorStatus)//Error happened! Could not send!
 		return errorStatus;
 		
-	Wait(400000);
+	Wait(4000000);
 	
 	errorStatus = SARA2_CheckOK(cmd, 45);
 	if(errorStatus)//Error happened! Could not attach to GPRS service
@@ -113,20 +114,31 @@ uint8_t SARAU2_SetupInternalContext()
 	if(errorStatus)//Error happened! Could not send!
 		return errorStatus;
 	
-	Wait(400000);
+	Wait(4000000);
 	
 	errorStatus = SARA2_CheckOK(cmd, 39);
 	if(errorStatus)//Error happened! Could not attach to GPRS service
 		return errorStatus;
 	
-	cmd = (uint8_t*)"AT+USPDA=0,3\r\n";
+	cmd = (uint8_t*)"AT+UPSDA=0,3\r\n";
 	errorStatus = SARAU2_SendCmd(gsmUart, cmd, 14);
 	if(errorStatus)//Error happened! Could not send!
 		return errorStatus;
 		
-	Wait(400000);
+	Wait(4000000);
 	
-	errorStatus = SARA2_CheckOK(cmd, 45);
+	uint8_t loopCount = 10;
+	do
+	{
+		Wait(40000000);
+		
+		errorStatus = SARA2_CheckOK(cmd, 11);
+		if(!errorStatus)//Error happened! Could not attach to GPRS service
+			break;
+		
+		loopCount--;
+	} while (loopCount!= 0);
+	
 	if(errorStatus)//Error happened! Could not attach to GPRS service
 		return errorStatus;
 	
@@ -144,7 +156,7 @@ uint8_t SARAU2_OpenConnection()
 	if(errorStatus)//Error happened! Could not send!
 		return 1;
 	
-	Wait(400000);
+	Wait(4000000);
 	
 	errorStatus = SARA2_CheckOK(cmd, 11);	
 	if(errorStatus)//Error happened! Could not attach to GPRS service
@@ -159,9 +171,18 @@ uint8_t SARAU2_OpenConnection()
 	if(errorStatus)//Error happened! Could not send!
 		return 1;
 	
-	Wait(400000);
+	uint8_t loopCount = 10;
+	do 
+	{
+		Wait(40000000);
+		
+		errorStatus = SARA2_CheckOK(cmd, 11);
+		if(!errorStatus)//Error happened! Could not attach to GPRS service
+			break;	
+			
+		loopCount--;
+	} while (loopCount!= 0);
 	
-	errorStatus = SARA2_CheckOK(cmd, 11);
 	if(errorStatus)//Error happened! Could not attach to GPRS service
 		return 1;
 	
@@ -288,12 +309,14 @@ uint8_t SARAU2_OpenSocket()
 	SARAU2_SendCmd(gsmUart, cmd, 13);
 	uint16_t rspLength;
 	
+	Wait(400000);
+	
 	uint8_t rsp = SARA2_CheckOKReturnMsg(cmd, 10, gsmResponseBuffer, &rspLength);
 	if(rsp == 0)
 	{
-		int16_t cregIndex = IndexOfString(gsmResponseBuffer, rspLength, (uint8_t*)"+USOCR: ", 9);
+		int16_t cregIndex = IndexOfString(gsmResponseBuffer, rspLength, (uint8_t*)"+USOCR: ", 8);
 		if(cregIndex > 0)
-			socketID = gsmResponseBuffer[cregIndex+8]-0x30;		
+			socketID = AsciiNumToInt(gsmResponseBuffer[cregIndex+8]);		
 		else
 			return 1;
 	}
@@ -307,13 +330,14 @@ uint8_t SARAU2_OpenSocket()
 uint8_t SARAU2_SendData(char* ip, uint16_t port, uint8_t* data, uint16_t length)
 {
 	uint8_t cmdData[GSM_SEND_DATA_REQ_LENGTH];
-	uint16_t cmdLength = sprintf((char*)cmdData,"AT+USOST=%d,%s,%d,%d\r\n", socketID, ip, port, length);
+	uint16_t cmdLength = sprintf((char*)cmdData,"AT+USOST=%d,\"%s\",%d,%d\r\n", socketID, ip, port, length);
 	
 	uint8_t index = 0;
 	uint8_t loopcount = 5;
 	uint8_t errorCode = 0;
 	
 	SARAU2_SendCmd(gsmUart, cmdData, cmdLength);
+	SARAU2_SendCmd(gpsUart, cmdData, cmdLength);
 	
 	do 
 	{
@@ -334,6 +358,8 @@ uint8_t SARAU2_SendData(char* ip, uint16_t port, uint8_t* data, uint16_t length)
 	
 	SARAU2_SendCmd(gsmUart, data, length);
 	
+	Wait(4000000);
+	
 	errorCode = SARA2_CheckOK(cmdData,8);
 	
 	if (errorCode)
@@ -345,10 +371,9 @@ uint8_t SARAU2_SendData(char* ip, uint16_t port, uint8_t* data, uint16_t length)
 
 int16_t SARAU2_ReadData(uint8_t* data, uint16_t readCount)
 {
-	uint8_t count;
-	uint8_t cmdData[16];
+	uint8_t cmdData[18];
 	
-	uint16_t cmdLength = sprintf((char*)cmdData,"AT+USORF=%d\r\n", readCount);
+	uint16_t cmdLength = sprintf((char*)cmdData,"AT+USORF=%d,%d\r\n", socketID,readCount);
 	
 	SARAU2_SendCmd(gsmUart, cmdData, cmdLength);
 	
@@ -359,16 +384,19 @@ int16_t SARAU2_ReadData(uint8_t* data, uint16_t readCount)
 	// FX May give issues! Can't test if returned data is OK or ERROR, That data can be in data before footer
 	if(rspLength != 0)
 	{
-		int16_t lengthIndex = IndexOfNthString(gsmResponseBuffer, rspLength, (uint8_t*)",", 1, 3)+1; //+2 from , + "
-		int16_t dataIndex = IndexOfNthString(gsmResponseBuffer, rspLength, (uint8_t*)",", 1, 4)+2; //+2 from , + "
+		int16_t lengthIndex = IndexOfNthString(gsmResponseBuffer, rspLength, (uint8_t*)",", 1, 4); 
+		int16_t dataIndex = IndexOfNthString(gsmResponseBuffer, rspLength, (uint8_t*)",", 1, 5); 
 		if(dataIndex > 0 && lengthIndex > 0)
 		{
-			uint8_t i;
-			uint16_t dataLength = 0;
-			for (i = dataIndex-2-lengthIndex; i >= 0; i--) //Data - 2 for index of last byte in length
-			{
-				dataLength += AsciiNumToInt(gsmResponseBuffer[dataIndex-2 - i])*(10^i);
-			}
+			lengthIndex +=1; //Offset after ,
+			dataIndex +=2; //Offset after , +
+			uint8_t lengthSize = dataIndex-lengthIndex-2;
+			char lengthStr[lengthSize+1];
+			lengthStr[lengthSize-1] = 0;
+				
+			memcpy(lengthStr, &gsmResponseBuffer[lengthIndex], lengthSize);
+			
+			uint16_t dataLength = atoi(lengthStr);
 			memcpy(data, &gsmResponseBuffer[dataIndex], dataLength);
 			
 			return dataLength;

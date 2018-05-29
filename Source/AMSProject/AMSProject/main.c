@@ -55,10 +55,21 @@ void InitInterrupts()
 	NVIC_EnableIRQ(SERCOM2_IRQn);
 }
 
-void InitModules()
+uint8_t InitModules()
 {
 	GPS_Init();
 	SARAU2_Init();
+	
+	uint8_t error = SARAU2_OpenConnection();
+	if(!error)
+	{					
+		error = SARAU2_OpenSocket();
+		if(!error)
+		{
+			return 0;
+		}
+	}	
+	return 1;
 }
 
 void LoopThrough()
@@ -84,19 +95,30 @@ void LoopThrough()
 				{
 					
 					error = SARAU2_OpenSocket();
-					if(error)
+					if(!error)
 					{
 						
 						error = SARAU2_SendData("188.114.136.5", 30000, "Hello World", 11);
-						if(error)
+						if(!error)
 						{
-							uint8_t count = SARAU2_ReadData(pcData, 32);
+							int16_t count = SARAU2_ReadData(pcData, 32);
 							if( count > 0)
 								UART_SendBuffer(gsmUart, pcData, count);
 						}
 					}
 				}
 			}
+			else if (pcData[0] == 0xCC)
+			{
+				uint8_t error = SARAU2_SendData("188.114.136.5", 30000, "Hello World", 11);
+				if(!error)
+				{
+					int16_t count = SARAU2_ReadData(pcData, 32);
+					if( count > 0)
+						UART_SendBuffer(gsmUart, pcData, count);
+				}
+			
+		}
 			else
 			{
 				UART_SendBuffer(gsmUart, pcData, pcCount);
@@ -136,7 +158,10 @@ int main(void)
 	
 	InitInterrupts();
 	
-	InitModules();
+	if(!InitModules())
+	{
+		
+	}
 	
 	
 	//uint8_t buffer[] = "TestDataOK\n";
@@ -150,7 +175,7 @@ int main(void)
 	//}
 	
 	//TestGPS();
-	LoopThrough();
+	//LoopThrough();
 	
 }
 

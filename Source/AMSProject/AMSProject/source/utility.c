@@ -100,7 +100,7 @@ int16_t IndexOfNthString(uint8_t* buffer, uint16_t bufferSize, uint8_t* needle, 
 				if(n == 1)
 					return i - needleSize + 1; // Return index of first symbol in needle
 				else
-					return IndexOfNthString(buffer, bufferSize, needle, needleSize, n-1);
+					return i + 1 + IndexOfNthString(&buffer[i+1], bufferSize, needle, needleSize, n-1);
 			}
 		}
 		else
