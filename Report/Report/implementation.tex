@@ -82,9 +82,10 @@ Trying to understand the UART set up better, an example from Arduino sketches wa
 Following will be a example of fractional baud value calculation.
 
 \[BAUD = \frac{f_{ref}}{S*f_{BAUD}} - \frac{FP}{8}\]
-\begin{verbatim}	
-uint32_t baudTimes8 = (SystemCoreClock * 8) / (16 * uartSetup.baudRate); uint16_t baudReg = ((baudTimes8 \% 8)<<13) | (baudTimes8 >> 3);	
-\end{verbatim}
+\begin{minted}[breaklines]{c}
+uint32_t baudTimes8 = (SystemCoreClock * 8) / (16 * uartSetup.baudRate);
+uint16_t baudReg = ((baudTimes8 \% 8) << 13) | (baudTimes8 >> 3);	
+\end{minted}
 \fxnote{Code Sample: }
 
 \fxnote{GPS: e.g. Power saving settings}
