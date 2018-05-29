@@ -104,29 +104,29 @@ uint8_t RB_IsFull(ringbuffer_t* buffer)
 
 uint16_t RB_ScanBuffer(ringbuffer_t* buffer, char* data, uint8_t nBytes)
 {
-  uint8_t counter = 0;
+	uint8_t counter = 0;
 	if(RB_IsEmpty(buffer))
 		return 0;
-		
+	
 	uint16_t IndexOffset = 0;
 	uint16_t loopOffset = 0;
-  uint8_t matches = 0;
+	uint8_t matches = 0;
 	
 	do 
 	{
-	  if(buffer->buffer[buffer->tail+IndexOffset-loopOffset] == data[matches])
-    {
-		  matches += 1;
-    }
-    else
-    {
-      matches = 0;
-    }
-    if (matches == nBytes)
-    {
-      return IndexOffset + 1;
-    }
-    IndexOffset++;
+		if(buffer->buffer[buffer->tail+IndexOffset-loopOffset] == data[matches])
+		{
+			matches += 1;
+		}
+		else
+		{
+			matches = 0;
+		}
+		if (matches == nBytes)
+		{
+			return IndexOffset + 1;
+		}
+		IndexOffset++;
 	} while (buffer->tail != buffer->tail + IndexOffset - loopOffset && buffer->tail + IndexOffset - loopOffset - 1 != buffer->head); //buffer->tail + IndexOffset + loopOffset = 0
 	 
 	return 0;

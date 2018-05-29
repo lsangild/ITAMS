@@ -24,7 +24,7 @@ void GPS_Init()
 	
   // Setup µC UART part
 	UART_Init(gpsUart, gpsSetup);
-  
+	
   // Set GPS UART to 9600 only UBX
   uint8_t cmd_GPSUART[] = {0x01, 0x00, 0x00, 0x00, 0xD0, 0x08, 0x00, 0x00, 0x80, 0x25, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00};
   GPS_setup(0x06, 0x00, 20, cmd_GPSUART);
@@ -133,7 +133,7 @@ uint8_t GPS_send(uint8_t class, uint8_t ID, uint16_t length, uint8_t* payload, u
   char header[] = {0xB5, 0x62};
   int16_t startIndex;
   uint16_t inLen = 0;
-  struct Neo7_MsgHeader* answerHeader = (void*)answer; //Set a struct at the beginning of answer to read header.
+  struct Neo7_MsgHeader* answerHeader = (void*) answer; //Set a struct at the beginning of answer to read header.
   GPS_ConstructMessage(class, ID, length, payload, msg);
   
   do

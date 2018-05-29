@@ -60,15 +60,14 @@ uint8_t InitModules()
 	GPS_Init();
 	SARAU2_Init();
 	
-	uint8_t error = SARAU2_OpenConnection();
+	while(SARAU2_OpenConnection()){}
+	
+	uint8_t error = SARAU2_OpenSocket();
 	if(!error)
-	{					
-		error = SARAU2_OpenSocket();
-		if(!error)
-		{
-			return 0;
-		}
-	}	
+	{
+		return 0;
+	}
+		
 	return 1;
 }
 
@@ -98,7 +97,7 @@ void LoopThrough()
 					if(!error)
 					{
 						
-						error = SARAU2_SendData("188.114.136.5", 30000, "Hello World", 11);
+						error = SARAU2_SendData("188.114.136.5", 30000, (uint8_t*)"Hello World", 11);
 						if(!error)
 						{
 							int16_t count = SARAU2_ReadData(pcData, 32);
@@ -110,7 +109,7 @@ void LoopThrough()
 			}
 			else if (pcData[0] == 0xCC)
 			{
-				uint8_t error = SARAU2_SendData("188.114.136.5", 30000, "Hello World", 11);
+				uint8_t error = SARAU2_SendData("188.114.136.5", 30000, (uint8_t*)"Hello World", 11);
 				if(!error)
 				{
 					int16_t count = SARAU2_ReadData(pcData, 32);
@@ -142,6 +141,8 @@ void TestGPS()
 	struct GPS_data_t GPSdata = GPS_Poll();
 	while (GPSdata.valid != 0){
 		GPSdata = GPS_Poll();
+	}
+	SARAU2_SendData("188.114.136.5", 30000, (uint8_t*) &GPSdata, sizeof(struct GPS_data_t));
 	//writeGPStoSD(GPSdata);
 }
 
@@ -158,13 +159,9 @@ int main(void)
 	
 	if(!InitModules())
 	{
-		
-	}
-	
-
-	//TestGPS();
-	//LoopThrough();
-	
+		//LoopThrough();
+		TestGPS();
+	}	
 }
 
 void SERCOM5_Handler()

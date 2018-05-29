@@ -233,7 +233,7 @@ uint8_t SARA2_CheckOK(uint8_t* cmd, uint8_t cmdLength)
 	uint16_t dataLength = 0;
 	do
 	{
-		dataLength = UART_ScanRXBuffer(gsmUart, '\n', 1);
+		dataLength = UART_ScanRXBuffer(gsmUart, "\n", 1);
 		if(dataLength == 0)
 			return 2;
 		//Test for cmd?
@@ -262,7 +262,7 @@ uint8_t SARA2_CheckOKReturnMsg(uint8_t* cmd, uint8_t cmdLength, uint8_t* respons
 	uint16_t dataLength = 0;
 	do
 	{
-		dataLength = UART_ScanRXBuffer(gsmUart, '\n', 1); //Insert response line into output
+		dataLength = UART_ScanRXBuffer(gsmUart, "\n", 1); //Insert response line into output
 		
 		if(dataLength == 0) //No Data
 		{
@@ -337,12 +337,11 @@ uint8_t SARAU2_SendData(char* ip, uint16_t port, uint8_t* data, uint16_t length)
 	uint8_t errorCode = 0;
 	
 	SARAU2_SendCmd(gsmUart, cmdData, cmdLength);
-	SARAU2_SendCmd(gpsUart, cmdData, cmdLength);
 	
 	do 
 	{
 		Wait(400000);
-		index = UART_ScanRXBuffer(gsmUart, '@');
+		index = UART_ScanRXBuffer(gsmUart, "@", 1);
 		if(index > 0)
 			break;
 			
