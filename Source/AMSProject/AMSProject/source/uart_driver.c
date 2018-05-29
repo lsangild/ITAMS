@@ -224,9 +224,9 @@ uint8_t UART_SendBuffer(struct uart_t serCom, uint8_t* buffer, uint16_t size)
 		memcpy(serComTransfers[serCom.sercom].buffer, buffer, size);
 		serComTransfers[serCom.sercom].isEmpty = (uint8_t)0;
 		SETREG8(serCom.baseAddress + SERCOM_USART_DATA_OFFSET, serComTransfers[serCom.sercom].buffer[serComTransfers[serCom.sercom].index++]);
-		return 1;
+		return 0;
 	}
-	return 0;
+	return 1;
 }
 
 uint8_t UART_ResetRXBuffer(struct uart_t uartBase)

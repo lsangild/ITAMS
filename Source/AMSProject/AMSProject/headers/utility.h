@@ -26,6 +26,8 @@ uint32_t READREG32(uint32_t address);
 
 uint8_t ScanString(uint8_t* buffer, uint16_t bufferSize, uint8_t* needle, uint8_t needleSize);
 int16_t IndexOfString(uint8_t* buffer, uint16_t bufferSize, uint8_t* needle, uint8_t needleSize);
+int16_t IndexOfNthString(uint8_t* buffer, uint16_t bufferSize, uint8_t* needle, uint8_t needleSize, uint8_t n);
+uint8_t AsciiNumToInt(uint8_t asciiByte);
 
 void Wait(uint32_t ticks);
 
