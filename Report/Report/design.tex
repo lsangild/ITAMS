@@ -57,7 +57,7 @@ As is standard with GSM modules, the \SARA employs a AT command interface throug
 	\label{fig:SD:configConnection}
 \end{figure}
 
-Noteworthy in \cref{fig:SD:configConnection} is, the calls between SARAU2_Driver and SARA U201 should be seen as UART transmissions, and not direct method calls. The transmission is facilitated by the an UART driver. 
+Noteworthy in \cref{fig:SD:configConnection} is, the calls between SARAU2 Driver and SARA U201 should be seen as UART transmissions, and not direct method calls. The transmission is facilitated by the an UART driver. 
 
 \section{GPS - \GPS}
 
@@ -69,9 +69,11 @@ Noteworthy in \cref{fig:SD:configConnection} is, the calls between SARAU2_Driver
 \section{SD-card - \SDsock}
 
 
-\section{UART - \SAMD}
+\section{Controller - \SAMD}
 
+\subsection{Interrupt based Communication}
 
+\fxnote{Describe non blocking send and receive methods}
 
 \subsection{BaudRate}
 Both \SARA and \GPS supports the usage of auto baud rate detection, meaning that they will respond to a message in the same baud rate as they receive.
