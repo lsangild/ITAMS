@@ -22,7 +22,7 @@ namespace UDPAckServer
                 IPEndPoint sender = new IPEndPoint(IPAddress.Any, 0);
                 data = listener.Receive(ref sender);
 
-                Console.WriteLine(Encoding.ASCII.GetString(data, 0, data.Length));
+                Console.WriteLine(BitConverter.ToString(data, 0, data.Length));
 
                 string msg = "Ack + " + data.Length;
                 byte[] msgData = Encoding.ASCII.GetBytes(msg);
