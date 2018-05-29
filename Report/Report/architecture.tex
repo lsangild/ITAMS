@@ -40,6 +40,7 @@ The \GPS UART uses the frame 8N1, with a baud rate of \num{4800}, \num{9600}, \n
 For easy debugging, the \num{9600} baud rate is chosen.
 
 \subsubsection{Protocol}
+\label{sec:UBXprot}
 The chosen GPS module is able to communicate using NMEA, UBX or RTCM protocol \cite{NEO7_proto}.
 It has been chosen to communicate using the UBX protocol, as it, asides from the GPS location data, can be used to set up the modules internal workings, such as power save mode.
 
@@ -85,6 +86,7 @@ Answers are available from the later performed tests, but can be seen in \cref{a
 \subsection{\SAMD and \SARA}
 \fxnote{AT commands here!}
 
+\fxnote{Allocation Diagram?}
 
 
 \FloatBarrier
