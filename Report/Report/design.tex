@@ -10,40 +10,9 @@
 Communication with the \SARA module, will be done through a UART connection. The module contains an ability to auto detect the baud rate of the first transmission, and use this baud rate to respond. In addition it supports the standard baud rates:\num{1200}, \num{2400}, \num{4800}, \num{9600}, \num{19200}, \num{38400} and 5 higher rates. \num{9600} baud was selected with focus on stability and the ability to debug the communications.
 
 \subsection{AT Command Interface}
-From the analysis commands was found in order to set up the module, and send data through. The following section will run through the most important commands, what they do and how they are used. The commands are used in the order of table \fxnote{Reference}
+From the analysis commands was found in order to set up the module, and send data through. The following section will run through the most important commands, what they do and how they are used. The commands are used in the order of table \fxnote{CHANGE TO sequence or float diagram with ref to app}
 
-\begin{table}
-	\begin{tabularx}{\textwidth}{p{2cm} X X}
-		\toprule
-		Name & Description & Command and expected \textit{Response} \\
-		\midrule
-		AT+CCID & Used to get the sim card ID, which could be used as identifier for the transmissions. & AT+CCID<CR><LF> \newline \newline
-		\textit{+CCID:<CCID><CR><LF>} \\ 
-		AT+CREG? & Used to read the current network status. Returns CREG: 0,? \newline
-		The return value ? describes if the modem is registered on the network. & AT+CREG?<CR><LF> \newline \newline
-		\textit{+CREG: 0,<state><CR><LF>} \\
-		AT+CGDCONT & Set up IP and APN for the network provider for the sim card & AT+CGDCONT=1,"IP","www.internet.mtelia.dk" \newline \newline
-		\textit{OK} \\
-		AT+CGATT & Attaches the GSM to the GPRS service before proceeding to activate internet protocols & AT+CGATT=1<CR><LF> \newline \newline
-		\textit{OK} \\
-		AT+CGACT & Activate the PDP context of the GPRS connection set up with the cgdcont command & AT+CGACT=1,1<CR><LF> \newline \newline
-		\textit{OK} \\
-		AT+UPSD & Set up APN for the internal context in the module, necessary for creating data sockets& AT+UPSD=0,1,"www.internet.mtelia.dk" \newline \newline
-		\textit{OK} \\
-		AT+UPSDA & Activate the internal context and allow the module to bin sockets for data transfer & AT+UPSDA=0,3,"www.internet.mtelia.dk"\newline \newline
-		\textit{OK} \\
-		AT+USOCR & Set up a socket for internet protocol transmission, use 17 for UDP protocol. Returns the socket id, for future use.& AT+USOCR=17 \newline \newline
-		\textit{+USOCR: 1} \\
-		AT+USOST & Send LENGTH amount of bytes through bound SOCK, to the stated IP on PORT. \SARA will respond with @ after which the binary data can be send& AT+USOST=0,"IP",PORT,LENGTH \newline \newline
-		\textit{@} \newline \newline
-		Hello World \newline \newline
-		\textit{OK} \\
-		\bottomrule
-	\end{tabularx}
-	\caption{Table of used AT command to control SARA-U201 module}
-	\label{tab:ATDesc}
-\end{table}
-\fxnote{Check \url{http://m2msupport.net/m2msupport/data-call-at-commands-to-set-up-gprsedgeumtslte-data-call/} for expected behaviour.}
+
 
 \section{GPS - \GPS}
 Baud rates available: \num{4800}, \num{9600}, \num{19200}, \num{38400}, \num{57600} and \num{115200}. With frame 8N1.

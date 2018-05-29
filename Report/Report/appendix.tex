@@ -3,6 +3,44 @@
 \appendix
 \setlength{\beforechapskip}{-15ex}
 
+\chapter{SARA-U201 AT communication}
+\label{app:sarau201}
+\begin{table}[H]
+	\addtolength{\leftskip} {-0.15\textwidth}
+	\addtolength{\rightskip}{-0.15\textwidth}
+	\begin{tabularx}{1.3\textwidth}{p{2cm} X X}
+		\toprule
+		Name & Description & Command and expected \textit{Response} \\
+		\midrule
+		AT+CCID & Used to get the sim card ID, which could be used as identifier for the transmissions. & AT+CCID \newline \newline
+		\textit{+CCID:<CCID>} \\ 
+		AT+CREG? & Used to read the current network status. Returns CREG: 0,? \newline
+		The return value ? describes if the modem is registered on the network. & AT+CREG? \newline \newline
+		\textit{+CREG: 0,<state>} \\
+		AT+CGDCONT & Set up IP and APN for the network provider for the sim card & AT+CGDCONT=1,"IP","www.internet.mtelia.dk" \newline \newline
+		\textit{OK} \\
+		AT+CGATT & Attaches the GSM to the GPRS service before proceeding to activate internet protocols & AT+CGATT=1 \newline \newline
+		\textit{OK} \\
+		AT+CGACT & Activate the PDP context of the GPRS connection set up with the cgdcont command & AT+CGACT=1,1 \newline \newline
+		\textit{OK} \\
+		AT+UPSD & Set up APN for the internal context in the module, necessary for creating data sockets& AT+UPSD=0,1,"www.internet.mtelia.dk" \newline \newline
+		\textit{OK} \\
+		AT+UPSDA & Activate the internal context and allow the module to bin sockets for data transfer & AT+UPSDA=0,3,"www.internet.mtelia.dk"\newline \newline
+		\textit{OK} \\
+		AT+USOCR & Set up a socket for internet protocol transmission, use 17 for UDP protocol. Returns the socket id, for future use.& AT+USOCR=17 \newline \newline
+		\textit{+USOCR: 1} \\
+		AT+USOST & Send LENGTH amount of bytes through bound SOCK, to the stated IP on PORT. \SARA will respond with @ after which the binary data can be send& AT+USOST=0,"IP",PORT,LENGTH \newline \newline
+		\textit{@} \newline
+		Hello World \newline
+		\textit{OK} \\
+		\bottomrule
+	\end{tabularx}
+	\caption{Table of used AT command to control SARA-U201 module. Each command must be ended with <CR><LF>}
+	\label{tab:ATDesc}
+\end{table}
+
+\fxnote{Check \url{http://m2msupport.net/m2msupport/data-call-at-commands-to-set-up-gprsedgeumtslte-data-call/} for expected behaviour.}
+
 \chapter{GPS module test data}
 \label{app:GPSmodtest}
 \begin{table}[H]

@@ -20,7 +20,7 @@ They communicate using one of the two UARTs available on the \SAMD ARM µC.
 The \SAMD ARM µC uses \SI{< 15}{\milli\ampere} while running \cite[p.~791-794]{SAMD21}.
 The SARA-U201 uses a maximum of \SI{1.9}{\ampere} when transferring data \cite[p.~26]{SARAU201} and less than \SI{1}{\milli\ampere} when in power-saving mode. Alternatively the known Arduino MEGA2560 with an external GSM module could be used, but this has been opted against in favour of using an integrated low power module.
 
-\paragraph{Locator} has to be able to locate itself globally. This is solved using a GNSS module, u-blox NEO-7M-0-000, from Embedded Stock.
+\paragraph{Locator} has to be able to locate itself globally. This is solved using the GNSS module, u-blox NEO-7M-0-000, from Embedded Stock.
 The module is able to use GPS (with SBAS and QZSS) and GLONASS, allowing for global positioning.
 It also uses a maximum of \SI{67}{\milli\ampere} \cite[p.~17]{NEO7_Data} and is the low power version from the NEO-7 series.
 The breakout-board exposes the UART connection, which can be used to communicate with the controller.
@@ -34,13 +34,6 @@ With the chosen components, the interfaces between them can be identified, as sh
 The communication between the \SAMD and the \SARA module are presoldered to UART.
 The breakout-board for the \GPS exposes UART ports and the SD-card breakout-board exposes SPI ports.
 Connection to the server is chosen to be UDP with an acknowledge from the server.
-
-\begin{figure}
-	\centering
-	\includegraphics[width=0.7\linewidth]{gfx/Design/Overall_IBD.pdf}
-	\caption{}
-	\label{fig:IBD:overall}
-\end{figure}
 
 \section{Sequence Diagrams}
 The sequence diagrams (SD) below are meant to give an understanding of the inner workings of the \systemName.
