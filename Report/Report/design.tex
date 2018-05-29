@@ -45,6 +45,7 @@ When the data has been sent the GSM is put back to sleep.
 Communication with the \SARA module, will be done through a UART connection. The module contains an ability to auto detect the baud rate of the first transmission, and use this baud rate to respond. In addition it supports the standard baud rates: \num{1200}, \num{2400}, \num{4800}, \num{9600}, \num{19200}, \num{38400} and 5 higher rates. \num{9600} baud was selected with focus on stability and the ability to debug the communications.
 
 \subsection{AT Command Interface}
+\fxnote{Describe - Sequence of AT commands}
 From the analysis commands was found in order to set up the module, and send data through. The following section will run through the most important commands, what they do and how they are used. The commands are used in the order of table \fxnote{CHANGE TO sequence or float diagram with ref to \cref{app:sarau201}}
 
 \section{GPS - \GPS}
@@ -60,6 +61,7 @@ From the analysis commands was found in order to set up the module, and send dat
 \section{UART - \SAMD}
 
 \subsection{Clock}
+\fxnote{Delvis Implementation}
 The \SAMD is able to run with a clock frequency of \SI{48}{\mega\hertz}, but will during start up this is not active.
 It is therefore necessary to activate not just the clock called \textit{DFLL48M} but also set up the reference clock, the generic clocks and the required multiplexers.
 
