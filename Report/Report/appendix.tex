@@ -1,7 +1,10 @@
+% !TEX root = ../main.tex
+% !TEX spellcheck = en_GB
 \appendix
+\setlength{\beforechapskip}{-15ex}
 
-\chapter{GPS communication}
-\label{app:GPScomm}
+\chapter{GPS module test data}
+\label{app:GPSmodtest}
 \begin{table}[H]
 	\centering
 	\setlength{\extrarowheight}{0pt}
@@ -26,8 +29,8 @@
 		flags & 01 & Valid fix \\
 		reserved0 & 0a & \\
 		numSV & 06 & Number of satellites: 6 \\
-		lon & 285a1406 & Longitude: 10.1997096 \\
-		lat & b8dd7a21 & Latitude: 56.170027999999995 \\
+		lon & 285a1406 & Longitude: \num{10.1997096} \\
+		lat & b8dd7a21 & Latitude: \num{56.170027999999995} \\
 		height & 2e560100 & \\
 		hMSL & 36af0100 & \\
 		hAcc & 0d260000 & \\
@@ -45,10 +48,59 @@
 		checksum & b05c & \\
 		\bottomrule
 	\end{tabularx}
-	\caption{Example of GPS answer to UBX-NAV-PVT\cite[p.~160-161]{NEO7_proto}.}
-	\label{tab:GPScomm}
+	\caption{Example of GPS answer to UBX-NAV-PVT\cite[p.~160-161]{NEO7_proto}. Hex code is little endian.}
+	\label{tab:GPSmoddata}
 \end{table}
 
+\chapter{GPS integration test data}
+\label{app:GPSinttest}
+
+\begin{table}[H]
+	\centering
+	\setlength{\extrarowheight}{0pt}
+	\begin{tabularx}{0.8\textwidth}{p{2cm} p{2cm} X}
+		\oldtoprule
+		\textbf{Desc} & \textbf{Code (hex)} & \textbf{Meaning} \\
+		\oldmidrule
+		Header & b562 & \\
+		ID & 0107 & \\
+		Length & 5400 & \\
+		iTOW & f074381c & GPS Time of week \\
+		year & e207 & 2018 \\
+		month & 05 & May \\
+		day & 19 & 19th \\
+		hour & 0b & 10 \\
+		min & 1e & 30 \\
+		sec & 44 & 47 \\
+		valid & 07 & Fully Resolved \\
+		tAcc & 2d000000 & \\
+		nano & 604b0400 & \\
+		fixType & 03 & 3D-fix \\
+		flags & 01 & Valid fix \\
+		reserved0 & 0a & \\
+		numSV & 08 & Number of satellites: 8 \\
+		lon & 20241306 & Longitude: \num{10.191772799999999} \\
+		lat & 65377b21 & Latitude: \num{56.1723237} \\
+		height & 28da0100 & \\
+		hMSL & 25330100 & \\
+		hAcc & d3390000 & \\
+		vAcc & 53450000 & \\
+		velN & 1a000000 & \\
+		velE & 7b000000 & \\
+		velD & 11010000 & \\
+		gSpeed & 7e000000 & \\
+		heading & 59c38901 & \\
+		sAcc & 52030000 & \\
+		headingAcc & 4c8f3c00 & \\
+		pDOP & e100 & \\
+		reserved2 & 0000 & \\
+		reserved3 & 84d3a437 & \\
+		checksum & 0020 & \\
+		\bottomrule
+	\end{tabularx}
+	\caption{Example of GPS answer to UBX-NAV-PVT\cite[p.~160-161]{NEO7_proto}. Read from debugger. Hex code is little endian.}
+	\label{tab:GPSintdata}
+\end{table}
 
 \chapter{Sara-U201 Acceptance Test - Transcript}
 \fxnote{Colorize transcript?}

@@ -13,6 +13,12 @@
 #include "uart_driver.h"
 #include "sw_defines.h"
 
+#define HEADER_SIZE 2
+#define CMD_SIZE 2
+#define LENGTH_SIZE 2
+#define PREPAYLOAD_SIZE (HEADER_SIZE + CMD_SIZE + LENGTH_SIZE)
+#define CHECK_SIZE 2
+
 // Data structure containing received GPS data
 struct GPS_data_t{
 	uint16_t year;
@@ -23,8 +29,8 @@ struct GPS_data_t{
 	uint8_t second;
 	uint32_t lat;
 	uint32_t lon;
-	// error = 0, means data is valid.
-	uint8_t error;
+	// valid = 0, means data is valid.
+	uint8_t valid;
 };
 
 union Neo7_Ack
@@ -37,12 +43,17 @@ union Neo7_Ack
 	uint8_t cmdID;
 	uint8_t ck_a;
 	uint8_t ck_b;
-	uint8_t	footer[2];
 	} Neo7_Ack_T;
 	
-	uint8_t data[12];
+	uint8_t data[GPS_ACK_LENGTH];
 };
 
+struct Neo7_MsgHeader{
+  uint8_t header[2];
+  uint8_t class;
+  uint8_t ID;
+  uint16_t lenght;
+};
 
 extern struct uart_t gpsUart;
 uint8_t gpsRxBuffer[GPS_UART_BUFFER_SIZE];

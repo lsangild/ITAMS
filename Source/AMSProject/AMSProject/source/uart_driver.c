@@ -192,9 +192,9 @@ void UART_ISR(struct uart_t uartBase)
 	}
 }
 
-uint16_t UART_ScanRXBuffer(struct uart_t serCom, uint8_t data)
+uint16_t UART_ScanRXBuffer(struct uart_t serCom, char* data, uint8_t nBytes)
 {
-	return RB_ScanBuffer(&serComRxBuffers[serCom.sercom], data);
+	return RB_ScanBuffer(&serComRxBuffers[serCom.sercom], data, nBytes);
 }
 
 uint16_t UART_Recieve(struct uart_t serCom, uint8_t* data, uint16_t count)
