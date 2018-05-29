@@ -92,15 +92,11 @@ Before this, the command CFG-PRT (Port Configuration for UART) \cite[p.~119-120]
 \end{table}
 
 \subsection{\MKR with \SARA}
-The used test command is \fxnote{Lasse aesthetics!}
+The used test command is
 \begin{quote}
-	AT+USOST=\textit{SOCK},"\textit{IP}",\textit{PORT},11@Hello World
+	AT+USOST=\textit{SOCK},"\textit{IP}",\textit{PORT},11
 \end{quote}
-Where \textit{SOCK} is decided by the \SARA module, and \textit{IP} and \textit{PORT} are decided by the server.\newline \newline
-After the module responds with @ the data is sent
-\begin{quote}
-	Hello World
-\end{quote}
+Where \textit{SOCK} is decided by the \SARA module, and \textit{IP} and \textit{PORT} are decided by the server.
 
 \begin{table}[H]
 	\centering
@@ -108,7 +104,9 @@ After the module responds with @ the data is sent
 		\toprule
 		\textbf{Action} & \textbf{Expected outcome} & \textbf{Outcome} \\
 		\midrule
-		Send test command from \MKR to \SARA via UART. & The server log shows "Hello World". & \\
+		Send test command from \MKR to \SARA via UART. &
+		\SARA responds with @. Debugger shows @ in buffer & \\
+		Send "Hello World" & The server log shows "Hello World". & \\
 		\bottomrule
 	\end{tabularx}
 	\caption{Integration test of \MKR and \SARA GSM module.}
@@ -116,7 +114,8 @@ After the module responds with @ the data is sent
 \end{table}
 
 \subsection{\MKR with \SDsock and µSD-card}
-Before the test, use \textit{dd} on a Linux device, to clear the µSD-card with \mintinline{bash}{dd if=/dev/zero of=/dev/sdX}, where sdX is the µSD-card.
+Before the test, use \textit{dd} on a Linux device, to clear the µSD-card with\\
+\mintinline{bash}{dd if=/dev/zero of=/dev/sdX}, where sdX is the µSD-card.
 
 \begin{table}[H]
 	\centering

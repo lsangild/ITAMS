@@ -8,12 +8,12 @@ This section describes the overall system architecture, the chosen platforms for
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\linewidth]{gfx/Design/Overall_IBD.pdf}
-	\caption{Overall BDD, including types of connection.}
-	\label{fig:BDD:overall}
+	\caption{Overall IBD, including types of connection.}
+	\label{fig:IBD:overall}
 \end{figure}
 
 \section{Choice of components}
-The physical entities necessary to solve the tasks of the blocks identified in \cref{fig:BDD:unspecified} are as follows:
+The physical entities necessary to solve the tasks of the blocks identified in \cref{fig:IBD:unspecified} are as follows:
 
 \paragraph{Controller and Data transfer} can be performed by a single module. The \MKR which includes a \SAMD ARM µC and a u-blox SARA-U201-03B-00 High Speed Packet Access (HSPA) with 2G fallback module for internet access\cite{MKRGSM1400}.
 They communicate using one of the two UARTs available on the \SAMD ARM µC.
@@ -85,38 +85,6 @@ Answers are available from the later performed tests, but can be seen in \cref{a
 \subsection{\SAMD and \SARA}
 \fxnote{AT commands here!}
 
-\section{Sequence Diagrams}
-The sequence diagrams (SD) below are meant to give an understanding of the inner workings of the \systemName.
 
-Initiation of the system is described in \cref{fig:SD:init}.
-It shows the µC initiating itself and then the external blocks.
-The GPS module is polled until it returns valid location data. The time returned from the GPS allows the µC know the time and run the desired actions either at certain intervals, e.g. every 10 minutes, or at specific times, e.g. every full hour.
-When valid data has been retrieved it is saved to the SD card and the GPS and GSM modules are put to sleep to conserve power.
-The acquisition of GPS location is shown in \cref{fig:SD:getlocation}.
-The GPS starts in a sleep mode and is awoken to find it's location.
-When the location is found and is valid, the GPS is put back to sleep and the data is saved tot he SD card.
-To upload data to the server, the GSM must be awoken and data must be retrieved from the SD card, as shown in \cref{fig:SD:upload}.
-When the data has been sent the GSM is put back to sleep.
-
-\begin{figure}
-	\centering
-	\includegraphics[width=0.7\linewidth]{gfx/Design/SD_init.pdf}
-	\caption{Sequence diagram showing the initiation of the system.}
-	\label{fig:SD:init}
-\end{figure}
-
-\begin{figure}
-	\centering
-	\includegraphics[width=0.7\linewidth]{gfx/Design/SD_getLocation.pdf}
-	\caption{Sequence diagram describing the acquisition and saving of GPS data.}
-	\label{fig:SD:getlocation}
-\end{figure}
-
-\begin{figure}
-	\centering
-	\includegraphics[width=0.7\linewidth]{gfx/Design/SD_Upload.pdf}
-	\caption{Sequence diagram showing the process of sending saved data to the server.}
-	\label{fig:SD:upload}
-\end{figure}
 
 \FloatBarrier
