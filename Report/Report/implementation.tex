@@ -2,7 +2,7 @@
 % !TEX spellcheck = en_GB
 
 \chapter{Implementation}
-\subsection{Clock}
+\section{Clock}
 The \SAMD is able to run with a clock frequency of \SI{48}{\mega\hertz}, but will during start up, this is not active. It is therefore necessary to activate not just the clock called \textit{DFLL48M} but also set up the reference clock, the generic clocks and the required multiplexers.
 
 During operation \SAMD is able to maintain a given frequency through a DFLL(Digital Frequency Lock Loop).

@@ -48,7 +48,16 @@ Communication with the \SARA module, will be done through a UART connection. The
 
 \subsection{AT Command Interface}
 \fxnote{Describe - Sequence of AT commands}
-As is standard with GSM modules, the \SARA employs a AT command interface through the UART. This means that commands and data to and from the module is in ascii, and that commands is started by "+AT" and end with <CR><LF>. In this application a limited amount of commands is necessary, the flow and functionality is display on \fxnote{FIGUR Ref}. The commands used are described, in appendix table. \fxnote{Insert GSMSetupConnection.pdf and ref to Appendix}
+As is standard with GSM modules, the \SARA employs a AT command interface through the UART. This means that commands and data to and from the module is in ascii, and that commands is started by "+AT" and end with <CR><LF>. In this application a limited amount of commands is necessary, the command flow is displayed on \cref{fig:SD:configConnection}. While functionality of the commands used are described, in appendix table. \fxnote{Trim Sequence diagram and ref to Appendix}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.9\linewidth]{gfx/Design/GSMSetupConnection.pdf}
+	\caption{Sequence diagram of AT configuration of \SARA module.}
+	\label{fig:SD:configConnection}
+\end{figure}
+
+Noteworthy in \cref{fig:SD:configConnection} is, the calls between SARAU2_Driver and SARA U201 should be seen as UART transmissions, and not direct method calls. The transmission is facilitated by the an UART driver. 
 
 \section{GPS - \GPS}
 

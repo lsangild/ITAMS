@@ -338,6 +338,9 @@ uint8_t SARAU2_SendData(char* ip, uint16_t port, uint8_t* data, uint16_t length)
 	
 	SARAU2_SendCmd(gsmUart, cmdData, cmdLength);
 	
+	//Debug for Integration Test
+	//SARAU2_SendCmd(gpsUart, cmdData, cmdLength);
+	
 	do 
 	{
 		Wait(400000);
@@ -354,6 +357,10 @@ uint8_t SARAU2_SendData(char* ip, uint16_t port, uint8_t* data, uint16_t length)
 			return 3;
 	} while (1);
 	
+	//Debug for Integration Test
+	//uint8_t* debugData[128];
+	//uint16_t count = UART_Recieve(gsmUart,debugData,128);
+	//SARAU2_SendCmd(gpsUart, debugData, count);
 	
 	SARAU2_SendCmd(gsmUart, data, length);
 	
