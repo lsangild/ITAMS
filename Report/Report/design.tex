@@ -7,17 +7,17 @@
 \section{GSM - \SARA}
 
 \subsection{UART}
-Communication with the \SARA module, will be done through a UART connection. The module contains an ability to auto detect the baud rate of the first transmission, and use this baud rate to respond. In addition it supports the standard baud rates:\num{1200}, \num{2400}, \num{4800}, \num{9600}, \num{19200}, \num{38400} and 5 higher rates. \num{9600} baud was selected with focus on stability and the ability to debug the communications.
+Communication with the \SARA module, will be done through a UART connection. The module contains an ability to auto detect the baud rate of the first transmission, and use this baud rate to respond. In addition it supports the standard baud rates: \num{1200}, \num{2400}, \num{4800}, \num{9600}, \num{19200}, \num{38400} and 5 higher rates. \num{9600} baud was selected with focus on stability and the ability to debug the communications.
 
 \subsection{AT Command Interface}
-From the analysis commands was found in order to set up the module, and send data through. The following section will run through the most important commands, what they do and how they are used. The commands are used in the order of table \fxnote{CHANGE TO sequence or float diagram with ref to app}
-
-
+From the analysis commands was found in order to set up the module, and send data through. The following section will run through the most important commands, what they do and how they are used. The commands are used in the order of table \fxnote{CHANGE TO sequence or float diagram with ref to \cref{app:sarau201}}
 
 \section{GPS - \GPS}
-Baud rates available: \num{4800}, \num{9600}, \num{19200}, \num{38400}, \num{57600} and \num{115200}. With frame 8N1.
 
-\cite{MKRSchem}
+
+
+
+\fxnote{Choices + Diagrammer}
 
 \section{SD-card - \SDsock}
 
@@ -25,10 +25,12 @@ Baud rates available: \num{4800}, \num{9600}, \num{19200}, \num{38400}, \num{576
 \section{UART - \SAMD}
 
 \subsection{Clock}
-The \SAMD is able to run with a clock frequency of \SI{48}{\mega\hertz}, but will during start up this is not active. It is therefore necessary to active not just the clock called \textit{DFLL48M} but also set up the reference clock, the generic clocks and the required multiplexers.\newline
+The \SAMD is able to run with a clock frequency of \SI{48}{\mega\hertz}, but will during start up this is not active.
+It is therefore necessary to activate not just the clock called \textit{DFLL48M} but also set up the reference clock, the generic clocks and the required multiplexers.
 
-
-During operation \SAMD is able to maintain a given frequency through a DFLL(Digital Frequency Lock Loop). This system relies on a secondary clock as a reference source for the main clock. In the following list it is showned in what order the clocks and registers should be activated in order to get a stable system.
+During operation \SAMD is able to maintain a given frequency through a DFLL(Digital Frequency Lock Loop).
+This system relies on a secondary clock as a reference source for the main clock.
+In the following list it is shown in what order the clocks and registers should be activated in order to get a stable system.
 
 \begin{enumerate}
 	\item Enable XOSC32K clock (External on-board 32.768Hz oscillator). Used as reference for \SI{48}{\mega\hertz} clock.
@@ -41,8 +43,10 @@ During operation \SAMD is able to maintain a given frequency through a DFLL(Digi
 \end{enumerate} 
 
 \subsection{BaudRate}
-Both \SARA and \GPS supports the usage of auto baud rate detection, meaning that they will respond to a message in the same baud rate as they receive. But due to consistency, both modules is set to the selected baud rate during their set up configuration. 
-For simplicity a baud rate of 9600 bits/s was chosen, specification for the UART is shown in \vref{tab:BaudRate}.
+Both \SARA and \GPS supports the usage of auto baud rate detection, meaning that they will respond to a message in the same baud rate as they receive.
+But due to consistency, both modules is set to the selected baud rate during their set up configuration. 
+For simplicity a baud rate of \SI[per-mode = symbol]{9600}{\bit\per\second} was chosen, specification for the UART is shown in \vref{tab:BaudRate}.
+
 \begin{table}[H]
 	\begin{tabular}{ll}
 		\hline 
