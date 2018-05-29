@@ -26,7 +26,7 @@ Going through the data sheet of \SAMD the group was not able to configure the cl
 \subsection{UART: Configuration}
 This section will describe the processor specific register configuration needed to get the UART running on \SAMD. Mainly there are two control register A and B, but also a register for interrupt enabling and one for baud rate.
 
-\fxnote{Tables ?}X contains values for data, if a bit or variable is not mentioned in the table, assume it to be 0.
+\cref{tab:UARTControlA}, \cref{tab:UARTControlB} and \cref{tab:UARTINTENSET} contains values for data, if a bit or variable is not mentioned in the table, assume it to be 0.
 
 \begin{table}[H]
 	\begin{tabular}{lr}
@@ -84,9 +84,12 @@ Trying to understand the UART set up better, an example from Arduino sketches wa
 Following will be a example of fractional baud value calculation.
 
 \[BAUD = \frac{f_{ref}}{S*f_{BAUD}} - \frac{FP}{8}\]
-\begin{verbatim}	
-uint32_t baudTimes8 = (SystemCoreClock * 8) / (16 * uartSetup.baudRate); uint16_t baudReg = ((baudTimes8 \% 8)<<13) | (baudTimes8 >> 3);	
-\end{verbatim}
+
+Following snippet is taken from baud calculation in the program source code:
+\begin{minted}[breaklines]{c}
+uint32_t baudTimes8 = (SystemCoreClock * 8) / (16 * uartSetup.baudRate);
+uint16_t baudReg = ((baudTimes8 % 8) << 13) | (baudTimes8 >> 3);	
+\end{minted}
 \fxnote{Code Sample: }
 
 \fxnote{GPS: e.g. Power saving settings}
