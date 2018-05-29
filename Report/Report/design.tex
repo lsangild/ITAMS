@@ -40,13 +40,15 @@ When the data has been sent the GSM is put back to sleep.
 \end{figure}
 
 \section{GSM - \SARA}
+To facilitate the functionality of the \SARA module, a modem specific driver will be developed. This driver will contain functions to configure \SARA for sending and receiving data through UDP packets.
+\fxnote{State diagram?}
 
 \subsection{UART}
 Communication with the \SARA module, will be done through a UART connection. The module contains an ability to auto detect the baud rate of the first transmission, and use this baud rate to respond. In addition it supports the standard baud rates: \num{1200}, \num{2400}, \num{4800}, \num{9600}, \num{19200}, \num{38400} and 5 higher rates. \num{9600} baud was selected with focus on stability and the ability to debug the communications.
 
 \subsection{AT Command Interface}
 \fxnote{Describe - Sequence of AT commands}
-From the analysis commands was found in order to set up the module, and send data through. The following section will run through the most important commands, what they do and how they are used. The commands are used in the order of table \fxnote{CHANGE TO sequence or float diagram with ref to \cref{app:sarau201}}
+As is standard with GSM modules, the \SARA employs a AT command interface through the UART. This means that commands and data to and from the module is in ascii, and that commands is started by "+AT" and end with <CR><LF>. In this application a limited amount of commands is necessary, the flow and functionality is display on \fxnote{FIGUR Ref}. The commands used are described, in appendix table. \fxnote{Insert GSMSetupConnection.pdf and ref to Appendix}
 
 \section{GPS - \GPS}
 
@@ -60,24 +62,7 @@ From the analysis commands was found in order to set up the module, and send dat
 
 \section{UART - \SAMD}
 
-\subsection{Clock}
-\fxnote{Delvis Implementation}
-The \SAMD is able to run with a clock frequency of \SI{48}{\mega\hertz}, but will during start up this is not active.
-It is therefore necessary to activate not just the clock called \textit{DFLL48M} but also set up the reference clock, the generic clocks and the required multiplexers.
 
-During operation \SAMD is able to maintain a given frequency through a DFLL(Digital Frequency Lock Loop).
-This system relies on a secondary clock as a reference source for the main clock.
-In the following list it is shown in what order the clocks and registers should be activated in order to get a stable system.
-
-\begin{enumerate}
-	\item Enable XOSC32K clock (External on-board 32.768Hz oscillator). Used as reference for \SI{48}{\mega\hertz} clock.
-	\item Set Generic Clock Generator (1) source to XOSC32K.
-	\item Active and set reference for Generic Clock Multiplexer.
-	\item Enable DFLL48M.
-	\item Set DFLL48M as source for Generic Clock Generator 0.
-	\item Edit Pre scaler for OSCM clock to obtain \SI{8}{\mega\hertz}.
-	\item Set OSC8M as source for Generic Clock Generator 3.
-\end{enumerate} 
 
 \subsection{BaudRate}
 Both \SARA and \GPS supports the usage of auto baud rate detection, meaning that they will respond to a message in the same baud rate as they receive.
