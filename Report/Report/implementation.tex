@@ -2,7 +2,9 @@
 % !TEX spellcheck = en_GB
 
 \chapter{Implementation}
-\section{Clock}
+\section{\SAMD}
+This section is dedicated to describing the configurations required on the \SAMD platform. Each subsection will deal with the registers and values needed for each module.
+\subsection{Clock}
 The \SAMD is able to run with a clock frequency of \SI{48}{\mega\hertz}, but will during start up, this is not active. It is therefore necessary to activate not just the clock called \textit{DFLL48M} but also set up the reference clock, the generic clocks and the required multiplexers.
 
 During operation \SAMD is able to maintain a given frequency through a DFLL(Digital Frequency Lock Loop).
@@ -21,10 +23,10 @@ In the following list it is shown in what order the clocks and registers should 
 
 Going through the data sheet of \SAMD the group was not able to configure the clock to run correctly. It was therefore assessed, that using a free open source implementation from example code, would speed up progress and result in a working prototype.
 
-\section{UART: Configuration}
+\subsection{UART: Configuration}
 This section will describe the processor specific register configuration needed to get the UART running on \SAMD. Mainly there are two control register A and B, but also a register for interrupt enabling and one for baud rate.
 
-\fxnote{Tables ?}X contains values for data, if a bit or variable is not mentioned in the table, assume it to be 0.
+\cref{tab:UARTControlA}, \cref{tab:UARTControlB} and \cref{tab:UARTINTENSET} contains values for data, if a bit or variable is not mentioned in the table, assume it to be 0.
 
 \begin{table}[H]
 	\begin{tabular}{lr}
@@ -82,11 +84,27 @@ Trying to understand the UART set up better, an example from Arduino sketches wa
 Following will be a example of fractional baud value calculation.
 
 \[BAUD = \frac{f_{ref}}{S*f_{BAUD}} - \frac{FP}{8}\]
+
+Following snippet is taken from baud calculation in the program source code:
 \begin{minted}[breaklines]{c}
 uint32_t baudTimes8 = (SystemCoreClock * 8) / (16 * uartSetup.baudRate);
-uint16_t baudReg = ((baudTimes8 \% 8) << 13) | (baudTimes8 >> 3);	
+uint16_t baudReg = ((baudTimes8 % 8) << 13) | (baudTimes8 >> 3);	
 \end{minted}
 \fxnote{Code Sample: }
 
 \fxnote{GPS: e.g. Power saving settings}
-\fxnote{GSM: Context setup and so forth}
+\section{GSM - \SARA}
+\subsection{PDP Context}
+In order for the GSM module to send data packets out through GPRS, a PDP context is created through the command:
+\begin{quote}
+	AT+CGDCONT=1,"IP","www.internet.mtelia.dk"
+\end{quote}
+
+The command describes what packet protocol to use (IP) and the APN of the cellular network. When a context is declared and the device is registered on a network, the context can be activated. Once activated the module is assigned an ip, which will be used to send data through.
+
+\subsection{PSD}
+Creating sockets on \SARA requires a internal PDP context, also described as a PSD (Packet Switch Data) profile. This is set up similar to the external context, just with another command:
+\begin{quote}
+	AT+UPSD=0,1,"www.internet.mtelia.dk"
+\end{quote}
+Defining context 0, using 1(APN) and "www.internet.mtelia.dk" as apn. Once both context has been activated, a socket is created, in this case a UDP socket, and data can be sent to the server.
