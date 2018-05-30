@@ -163,7 +163,7 @@ Acceptance tests are carried out outdoors to ensure good GPS signal quality.
 		Power on \systemName. Wait \SI{5}{\minute}. & \numrange{1}{5} valid data points are shown on the server. & The server receives $\approx$ 5 valid values pr. minute, but stops receiving after \SI{2}{\minute}, due to an unknown interrupt error on the \SAMD. Output shown in \cref{fig:accepttestconsole}. \\
 		Wait \SI{5}{\minute}. & \numrange{5}{10} valid data points are shown on the server. & \\
 		Wait \SI{15}{\minute}. & The server shows \numrange{15}{25} valid location data points. & \\
-		A GPS location from the server is put into Google Maps. & Google Maps shows the location where the \systemName was turned on. & The location is correct. \\
+		A GPS location from the server is put into Google Maps. & Google Maps shows the location where the \systemName was turned on. & The location is correct. See \cref{fig:accepttestmaps}. \\
 		\bottomrule
 	\end{tabularx}
 	\caption{Acceptance test of \systemName without \SDsock socket and µSD-card.}
@@ -176,5 +176,13 @@ Acceptance tests are carried out outdoors to ensure good GPS signal quality.
 	\caption{Server log of acceptance test of \systemName without µSD-card.}
 	\label{fig:accepttestconsole}
 \end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{gfx/Test/AcceptTestMaps.png}
+	\caption{Google maps of one of the locations shown in \cref{fig:accepttestconsole}. The blue dot is the actual location, the red is the GPS coordinate. Some of the deviation might be due to the use of float and not double on the server, for storing the coordinates.}
+	\label{fig:accepttestmaps}
+\end{figure}
+
 
 \FloatBarrier
