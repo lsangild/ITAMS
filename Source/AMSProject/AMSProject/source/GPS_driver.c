@@ -132,7 +132,6 @@ uint8_t GPS_send(uint8_t class, uint8_t ID, uint16_t length, uint8_t* payload, u
   uint8_t msg[PREPAYLOAD_SIZE + length + CHECK_SIZE];
   char header[] = {0xB5, 0x62};
   int16_t startIndex;
-  uint16_t inLen = 0;
   struct Neo7_MsgHeader* answerHeader = (void*) answer; //Set a struct at the beginning of answer to read header.
   GPS_ConstructMessage(class, ID, length, payload, msg);
   
@@ -186,30 +185,29 @@ uint8_t GPS_setup(uint8_t cmdClass, uint8_t cmdID, uint16_t length, uint8_t* pay
   } while (GPS_CheckAcknowledge(cmdClass, cmdID, answer.data));
 }
 
-struct GPS_data_t GPS_Poll()
+void GPS_Poll(struct GPS_data_t* data)
 {   
   // Create message and send it
-  uint8_t msg[GPS_POLL_MSG_LENGTH];
+  uint8_t msg[GPS_POLL_MSG_LENGTH+100];
   uint8_t bytesReceived = GPS_send(0x01, 0x07, 0, 0x00, msg);
   // Setup struct for data
-  struct GPS_data_t data;
-  data.valid = 1;
+  data->valid = 1;
 
   // If data has correct length, flag for valid fix is set and , copy into struct
   if ((bytesReceived == GPS_POLL_MSG_LENGTH) && ((msg[27] & 0x01) == 0x01) && (msg[26] > 0x00))
 	{
-    memcpy(&data.year, &msg[10], 2);
-    memcpy(&data.month, &msg[12], 1);
-    memcpy(&data.date, &msg[13], 1);
-    memcpy(&data.hour, &msg[14], 1);
-    memcpy(&data.minute, &msg[15], 1);
-    memcpy(&data.second, &msg[16], 1);
-    memcpy(&data.lon, &msg[30], 4);
-    memcpy(&data.lat, &msg[34], 4);
-    data.valid = 0;
+    memcpy(&data->year, &msg[10], 2);
+    memcpy(&data->month, &msg[12], 1);
+    memcpy(&data->date, &msg[13], 1);
+    memcpy(&data->hour, &msg[14], 1);
+    memcpy(&data->minute, &msg[15], 1);
+    memcpy(&data->second, &msg[16], 1);
+    memcpy(&data->lon, &msg[30], 4);
+    memcpy(&data->lat, &msg[34], 4);
+    data->valid = 0;
   }
     
-  return data;
+  return;
 }
 
 

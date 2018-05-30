@@ -13,7 +13,7 @@ This section describes the overall system architecture, the chosen platforms for
 \end{figure}
 
 \section{Choice of components}
-The physical entities necessary to solve the tasks of the blocks identified in \cref{fig:IBD:unspecified} are as follows:
+The physical entities necessary to solve the tasks of the blocks identified in \cref{fig:IBD:overall} are as follows:
 
 \paragraph{Controller and Data transfer} can be performed by a single module. The \MKR which includes a \SAMD ARM µC and a u-blox SARA-U201-03B-00 High Speed Packet Access (HSPA) with 2G fallback module for internet access\cite{MKRGSM1400}.
 They communicate using one of the two UARTs available on the \SAMD ARM µC.
@@ -40,6 +40,7 @@ The \GPS UART uses the frame 8N1, with a baud rate of \num{4800}, \num{9600}, \n
 For easy debugging, the \num{9600} baud rate is chosen.
 
 \subsubsection{Protocol}
+\label{sec:UBXprot}
 The chosen GPS module is able to communicate using NMEA, UBX or RTCM protocol \cite{NEO7_proto}.
 It has been chosen to communicate using the UBX protocol, as it, asides from the GPS location data, can be used to set up the modules internal workings, such as power save mode.
 
@@ -60,7 +61,7 @@ See \cite[p.~73-183]{NEO7_proto} for the full protocol, or below for an example.
 
 The most used UBX command is UBX-NAV-PVT \cite[p.~160]{NEO7_proto}, which returns the location of the \GPS.
 The communication is shown in \cref{tab:UBXex}.
-Answers are available from the later performed tests, but can be seen in \cref{app:GPSmodtest} and \cref{app:GPSmodtest}.
+Answers are available from the later performed tests, but can be seen in \cref{app:GPSmodtest} and \cref{app:GPSinttest}.
 
 \begin{table}
 	\centering
@@ -83,8 +84,27 @@ Answers are available from the later performed tests, but can be seen in \cref{a
 \end{table}
 
 \subsection{\SAMD and \SARA}
-\fxnote{AT commands here!}
+As is standard with GSM modules, the \SARA employs a AT command interface through the UART. This means that commands and data to and from the module is in ascii, and that commands is started by "+AT" and end with <CR><LF>. 
 
+The implementation and design of communications between \SAMD and \SARA will follow specification laid out in PDF\fxnote{Ref u-blox-CEL\_ATCommands\_(UBX-13002752).pdf}. 
+
+In general each communication will follow a given flow, the controller starts by sending an AT command:
+
+\mint{bash}{AT+CREG?\r\n}
+
+Responding to each message the GSM module responds with the command it read:
+
+\mint{bash}{AT+CREG?\r}
+
+Following command confirmation, if it is a recognised command, the GSM will potentially send a respond message with status. This responds always starts with a '+' symbol. 
+
+\mint{bash}{AT+CREG: 0,1\r}
+
+Finally a last message will be send, with the result code of the command. This will either be "OK" or "ERROR". If the command was not recognised the result will always be "ERROR".
+
+\mint{bash}{OK\r\n}
+
+\fxnote{Allocation Diagram?}
 
 
 \FloatBarrier

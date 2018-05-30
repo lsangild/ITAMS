@@ -14,7 +14,7 @@ Start
 calcChecksum()
 constructMessage()
 While[NACK]
-	GPS_send()
+	UART_SendBuffer()
 	findHeader()
 	Read 6 bytes (Sync, CLASS, ID, Length)
 	If
