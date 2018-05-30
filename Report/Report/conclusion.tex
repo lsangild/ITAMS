@@ -8,7 +8,18 @@ The final prototype incorporates an ARM µC, a GSM cellular module and a GPS mod
 
 A great deal of work went into getting to know the \SAMD µC, this was a hindrance to the work flow.
 As the \SAMD is built on the SAM structure and not the AVR structure, a lot of new registers had to be understood.
-This could have been avoided by using the known ATmega2560.
-This was opted against to increase the learning possibilities.
+A solution to this could have been to use Arduino Sketches or the Atmel ASF framework, but the team felt this might have led to less learning from the project.
+Another solution to the unknown architecture could have been to use the known ATmega2560.
+
+The interfacing with the GSM and GPS modules were fairly straightforward, but was again hindered by the above described lack of knowlede of the \SAMD µC.
+This showed in an unreliable UART communication, which was not made stable until the very end of the project.
+
+An issue encountered with the GSM module was the need for sudden bursts of current, the antenna needed.
+These bursts are up to \SI{2}{\ampere}, which a standard USB power supply is not able to supply.
+The solution was to attach a \SI{3.8}{\volt} mobile phone battery to the \MKR.
+
+The final prototype is able to locate itself.
+It is not able to save location data over extended periods without internet access.
+The GPS data gathered is sent to a remote server, available for backup or analysis.
 
 \FloatBarrier

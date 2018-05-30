@@ -106,8 +106,8 @@ Where \textit{SOCK} is decided by the \SARA module, and \textit{IP} and \textit{
 		\textbf{Action} & \textbf{Expected outcome} & \textbf{Outcome} \\
 		\midrule
 		Send test command from \MKR to \SARA via UART. &
-		\SARA responds with @. Debugger shows @ in buffer & \\
-		Send "Hello World" & The server log shows "Hello World". & \\
+		\SARA responds with @. Debugger shows @ in buffer & Hex value for @ (0x40) shown in debugger.\\
+		Send "Hello World" & The server log shows "Hello World". & The server log shows "Hello World".\\
 		\bottomrule
 	\end{tabularx}
 	\caption{Integration test of \MKR and \SARA GSM module.}
@@ -160,10 +160,10 @@ Acceptance tests are carried out outdoors to ensure good GPS signal quality.
 		\toprule
 		\textbf{Action} & \textbf{Expected outcome} & \textbf{Outcome} \\
 		\midrule
-		Power on \systemName. Wait \SI{5}{\minute}. & \numrange{1}{5} valid data points are shown on the server. & \\
+		Power on \systemName. Wait \SI{5}{\minute}. & \numrange{1}{5} valid data points are shown on the server. & The server receives $\approx$ 5 valid values pr. minute, but stops receiving after \SI{2}{\minute}, due to an unknown interrupt error on the \SAMD.\\
 		Wait \SI{5}{\minute}. & \numrange{5}{10} valid data points are shown on the server. & \\
 		Wait \SI{15}{\minute}. & The server shows \numrange{15}{25} valid location data points. & \\
-		A GPS location from the server is put into Google Maps. & Google Maps shows the location where the \systemName was turned on. & \\
+		A GPS location from the server is put into Google Maps. & Google Maps shows the location where the \systemName was turned on. & The location is correct. \\
 		\bottomrule
 	\end{tabularx}
 	\caption{Acceptance test of \systemName without \SDsock socket and µSD-card.}
