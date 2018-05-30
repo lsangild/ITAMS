@@ -84,7 +84,25 @@ Answers are available from the later performed tests, but can be seen in \cref{a
 \end{table}
 
 \subsection{\SAMD and \SARA}
-\fxnote{AT commands here!}
+As is standard with GSM modules, the \SARA employs a AT command interface through the UART. This means that commands and data to and from the module is in ascii, and that commands is started by "+AT" and end with <CR><LF>. 
+
+The implementation and design of communications between \SAMD and \SARA will follow specification laid out in PDF\fxnote{Ref u-blox-CEL\_ATCommands\_(UBX-13002752).pdf}. 
+
+In general each communication will follow a given flow, the controller starts by sending an AT command:
+
+\mint{bash}{AT+CREG?\r\n}
+
+Responding to each message the GSM module responds with the command it read:
+
+\mint{bash}{AT+CREG?\r}
+
+Following command confirmation, if it is a recognised command, the GSM will potentially send a respond message with status. This responds always starts with a '+' symbol. 
+
+\mint{bash}{AT+CREG: 0,1\r}
+
+Finally a last message will be send, with the result code of the command. This will either be "OK" or "ERROR". If the command was not recognised the result will always be "ERROR".
+
+\mint{bash}{OK\r\n}
 
 \fxnote{Allocation Diagram?}
 
