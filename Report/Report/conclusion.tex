@@ -2,8 +2,13 @@
 % !TEX spellcheck = en_GB
 
 \chapter{Conclusion}
+\label{chap:conclusion}
+The goal of the project has been to create a \systemName able to locate itself and send the location to a remote server, possibly sending at specified intervals to conserve power.
+The final prototype incorporates an ARM µC, a GSM cellular module and a GPS module.
 
-
-The final prototype has many possibilities for both improvement and expansion, but does, due to the focus on the core parts and the communication between the different subsystems, allow for these to be implemented on top of the current system.
+A great deal of work went into getting to know the \SAMD µC, this was a hindrance to the work flow.
+As the \SAMD is built on the SAM structure and not the AVR structure, a lot of new registers had to be understood.
+This could have been avoided by using the known ATmega2560.
+This was opted against to increase the learning possibilities.
 
 \FloatBarrier
