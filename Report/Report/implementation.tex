@@ -13,7 +13,7 @@ At the start of the project, it was assumed that ASF would be to high level also
 Code examples and configurations was later researched in ASF.
 
 \subsection{Clock}
-The \SAMD is able to run with a clock frequency of \SI{48}{\mega\hertz}, but will during start up, this is not active. It is therefore necessary to activate not just the clock called \textit{DFLL48M} but also set up the reference clock, the generic clocks and the required multiplexers.
+The \SAMD is able to run with a clock frequency of \SI{48}{\mega\hertz}, but this clock is not started automatically. It is therefore necessary to activate, not just the clock called \textit{DFLL48M}, but also set up the reference clock, the generic clocks and the required multiplexers.
 
 During operation \SAMD is able to maintain a given frequency through a DFLL(Digital Frequency Lock Loop).
 This system relies on a secondary clock as a reference source for the main clock.
@@ -101,16 +101,17 @@ uint16_t baudReg = ((baudTimes8 % 8) << 13) | (baudTimes8 >> 3);
 \end{minted}
 
 \subsection{Debugging}
-In circuit debugging was achieved through a SWD connection on the \MKR board. As shown on \cref{fig:debugpins} a set of 6 pins was solders on pads at the bottom of the \MKR. Using an Atmel Ice MKII, debugging could be done through JTAG wires, as SWD is a subset of the JTAG connection.
+In circuit debugging was achieved through a SWD connection on the \MKR board.
+As shown on \cref{fig:debugpins} a set of 6 pins was soldered on pads at the bottom of the \MKR.
+Using an Atmel Ice MKII, debugging could be done through JTAG wires, as SWD is a subset of the JTAG connection.
 
 \begin{figure}
 	\centering
-	\includegraphics[height=0.4\textheight]{gfx/Implementation/MKR1400BoardSWD.jpg}
+	\includegraphics[height=0.4\textheight, angle=270]{gfx/Implementation/MKR1400BoardSWD.jpg}
 	\caption{Arduino \MKR board with SWS pins attached.}
 	\label{fig:debugpins}
 \end{figure}
 
-\fxnote{GPS: e.g. Power saving settings}
 \section{GSM - \SARA}
 \subsection{PDP Context}
 In order for the GSM module to send data packets out through GPRS, a PDP context is created through the command:
@@ -118,10 +119,13 @@ In order for the GSM module to send data packets out through GPRS, a PDP context
 	AT+CGDCONT=1,"IP","www.internet.mtelia.dk"
 \end{quote}
 
-The command describes what packet protocol to use (IP) and the APN of the cellular network. When a context is declared and the device is registered on a network, the context can be activated. Once activated the module is assigned an ip, which will be used to send data through.
+The command describes what packet protocol to use (IP) and the APN of the cellular network.
+When a context is declared and the device is registered on a network, the context can be activated.
+Once activated the module is assigned an IP, which will be used to send data through.
 
 \subsection{PSD}
-Creating sockets on \SARA requires a internal PDP context, also described as a PSD (Packet Switch Data) profile. This is set up similar to the external context, just with another command:
+Creating sockets on \SARA requires a internal PDP context, also described as a PSD (Packet Switch Data) profile.
+This is set up similar to the external context, just with another command:
 \begin{quote}
 	AT+UPSD=0,1,"www.internet.mtelia.dk"
 \end{quote}
@@ -151,5 +155,8 @@ struct GPS_data_t{
 	\caption{GPS data struct.}
 	\label{code:GPSdatat}
 \end{listing}
+
+\section{µSD - \SDsock}
+
 
 \FloatBarrier
