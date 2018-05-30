@@ -97,10 +97,8 @@ where \mintinline{c}{GPS_data_t} is a struct containing the time and location of
 \mintinline{c}{SD_delete()} is meant to delete any data points already sent to the remote server.
 
 \section{Controller - \SAMD}
-
-\subsection{Interrupt based Communication}
-
-\fxnote{Describe non blocking send and receive methods}
+General flow of the system is linear, where the modules are initialise. And the gps polling is looped. 
+But since the communication protocols are asynchronous, it was decided to make the serial ports interrupt based. Meaning that the main thread will not prevent data from being sent or received. While also making the send and receive functions non blocking.
 
 \subsection{UART - BaudRate}
 Both \SARA and \GPS supports the usage of auto baud rate detection, meaning that they will respond to a message in the same baud rate as they receive.

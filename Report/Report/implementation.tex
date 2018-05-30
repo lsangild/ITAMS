@@ -21,7 +21,7 @@ In the following list it is shown in what order the clocks and registers should 
 	\item Set OSC8M as source for Generic Clock Generator 3.
 \end{enumerate} 
 
-Going through the data sheet of \SAMD the group was not able to configure the clock to run correctly. It was therefore assessed, that using a free open source implementation from example code, would speed up progress and result in a working prototype.
+Going through the data sheet of \SAMD the group was not able to configure the clock to run correctly. It was therefore assessed, that using a free open source implementation from example code\cite{MKR1400GIT}, would speed up progress and result in a working prototype. The example sketch was import into atmel studio through it's sketch import system, and a startup.c file was created setting up the clock.
 
 \subsection{UART: Configuration}
 This section will describe the processor specific register configuration needed to get the UART running on \SAMD. Mainly there are two control register A and B, but also a register for interrupt enabling and one for baud rate.
@@ -91,7 +91,16 @@ Following snippet is taken from baud calculation in the program source code:
 uint32_t baudTimes8 = (SystemCoreClock * 8) / (16 * uartSetup.baudRate);
 uint16_t baudReg = ((baudTimes8 % 8) << 13) | (baudTimes8 >> 3);	
 \end{minted}
-\fxnote{Code Sample: }
+
+\subsection{Debugging}
+In circuit debugging was achieved through a SWD connection on the \MKR board. As shown on \cref{fig:debugpins} a set of 6 pins was solders on pads at the bottom of the \MKR. Using an Atmel Ice MKII, debugging could be done through JTAG wires, as SWD is a subset of the JTAG connection.
+
+\begin{figure}
+	\centering
+	\includegraphics[height=0.4\textheight]{gfx/Implementation/MKR1400BoardSWD.jpg}
+	\caption{Arduino \MKR board with SWS pins attached.}
+	\label{fig:debugpins}
+\end{figure}
 
 \fxnote{GPS: e.g. Power saving settings}
 \section{GSM - \SARA}
