@@ -7,7 +7,29 @@ In this section an short introduction to how this project has used test from beg
 \section{Module tests}
 The goal of the module tests is to determine if the used modules are able to perform the actions demanded by the \nameref{chap:requirements}.
 
-Module tests has been performed on the \GPS GPS module, the \SARA GSM module and the \SDsock µSD-card socket with µSD-card inserted.
+Module tests has been performed on the \SARA GSM module, \GPS GPS module, and the \SDsock µSD-card socket with µSD-card inserted.
+
+\subsection{GSM \SARA}
+The module test of the GSM \SARA tests if the module is able to send a simple string to a known server.
+
+The used test command is
+\begin{quote}
+	AT+USOST=\textit{SOCK},"\textit{IP}",\textit{PORT},11@Hello World
+\end{quote}
+Where \textit{SOCK} is decided by the \SARA module, and \textit{IP} and \textit{PORT} are decided by the server.
+
+\begin{table}[H]
+	\centering
+	\begin{tabularx}{\textwidth}{p{4.3cm} X X}
+		\toprule
+		\textbf{Action} & \textbf{Expected outcome} & \textbf{Outcome} \\
+		\midrule
+		Send test command, via a USB to UART module, to \MKR coded with an Arduino Sketch forwarding the input to the \SARA. & The server log shows "Hello World". & Success. For more information see transcript in appendix \cref{app:GSMcomm}. \\
+		\bottomrule
+	\end{tabularx}
+	\caption{Module test of \SARA GSM module.}
+	\label{AT:modGSM}
+\end{table}
 
 \subsection{GPS \GPS}
 The GPS module is tested by connecting it to a USB to UART module and sending the appropriate UBX commands. The setting is outdoors as to achieve the most precise localization.
@@ -32,28 +54,6 @@ Before this, the below command CFG-PRT (Port Configuration for UART) \cite[p.~11
 	\label{AT:modGPS}
 \end{table}
 
-\subsection{GSM \SARA}
-The module test of the GSM \SARA tests if the module is able to send a simple string to a known server.
-
-The used test command is
-\begin{quote}
-	AT+USOST=\textit{SOCK},"\textit{IP}",\textit{PORT},11@Hello World
-\end{quote}
-Where \textit{SOCK} is decided by the \SARA module, and \textit{IP} and \textit{PORT} are decided by the server.
-
-\begin{table}[H]
-	\centering
-	\begin{tabularx}{\textwidth}{p{4.3cm} X X}
-		\toprule
-		\textbf{Action} & \textbf{Expected outcome} & \textbf{Outcome} \\
-		\midrule
-		Send test command, via a USB to UART module, to \MKR coded with an Arduino Sketch forwarding the input to the \SARA. & The server log shows "Hello World". & Success. For more information see transcript in appendix \cref{app:GSMcomm}. \\
-		\bottomrule
-	\end{tabularx}
-	\caption{Module test of \SARA GSM module.}
-	\label{AT:modGSM}
-\end{table}
-
 \subsection{\SDsock socket and µSD-card}
 Before the test, use \textit{dd} on a Linux device, to clear the µSD-card with \\
 \mintinline{bash}{dd if=/dev/zero of=/dev/sdX}, where sdX is the µSD-card.
@@ -75,23 +75,6 @@ Before the test, use \textit{dd} on a Linux device, to clear the µSD-card with 
 \section{Integration tests}
 The integration tests are much like the module tests, except for the \MKR being the facilitator of the data.
 
-\subsection{\MKR with \GPS}
-Before this, the command CFG-PRT (Port Configuration for UART) \cite[p.~119-120]{NEO7_proto}, must be sent to the GPS module.
-
-\begin{table}[H]
-	\centering
-	\begin{tabularx}{\textwidth}{p{4.3cm} X X}
-		\toprule
-		\textbf{Action} & \textbf{Expected outcome} & \textbf{Outcome} \\
-		\midrule
-		Send \textit{0xB562010700000819} (UBX-NAV-PVT/Get location) from \MKR, with debugger on, to GPS module via UART with \num{9600} baud. & Receive \num{92} bytes according to \cite[p.~160-161]{NEO7_proto}. & \SI{92}{\byte} received. Output shown in \cref{app:GPSinttest}. \\
-		Input coordinates achieved from above test into Google Maps. & Pin is placed at the location above command was issued at. & Pin is placed at the location the command was issued. \\
-		\bottomrule
-	\end{tabularx}
-	\caption{Integration test of \MKR and \GPS GPS module.}
-	\label{AT:intGPS}
-\end{table}
-
 \subsection{\MKR with \SARA}
 The used test command is
 \begin{quote}
@@ -112,6 +95,23 @@ Where \textit{SOCK} is decided by the \SARA module, and \textit{IP} and \textit{
 	\end{tabularx}
 	\caption{Integration test of \MKR and \SARA GSM module.}
 	\label{AT:intGSM}
+\end{table}
+
+\subsection{\MKR with \GPS}
+Before this, the command CFG-PRT (Port Configuration for UART) \cite[p.~119-120]{NEO7_proto}, must be sent to the GPS module.
+
+\begin{table}[H]
+	\centering
+	\begin{tabularx}{\textwidth}{p{4.3cm} X X}
+		\toprule
+		\textbf{Action} & \textbf{Expected outcome} & \textbf{Outcome} \\
+		\midrule
+		Send \textit{0xB562010700000819} (UBX-NAV-PVT/Get location) from \MKR, with debugger on, to GPS module via UART with \num{9600} baud. & Receive \num{92} bytes according to \cite[p.~160-161]{NEO7_proto}. & \SI{92}{\byte} received. Output shown in \cref{app:GPSinttest}. \\
+		Input coordinates achieved from above test into Google Maps. & Pin is placed at the location above command was issued at. & Pin is placed at the location the command was issued. \\
+		\bottomrule
+	\end{tabularx}
+	\caption{Integration test of \MKR and \GPS GPS module.}
+	\label{AT:intGPS}
 \end{table}
 
 \subsection{\MKR with \SDsock and µSD-card}

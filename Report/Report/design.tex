@@ -39,7 +39,32 @@ When the data has been sent the GSM is put back to sleep.
 \end{figure}
 
 \FloatBarrier
-\fxnote{Possible rearranging of this chapter to get UART earlier}
+\section{Controller - \SAMD}
+General flow of the system is linear, where the modules are initialise. And the gps polling is looped. 
+But since the communication protocols are asynchronous, it was decided to make the serial ports interrupt based. Meaning that the main thread will not prevent data from being sent or received. While also making the send and receive functions non blocking.
+
+\subsection{UART - BaudRate}
+Both \SARA and \GPS supports the usage of auto baud rate detection, meaning that they will respond to a message in the same baud rate as they receive.
+But due to consistency, both modules is set to the selected baud rate during their set up configuration. 
+For simplicity a baud rate of \SI[per-mode = symbol]{9600}{\bit\per\second} was chosen, specification for the UART is shown in \cref{tab:BaudRate}.
+
+\begin{table}[H]
+	\begin{tabular}{ll}
+		\hline 
+		Baud Rate & 9600 \\ 
+		\hline 
+		Data Bits & 8 \\ 
+		\hline 
+		Parity & None \\ 
+		\hline 
+		Stop Bits & 1 \\ 
+		\hline 
+	\end{tabular}
+	\centering
+	\caption{Baud rate definition used for serial com ports on \SAMD.}
+	\label{tab:BaudRate}
+\end{table}
+
 \section{GSM - \SARA}
 To facilitate the functionality of the \SARA module, a modem specific driver will be developed. This driver will contain functions to configure \SARA for sending and receiving data through UDP packets.
 \fxnote{State diagram?}
@@ -97,31 +122,5 @@ The necessary functions to write will be
 \end{minted}
 where \mintinline{c}{GPS_data_t} is a struct containing the time and location of a given GPS data point.
 \mintinline{c}{SD_delete()} is meant to delete any data points already sent to the remote server.
-
-\section{Controller - \SAMD}
-General flow of the system is linear, where the modules are initialise. And the gps polling is looped. 
-But since the communication protocols are asynchronous, it was decided to make the serial ports interrupt based. Meaning that the main thread will not prevent data from being sent or received. While also making the send and receive functions non blocking.
-
-\subsection{UART - BaudRate}
-Both \SARA and \GPS supports the usage of auto baud rate detection, meaning that they will respond to a message in the same baud rate as they receive.
-But due to consistency, both modules is set to the selected baud rate during their set up configuration. 
-For simplicity a baud rate of \SI[per-mode = symbol]{9600}{\bit\per\second} was chosen, specification for the UART is shown in \cref{tab:BaudRate}.
-
-\begin{table}[H]
-	\begin{tabular}{ll}
-		\hline 
-		Baud Rate & 9600 \\ 
-		\hline 
-		Data Bits & 8 \\ 
-		\hline 
-		Parity & None \\ 
-		\hline 
-		Stop Bits & 1 \\ 
-		\hline 
-	\end{tabular}
-	\centering
-	\caption{Baud rate definition used for serial com ports on \SAMD.}
-	\label{tab:BaudRate}
-\end{table} 
 
 \FloatBarrier

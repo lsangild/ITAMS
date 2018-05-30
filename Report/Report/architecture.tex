@@ -16,7 +16,7 @@ This section describes the overall system architecture, the chosen platforms for
 The physical entities necessary to solve the tasks of the blocks identified in \cref{fig:IBD:overall} are as follows:
 
 \paragraph{Controller and Data transfer} can be performed by a single module. The \MKR which includes a \SAMD ARM µC and a u-blox SARA-U201-03B-00 High Speed Packet Access (HSPA) with 2G fallback module for internet access\cite{MKRGSM1400}.
-They communicate using one of the two UARTs available on the \SAMD ARM µC.
+They communicate using one of the two UARTs available on the \MKR board.
 The \SAMD ARM µC uses \SI{< 15}{\milli\ampere} while running \cite[p.~791-794]{SAMD21}.
 The SARA-U201 uses a maximum of \SI{1.9}{\ampere} when transferring data \cite[p.~26]{SARAU201} and less than \SI{1}{\milli\ampere} when in power-saving mode. Alternatively the known Arduino MEGA2560 with an external GSM module could be used, but this has been opted against in favour of using an integrated low power module.
 
@@ -34,6 +34,27 @@ With the chosen components, the interfaces between them can be identified, as sh
 The communication between the \SAMD and the \SARA module are presoldered to UART.
 The breakout-board for the \GPS exposes UART ports and the SD-card breakout-board exposes SPI ports.
 Connection to the server is chosen to be UDP with an acknowledge from the server.
+
+\subsection{\SAMD and \SARA}
+As is standard with GSM modules, the \SARA employs a AT command interface through the UART. This means that commands and data to and from the module is in ascii, and that commands is started by "AT+" and end with <CR><LF>. 
+
+The implementation and design of communications between \SAMD and \SARA will follow specification laid out in the u-blox AT Commands Manual \cite{ubloxAT}.
+
+In general each communication will follow a given flow, the controller starts by sending an AT command:
+
+\mint{bash}{AT+CREG?\r\n}
+
+Responding to each message the GSM module responds with the command it read:
+
+\mint{bash}{AT+CREG?\r}
+
+Following command confirmation, if it is a recognised command, the GSM will potentially send a respond message with status. This responds always starts with a '+' symbol. 
+
+\mint{bash}{AT+CREG: 0,1\r}
+
+Finally a last message will be send, with the result code of the command. This will either be "OK" or "ERROR". If the command was not recognised the result will always be "ERROR".
+
+\mint{bash}{OK\r\n}
 
 \subsection{\MKR and \GPS}
 The \GPS UART uses the frame 8N1, with a baud rate of \num{4800}, \num{9600}, \num{19200}, \num{38400}, \num{57600} or \num{115200}.
@@ -82,29 +103,5 @@ Answers are available from the later performed tests, but can be seen in \cref{a
 	\caption{Example communication using the UBX protocol.}
 	\label{tab:UBXex}
 \end{table}
-
-\subsection{\SAMD and \SARA}
-As is standard with GSM modules, the \SARA employs a AT command interface through the UART. This means that commands and data to and from the module is in ascii, and that commands is started by "+AT" and end with <CR><LF>. 
-
-The implementation and design of communications between \SAMD and \SARA will follow specification laid out in PDF\fxnote{Ref u-blox-CEL\_ATCommands\_(UBX-13002752).pdf}. 
-
-In general each communication will follow a given flow, the controller starts by sending an AT command:
-
-\mint{bash}{AT+CREG?\r\n}
-
-Responding to each message the GSM module responds with the command it read:
-
-\mint{bash}{AT+CREG?\r}
-
-Following command confirmation, if it is a recognised command, the GSM will potentially send a respond message with status. This responds always starts with a '+' symbol. 
-
-\mint{bash}{AT+CREG: 0,1\r}
-
-Finally a last message will be send, with the result code of the command. This will either be "OK" or "ERROR". If the command was not recognised the result will always be "ERROR".
-
-\mint{bash}{OK\r\n}
-
-\fxnote{Allocation Diagram?}
-
 
 \FloatBarrier
