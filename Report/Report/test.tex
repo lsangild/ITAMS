@@ -160,7 +160,7 @@ Acceptance tests are carried out outdoors to ensure good GPS signal quality.
 		\toprule
 		\textbf{Action} & \textbf{Expected outcome} & \textbf{Outcome} \\
 		\midrule
-		Power on \systemName. Wait \SI{5}{\minute}. & \numrange{1}{5} valid data points are shown on the server. & The server receives $\approx$ 5 valid values pr. minute, but stops receiving after \SI{2}{\minute}, due to an unknown interrupt error on the \SAMD.\\
+		Power on \systemName. Wait \SI{5}{\minute}. & \numrange{1}{5} valid data points are shown on the server. & The server receives $\approx$ 5 valid values pr. minute, but stops receiving after \SI{2}{\minute}, due to an unknown interrupt error on the \SAMD. Output shown in \cref{fig:accepttestconsole}. \\
 		Wait \SI{5}{\minute}. & \numrange{5}{10} valid data points are shown on the server. & \\
 		Wait \SI{15}{\minute}. & The server shows \numrange{15}{25} valid location data points. & \\
 		A GPS location from the server is put into Google Maps. & Google Maps shows the location where the \systemName was turned on. & The location is correct. \\
@@ -169,5 +169,12 @@ Acceptance tests are carried out outdoors to ensure good GPS signal quality.
 	\caption{Acceptance test of \systemName without \SDsock socket and µSD-card.}
 	\label{AT:withoutSD}
 \end{table}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.9\linewidth]{gfx/Test/AcceptTestConsole.PNG}
+	\caption{Server log of acceptance test of \systemName without µSD-card.}
+	\label{fig:accepttestconsole}
+\end{figure}
 
 \FloatBarrier
