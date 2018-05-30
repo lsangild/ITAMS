@@ -48,8 +48,7 @@ To facilitate the functionality of the \SARA module, a modem specific driver wil
 Communication with the \SARA module, will be done through a UART connection. The module contains an ability to auto detect the baud rate of the first transmission, and use this baud rate to respond. In addition it supports the standard baud rates: \num{1200}, \num{2400}, \num{4800}, \num{9600}, \num{19200}, \num{38400} and 5 higher rates. \num{9600} baud was selected with focus on stability and the ability to debug the communications.
 
 \subsection{AT Command Interface}
-\fxnote{Describe - Sequence of AT commands}
-As is standard with GSM modules, the \SARA employs a AT command interface through the UART. This means that commands and data to and from the module is in ascii, and that commands is started by "+AT" and end with <CR><LF>. In this application a limited amount of commands is necessary, the command flow is displayed on \cref{fig:SD:configConnection}. While functionality of the commands used are described, in appendix table. \fxnote{Trim Sequence diagram and ref to Appendix}
+Through the application a limited amount of commands is necessary, the command flow is displayed on \cref{fig:SD:configConnection}. While functionality of the commands used are described, in \cref{app:sarau201}.
 
 \begin{figure}
 	\centering
@@ -103,7 +102,7 @@ where \mintinline{c}{GPS_data_t} is a struct containing the time and location of
 
 \fxnote{Describe non blocking send and receive methods}
 
-\subsection{BaudRate}
+\subsection{UART - BaudRate}
 Both \SARA and \GPS supports the usage of auto baud rate detection, meaning that they will respond to a message in the same baud rate as they receive.
 But due to consistency, both modules is set to the selected baud rate during their set up configuration. 
 For simplicity a baud rate of \SI[per-mode = symbol]{9600}{\bit\per\second} was chosen, specification for the UART is shown in \vref{tab:BaudRate}.

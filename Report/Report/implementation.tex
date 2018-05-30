@@ -79,7 +79,8 @@ This section will describe the processor specific register configuration needed 
 \end{table}
 
 \subsection{Baud Rate}
-To implement baud rate calculation, the data sheet for \SAMD was consulted. The group expected to use asynchronous arithmetic baud, and started to set up the implementation of this. After having a functional UART set up, it was noticed that the baud rate was very unstable, having a range from 9300 -> 9800 bits/s. This meant that the \GPS and \SARA module communications was scrambled at times. 
+To implement baud rate calculation, the data sheet for \SAMD was consulted. The group expected to use asynchronous arithmetic baud, and started to set up the implementation of this. After having a functional UART set up, an oscilloscope was used to auto detect the baud rate. After several attempts the baud rate was still unstable, having a range from 9300 -> 9800 bits/s. This meant that the \GPS and \SARA module communications was scrambled at times.
+ 
 Trying to understand the UART set up better, an example from Arduino sketches was reviewed. In the example asynchronous fractional baud calculation was used, and the group decided to test out this approach. Although nothing was noticeably change in the control registers, from the previous tests, the UART was now stable.
 Following will be a example of fractional baud value calculation.
 
