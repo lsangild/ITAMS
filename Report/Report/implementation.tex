@@ -118,3 +118,30 @@ Creating sockets on \SARA requires a internal PDP context, also described as a P
 	AT+UPSD=0,1,"www.internet.mtelia.dk"
 \end{quote}
 Defining context 0, using 1(APN) and "www.internet.mtelia.dk" as apn. Once both context has been activated, a socket is created, in this case a UDP socket, and data can be sent to the server.
+
+\section{GPS - \GPS}
+\label{sec:impl:gps}
+The location data received from the \GPS GPS is stored in a struct defined as shown in \cref{code:GPSdatat}.
+The members are defined in sizes allowing the received data to be copied directly into the struct using \mintinline{c}{memcpy()}.
+This is made easy as the endianness of the \GPS and the \SAMD match, both are little-endian.
+
+\begin{listing}
+	\begin{minted}[bgcolor=lightgray]{c}
+struct GPS_data_t{
+  uint16_t year;
+  uint8_t month;
+  uint8_t date;
+  uint8_t hour;
+  uint8_t minute;
+  uint8_t second;
+  uint32_t lat;
+  uint32_t lon;
+  // valid = 0, means data is valid.
+  uint8_t valid;
+};
+	\end{minted}
+	\caption{GPS data struct.}
+	\label{code:GPSdatat}
+\end{listing}
+
+\FloatBarrier

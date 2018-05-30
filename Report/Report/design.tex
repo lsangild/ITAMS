@@ -83,7 +83,9 @@ If the response contains GPS\_data, the data must be read, interpreted and saved
 	\label{fig:gpsflowfindheader}
 \end{figure}
 
-\fxnote{Choices + Diagrammer}
+To lower the power consumption of the GPS module, and because the direction and speed of the \systemName is not at interest in this project, the GPS module is put to sleep whenever a valid fix has been received by the controller.
+This requires GLONASS to be turned of.
+Additionally the module is put into pedestrian mode, as this is the mode in which the GPS will be tested.
 
 \section{SD-card - \SDsock}
 The SD-card is to be used without a file system, as the stored data will be hex values of known size.
@@ -103,7 +105,7 @@ But since the communication protocols are asynchronous, it was decided to make t
 \subsection{UART - BaudRate}
 Both \SARA and \GPS supports the usage of auto baud rate detection, meaning that they will respond to a message in the same baud rate as they receive.
 But due to consistency, both modules is set to the selected baud rate during their set up configuration. 
-For simplicity a baud rate of \SI[per-mode = symbol]{9600}{\bit\per\second} was chosen, specification for the UART is shown in \vref{tab:BaudRate}.
+For simplicity a baud rate of \SI[per-mode = symbol]{9600}{\bit\per\second} was chosen, specification for the UART is shown in \cref{tab:BaudRate}.
 
 \begin{table}[H]
 	\begin{tabular}{ll}
