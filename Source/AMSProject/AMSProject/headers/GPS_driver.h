@@ -27,10 +27,10 @@ struct GPS_data_t{
 	uint8_t hour;
 	uint8_t minute;
 	uint8_t second;
-	uint32_t lat;
-	uint32_t lon;
 	// valid = 0, means data is valid.
 	uint8_t valid;
+	uint32_t lat;
+	uint32_t lon;
 };
 
 union Neo7_Ack
@@ -69,7 +69,7 @@ uint8_t GPS_send(uint8_t class, uint8_t ID, uint16_t length, uint8_t* payload, u
 // Used for sending setup commands. Checks for ack/nack and returns appropriate true/false
 uint8_t GPS_setup(uint8_t class, uint8_t ID, uint16_t length, uint8_t* payload);
 // Polls the GPS for data and returns it in the GPS_data_t struct
-struct GPS_data_t GPS_Poll();
+void GPS_Poll(struct GPS_data_t* data);
 
 uint8_t GPS_CheckAcknowledge(uint8_t class, uint8_t id, uint8_t* buffer);
 

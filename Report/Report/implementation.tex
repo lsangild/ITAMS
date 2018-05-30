@@ -4,6 +4,14 @@
 \chapter{Implementation}
 \section{\SAMD}
 This section is dedicated to describing the configurations required on the \SAMD platform. Each subsection will deal with the registers and values needed for each module.
+
+\subsection{Programming framework}
+Both Arduino and Atmel provides a framework for coding purposes for the \MKR board.
+Since Arduino sketches are very high level programming, this was considered to far from the processor.
+Atmel studio provide ASF(advanced software frame) for their processor, which includes drivers and helpfull tools.
+At the start of the project, it was assumed that ASF would be to high level also, resulting in the group programming in C without any major framework.
+Code examples and configurations was later researched in ASF.
+
 \subsection{Clock}
 The \SAMD is able to run with a clock frequency of \SI{48}{\mega\hertz}, but will during start up, this is not active. It is therefore necessary to activate not just the clock called \textit{DFLL48M} but also set up the reference clock, the generic clocks and the required multiplexers.
 

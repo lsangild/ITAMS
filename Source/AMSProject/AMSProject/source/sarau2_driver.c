@@ -124,8 +124,6 @@ uint8_t SARAU2_SetupInternalContext()
 	errorStatus = SARAU2_SendCmd(gsmUart, cmd, 14);
 	if(errorStatus)//Error happened! Could not send!
 		return errorStatus;
-		
-	Wait(4000000);
 	
 	uint8_t loopCount = 10;
 	do

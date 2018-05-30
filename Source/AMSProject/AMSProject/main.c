@@ -138,11 +138,16 @@ void LoopThrough()
 
 void TestGPS()
 {
-	struct GPS_data_t GPSdata = GPS_Poll();
-	while (GPSdata.valid != 0){
-		GPSdata = GPS_Poll();
+	struct GPS_data_t GPSdata;
+	while(1)
+	{
+		GPS_Poll(&GPSdata);
+		while (GPSdata.valid != 0){
+			GPS_Poll(&GPSdata);
+		}
+		SARAU2_SendData("188.114.136.5", 30000, (uint8_t*) &GPSdata, sizeof(struct GPS_data_t));
+		Wait(48000000);
 	}
-	SARAU2_SendData("188.114.136.5", 30000, (uint8_t*) &GPSdata, sizeof(struct GPS_data_t));
 	//writeGPStoSD(GPSdata);
 }
 
